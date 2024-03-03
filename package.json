@@ -1,8 +1,9 @@
 {
   "type": "module",
   "version": "0.0.0",
-  
-  "scripts": {},
+  "scripts": {
+    "prepare": "husky install"
+  },
   "dependencies": {
     "vue": "^3.4.19"
   },
@@ -10,8 +11,13 @@
     "@mistjs/eslint-config": "^1.0.0",
     "@vitejs/plugin-vue": "^5.0.4",
     "eslint": "^8.55.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.2",
     "typescript": "^5.2.2",
     "vite": "^5.1.4",
     "vue-tsc": "^1.8.27"
+  },
+  "lint-staged": {
+    "./**/*.{js,ts,vue,tsx,jsx,css,less,json}": ["eslint --fix"]
   }
 }
