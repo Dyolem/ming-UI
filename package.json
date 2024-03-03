@@ -1,14 +1,15 @@
 {
-  "version": "0.0.0",
   "type": "module",
-  "scripts": {
-
-  },
+  "version": "0.0.0",
+  
+  "scripts": {},
   "dependencies": {
     "vue": "^3.4.19"
   },
   "devDependencies": {
+    "@mistjs/eslint-config": "^1.0.0",
     "@vitejs/plugin-vue": "^5.0.4",
+    "eslint": "^8.55.0",
     "typescript": "^5.2.2",
     "vite": "^5.1.4",
     "vue-tsc": "^1.8.27"
