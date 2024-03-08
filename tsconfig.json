@@ -4,7 +4,7 @@
     "jsx": "preserve",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "useDefineForClassFields": true,
-    
+
     "module": "ESNext",
 
     "skipLibCheck": true,
@@ -16,14 +16,17 @@
     "noEmit": true,
     "isolatedModules": true,
 
-
-
     /* Linting */
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-
+    "baseUrl": "./",
+    "paths": {
+      "@ming-UI/utils": [
+        "packages/utils/src"
+      ]
+    }
   },
   "references": [{ "path": "./tsconfig.node.json" }]
 }
