@@ -1,14 +1,15 @@
 <docs>
 ---
-title:基础使用
+title: 基础使用
 ---
-这是一个基础使用的例子
+
+这是一个`button`基础使用的例子
 </docs>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const msg = ref('Hello World')
+const msg = ref('Heldggregerd')
 </script>
 
 <template>
