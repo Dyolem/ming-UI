@@ -9,7 +9,7 @@ title: 基础使用
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const msg = ref('Heldggregerd')
+const msg = ref('hello')
 </script>
 
 <template>
