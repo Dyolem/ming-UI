@@ -16,6 +16,10 @@ export default defineConfig({
   resolve: {
     alias: [
       {
+        find: /^ming-UI/,
+        replacement: path.resolve(baseUrl, 'packages/ming-UI/src'),
+      },
+      {
         find: /^@ming-UI\/utils/,
         replacement: path.resolve(baseUrl, 'packages/utils/src'),
       },

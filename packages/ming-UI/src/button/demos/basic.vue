@@ -12,5 +12,5 @@ test()
 </script>
 
 <template>
-  <div>tjkiki</div>
+  <div>tjiki</div>
 </template>

@@ -21,12 +21,21 @@
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
+      "ming-UI": [
+        "packages/ming-UI/src"
+      ],
+      "ming-UI/*": [
+        "packages/ming-UI/src/*"
+      ],
       "@ming-UI/utils": [
         "packages/utils/src"
       ]
     }
   },
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [
+    { "path": "./tsconfig.node.json" },
+    { "path": "./tsconfig.vitepress.json" }
+  ]
 }
