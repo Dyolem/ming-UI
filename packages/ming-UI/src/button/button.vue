@@ -1,12 +1,10 @@
-<script  lang="ts" setup>
-// export default defineComponent({
-//   name: 'MingButton',
-//   setup() {
-//     return {
+<script  lang="ts">
+import { defineComponent } from 'vue'
 
-//     }
-//   },
-// })
+export default defineComponent({
+  name: 'MingButton',
+
+})
 </script>
 
 <template>

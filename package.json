@@ -23,7 +23,7 @@
     "lint-staged": "^15.2.2",
     "typescript": "^5.2.2",
     "vite": "^5.1.4",
-    "vite-plugin-vitepress-demo": "^2.2.1",
+    "vite-plugin-vitepress-demo": "^2.0.0",
     "vitepress": "1.0.0-rc.44",
     "vue-tsc": "^1.8.27"
   },

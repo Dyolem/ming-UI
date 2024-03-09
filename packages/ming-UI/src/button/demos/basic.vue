@@ -1,16 +1,17 @@
 <docs>
-    ---
-    title:基础使用
-    ---
-    这是一个基础使用的例子
+---
+title:基础使用
+---
+这是一个基础使用的例子
 </docs>
 
 <script setup lang="ts">
-import { test } from '@ming-UI/utils'
+import { ref } from 'vue'
 
-test()
+const msg = ref('Hello World')
 </script>
 
 <template>
-  <div>tjiki</div>
+  <div>{{ msg }}</div>
+  <MingButton />
 </template>
