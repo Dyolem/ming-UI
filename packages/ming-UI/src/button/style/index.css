@@ -1,13 +1,28 @@
 @import 'theme/colors.css';
 @import 'theme/vars.css';
 .ming-button {
+  display: inline-flex;
+  align-items: center;
   background: none;
   cursor: pointer;
   border: 1px solid var(--ming-color-border);
   outline: none;
   color: inherit;
-  padding: 4px 10px;
+  padding: 4px 8px;
   border-radius: 4px;
+  padding: 4px 10px;
+  height: 32px;
+  font-size: 16px;
+}
+.ming-button-size--small {
+  height: 24px;
+  padding: 2px 4px;
+  font-size: 12px;
+}
+.ming-button-size--large {
+  height: 40px;
+  padding: 6px 12px;
+  font-size: 20px;
 }
 .ming-button--default {
   border-color: var(--ming-color-border);
@@ -46,4 +61,10 @@
 .ming-button--primary:active {
   border-color: var(--ming-color-primary-active);
   background-color: var(--ming-color-primary-active);
+}
+.ming-button:disabled {
+  cursor: not-allowed;
+  border-color: #d9d9d9;
+  color: #bfbfbf;
+  background-color: #f0f0f0;
 }

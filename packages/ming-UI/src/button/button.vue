@@ -10,6 +10,14 @@ export default defineComponent({
       type: String as PropType<'default' | 'primary' | 'dashed'>,
       default: 'default',
     },
+    disabled: {
+      type: Boolean as PropType<boolean>,
+      default: false,
+    },
+    size: {
+      type: String as PropType<'small' | 'default' | 'large'>,
+      default: 'default',
+    },
   },
   emits: ['click'],
   setup(props, { emit }) {
@@ -23,6 +31,7 @@ export default defineComponent({
       return {
         [c()]: true,
         [c(cm(props.type))]: true,
+        [c('size', cm(props.size))]: true,
       }
     })
     return {
@@ -39,8 +48,10 @@ export default defineComponent({
 
 <template>
   <div>
-    <button :class="cls" @click="handclick">
-      button
+    <button :class="cls" :disabled="disabled" @click="handclick">
+      <slot>
+        button
+      </slot>
     </button>
   </div>
 </template>
