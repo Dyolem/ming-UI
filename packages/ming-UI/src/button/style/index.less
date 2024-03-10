@@ -1,8 +1,5 @@
 @import '../../style/index.less';
-// .ming-button{
-//     color: aquamarine;
-//     cursor: pointer;
-// }
+
 .ming-button {
     background: none;
     cursor: pointer;
@@ -21,6 +18,32 @@
         &:active{
             border-color: var(--ming-color-primary-active);
             color: var(--ming-color-primary-active);
+        }
+    }
+    &--dashed{
+        border-style: dashed;
+        border-color: var(--ming-color-border);
+        color: var(--ming-color-text);
+        &:hover{
+            border-color: var(--ming-color-primary-hover);
+            color: var(--ming-color-primary-hover);
+        }
+        &:active{
+            border-color: var(--ming-color-primary-active);
+            color: var(--ming-color-primary-active);
+        }
+    }
+    &--primary{
+        border-color: var(--ming-color-primary);
+        color: white;
+        background-color: var(--ming-color-primary);
+        &:hover{
+            border-color: var(--ming-color-primary-hover);
+            background-color: var(--ming-color-primary-hover);
+        }
+        &:active{
+            border-color: var(--ming-color-primary-active);
+            background-color: var(--ming-color-primary-active);
         }
     }
 }

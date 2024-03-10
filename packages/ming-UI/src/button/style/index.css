@@ -21,3 +21,29 @@
   border-color: var(--ming-color-primary-active);
   color: var(--ming-color-primary-active);
 }
+.ming-button--dashed {
+  border-style: dashed;
+  border-color: var(--ming-color-border);
+  color: var(--ming-color-text);
+}
+.ming-button--dashed:hover {
+  border-color: var(--ming-color-primary-hover);
+  color: var(--ming-color-primary-hover);
+}
+.ming-button--dashed:active {
+  border-color: var(--ming-color-primary-active);
+  color: var(--ming-color-primary-active);
+}
+.ming-button--primary {
+  border-color: var(--ming-color-primary);
+  color: white;
+  background-color: var(--ming-color-primary);
+}
+.ming-button--primary:hover {
+  border-color: var(--ming-color-primary-hover);
+  background-color: var(--ming-color-primary-hover);
+}
+.ming-button--primary:active {
+  border-color: var(--ming-color-primary-active);
+  background-color: var(--ming-color-primary-active);
+}

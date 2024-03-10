@@ -11,6 +11,15 @@ title: 基础使
 </script>
 
 <template>
-  <!-- <div>{{ msg }}</div> -->
-  <t-button />
+  <div class="show-box">
+    <t-button />
+    <t-button type="dashed" />
+    <t-button type="primary" />
+  </div>
 </template>
+
+<style>
+.show-box{
+  display: flex;
+}
+</style>

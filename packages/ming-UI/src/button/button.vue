@@ -30,6 +30,10 @@ export default defineComponent({
       handclick,
     }
   },
+  // mounted() {
+  //   console.log(this.$props.type)
+  // },
+
 })
 </script>
 
@@ -40,9 +44,3 @@ export default defineComponent({
     </button>
   </div>
 </template>
-
-<!-- <style>
-  .test {
-    color: aquamarine;
-  }
-</style> -->
