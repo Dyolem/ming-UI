@@ -2,13 +2,21 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'MingButton',
+  name: 'TButton',
 
 })
 </script>
 
 <template>
   <div>
-    <button>button</button>
+    <button class="test">
+      button
+    </button>
   </div>
 </template>
+
+<!-- <style>
+  .test {
+    color: aquamarine;
+  }
+</style> -->
