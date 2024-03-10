@@ -9,7 +9,7 @@ export default defineComponent({
 
 <template>
   <div>
-    <button class="test">
+    <button class="ming-button">
       button
     </button>
   </div>

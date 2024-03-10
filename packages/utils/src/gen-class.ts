@@ -1,47 +1,35 @@
-type Modifier = string | { [key: string]: boolean }
-type Modifiers = Modifier | Modifier[]
+import classNames from 'classnames'
+import { computed } from 'vue'
 
-export default class BEM {
-  constructor(private block: string) {}
-
-  // 生成基于Block的类名
-  b(): string {
-    return this.block
+ type BEMType = string | [string, 'B' | 'E' | 'M' | undefined]
+export function useClassnames(componentName: string) {
+  const prefix = 'ming'
+  const componentClass = `${prefix}-${componentName}`
+  const c = (...arg: BEMType[]) => {
+    if (arg.length) {
+      return arg.reduce((prev, cur) => {
+        if (Array.isArray(cur)) {
+          const arg1 = cur[0]
+          const arg2 = cur[1]
+          if (arg2 === 'E')
+            return `${prev}__${arg1}`
+          else if (arg2 === 'M')
+            return `${prev}--${arg1}`
+        }
+        return `${[prev]}-${cur}`
+      }, componentClass) as string
+    }
+    return componentClass
   }
-
-  // 生成基于Element的类名
-  e(element: string): string {
-    return `${this.block}__${element}`
+  const ce = (e: string) => [e, 'E'] as BEMType
+  const cm = (m: string) => [m, 'M'] as BEMType
+  const cx = (cls: () => Record<string, boolean>) => {
+    return computed(() => classNames(cls()))
   }
-
-  // 生成基于Modifier的类名
-  m(modifier: Modifiers, base: string = this.block): string {
-    if (!modifier)
-      return base
-
-    const addModifier = (mod: string) => `${base}--${mod}`
-
-    if (typeof modifier === 'string')
-      return addModifier(modifier)
-    else if (Array.isArray(modifier))
-      return modifier.map(mod => typeof mod === 'string' ? addModifier(mod) : this.m(Object.entries(mod).filter(([_, value]) => value).map(([key, _]) => key), base)).join(' ')
-    else
-      return Object.entries(modifier).filter(([_, value]) => value).map(([key, _]) => addModifier(key)).join(' ')
-  }
-
-  // 组合Block, Element和Modifier生成类名
-  generate(element?: string, modifier?: Modifiers): string {
-    const base = element ? this.e(element) : this.b()
-    // 确保modifier不为undefined，如果是undefined则作为一个空数组传递
-    return this.m(modifier ?? [], base)
+  return {
+    c,
+    ce,
+    cm,
+    cx,
   }
 }
-
-// // 使用示例
-// const buttonBEM = new BEM('button')
-
-// console.log(buttonBEM.b()) // "button"
-// console.log(buttonBEM.e('icon')) // "button__icon"
-// console.log(buttonBEM.m('active')) // "button--active"
-// console.log(buttonBEM.generate('icon', 'right')) // "button__icon button__icon--right"
-// console.log(buttonBEM.generate(undefined, ['disabled', { primary: true }])) // "button button--disabled button--primary"
