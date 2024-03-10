@@ -1,3 +1,23 @@
+@import 'theme/colors.css';
+@import 'theme/vars.css';
 .ming-button {
-  color: aquamarine;
+  background: none;
+  cursor: pointer;
+  border: 1px solid var(--ming-color-border);
+  outline: none;
+  color: inherit;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+.ming-button--default {
+  border-color: var(--ming-color-border);
+  color: var(--ming-color-text);
+}
+.ming-button--default:hover {
+  border-color: var(--ming-color-primary-hover);
+  color: var(--ming-color-primary-hover);
+}
+.ming-button--default:active {
+  border-color: var(--ming-color-primary-active);
+  color: var(--ming-color-primary-active);
 }

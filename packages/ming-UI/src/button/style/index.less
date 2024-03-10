@@ -1,3 +1,26 @@
-.ming-button{
-    color: aquamarine;
+@import '../../style/index.less';
+// .ming-button{
+//     color: aquamarine;
+//     cursor: pointer;
+// }
+.ming-button {
+    background: none;
+    cursor: pointer;
+    border:  1px solid var(--ming-color-border);
+    outline: none;
+    color: inherit;
+    padding: 4px 10px;
+    border-radius: 4px;
+    &--default{
+        border-color: var(--ming-color-border);
+        color: var(--ming-color-text);
+        &:hover{
+            border-color: var(--ming-color-primary-hover);
+            color: var(--ming-color-primary-hover);
+        }
+        &:active{
+            border-color: var(--ming-color-primary-active);
+            color: var(--ming-color-primary-active);
+        }
+    }
 }
