@@ -12,12 +12,12 @@ title:按钮禁用
 
 <template>
   <div class="show-box">
-    <t-button type="dashed" :disabled="false">
+    <m-button type="dashed" :disabled="false">
       按钮
-    </t-button>
-    <t-button type="primary" disabled>
+    </m-button>
+    <m-button type="primary" disabled>
       按钮
-    </t-button>
+    </m-button>
   </div>
 </template>
 

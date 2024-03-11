@@ -11,15 +11,15 @@ title: 按钮大小
 
 <template>
   <div class="show-box">
-    <t-button type="primary" size="small">
+    <m-button type="primary" size="small">
       按钮
-    </t-button>
-    <t-button type="primary" size="default">
+    </m-button>
+    <m-button type="primary" size="default">
       按钮
-    </t-button>
-    <t-button type="primary" size="large">
+    </m-button>
+    <m-button type="primary" size="large">
       按钮
-    </t-button>
+    </m-button>
   </div>
 </template>
 

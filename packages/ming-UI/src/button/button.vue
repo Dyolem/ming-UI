@@ -4,7 +4,7 @@ import { defineComponent } from 'vue'
 import { useClassnames } from '@ming-UI/utils'
 
 export default defineComponent({
-  name: 'TButton',
+  name: 'MButton',
   props: {
     type: {
       type: String as PropType<'default' | 'primary' | 'dashed'>,

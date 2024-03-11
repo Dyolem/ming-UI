@@ -12,13 +12,13 @@ title: 基础使用
 
 <template>
   <div class="show-box">
-    <t-button />
-    <t-button type="dashed">
+    <m-button />
+    <m-button type="dashed">
       按钮
-    </t-button>
-    <t-button type="primary">
+    </m-button>
+    <m-button type="primary">
       submit
-    </t-button>
+    </m-button>
   </div>
 </template>
 
