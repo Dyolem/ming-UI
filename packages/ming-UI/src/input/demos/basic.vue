@@ -13,12 +13,6 @@ title: 基础使用
 <template>
   <div class="show-box">
     <m-input />
-    <m-input type="dashed">
-      按钮
-    </m-input>
-    <m-input type="primary">
-      submit
-    </m-input>
   </div>
 </template>
 
