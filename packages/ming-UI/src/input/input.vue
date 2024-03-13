@@ -55,6 +55,12 @@ const emit = defineEmits<{
   'update:modelValue': [string]
 }>()
 
+defineSlots<{
+  prefix(): any
+  suffix(): any
+}>()
+
+// 受控组件实现逻辑
 function handleInput(e: Event) {
   const target = e.target as HTMLInputElement
   // 检查props.modelValue是否被定义
@@ -68,7 +74,8 @@ function handleInput(e: Event) {
   emit('update:modelValue', target.value)
 }
 
-const { cx, c, cm } = useClassnames('input')
+// 组件样式代码
+const { cx, c, cm, ce } = useClassnames('input')
 const cls = cx(() => {
   return {
     [c()]: true,
@@ -87,6 +94,12 @@ const inputCls = cx(() => {
 
 <template>
   <div :class="cls">
+    <span v-if="$slots.prefix" :class="c(ce('prefix'))">
+      <slot name="prefix" />
+    </span>
     <input :class="inputCls" :value="modelValue" type="text" :disabled="disabled" @input="handleInput">
+    <span v-if="$slots.suffix" :class="c(ce('suffix'))">
+      <slot name="suffix" />
+    </span>
   </div>
 </template>

@@ -21,6 +21,21 @@
   height: 20px;
   padding-inline: 4px;
 }
+.ming-input--small__suffix {
+  margin-left: 4px;
+}
+.ming-input--small .ming-input__prefix {
+  margin-right: 4px;
+}
+.ming-input--small .ming-input__suffix {
+  margin-left: 4px;
+}
+.ming-input__prefix {
+  margin-right: 8px;
+}
+.ming-input__suffix {
+  margin-left: 8px;
+}
 .ming-input input {
   font-size: inherit;
   font-weight: inherit;
