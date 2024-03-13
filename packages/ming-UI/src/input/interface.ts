@@ -1,3 +1,5 @@
 export interface InputProps {
-  modelValue: string
+  modelValue?: string
+  disabled?: boolean
+  size?: 'small' | 'default' | 'large'
 }

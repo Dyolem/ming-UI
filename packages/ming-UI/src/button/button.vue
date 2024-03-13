@@ -27,6 +27,7 @@ export default defineComponent({
       emit('click', e)
     }
     const { c, cx, cm } = useClassnames('button')
+    // 根据用户传递的值来动态生成类名
     const cls = cx(() => {
       return {
         [c()]: true,

@@ -15,6 +15,8 @@ const msg = ref('')
 <template>
   <div class="show-box">
     <div>{{ `输入：${msg}` }}</div>
-    <m-input />
+    <m-input v-model="msg" size="small" />
+    <m-input v-model="msg" disabled />
+    <m-input v-model="msg" disabled size="large" />
   </div>
 </template>
