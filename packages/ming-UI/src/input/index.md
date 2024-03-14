@@ -29,7 +29,7 @@
 
 <demo src="./demos/slot.vue"></demo>
 
-## Api
+## API
 
 ### Attributes
 
