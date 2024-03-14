@@ -113,7 +113,7 @@ defineExpose({
     <span v-if="$slots.prefix" :class="c(ce('prefix'))">
       <slot name="prefix" />
     </span>
-    <input ref="inputRef" :class="inputCls" :value="modelValue" type="text" :disabled="disabled" v-bind="pick($attrs, originInputProps)" @focus="focus" @blur="blur" @input="handleInput">
+    <input ref="inputRef" :class="inputCls" :value="modelValue" type="text" :disabled="disabled" v-bind="pick($attrs, originInputProps)" @input="handleInput">
     <span v-if="$slots.suffix" :class="c(ce('suffix'))">
       <slot name="suffix" />
     </span>

@@ -12,6 +12,7 @@ export default defineConfig({
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     siteTitle: 'My Custom Title',
+    outline: 'deep',
     nav: [
       { text: '首页', link: '/' },
       { text: '介绍', link: '/introduce' },
