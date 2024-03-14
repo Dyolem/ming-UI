@@ -39,7 +39,7 @@ onMounted(() => {
 </template> -->
 
 <script setup lang="ts">
-import { defineOptions } from 'vue'
+import { defineOptions, ref } from 'vue'
 import { useClassnames } from '@ming-UI/utils'
 import type { InputProps } from './interface'
 
@@ -90,6 +90,18 @@ const inputCls = cx(() => {
     [c('input')]: true,
   }
 })
+
+const inputRef = ref<HTMLInputElement>()
+function focus() {
+  inputRef.value?.focus()
+}
+function blur() {
+  inputRef.value?.focus()
+}
+defineExpose({
+  focus,
+  blur,
+})
 </script>
 
 <template>
@@ -97,7 +109,7 @@ const inputCls = cx(() => {
     <span v-if="$slots.prefix" :class="c(ce('prefix'))">
       <slot name="prefix" />
     </span>
-    <input :class="inputCls" :value="modelValue" type="text" :disabled="disabled" @input="handleInput">
+    <input ref="inputRef" :class="inputCls" :value="modelValue" type="text" :disabled="disabled" @focus="focus" @blur="blur" @input="handleInput">
     <span v-if="$slots.suffix" :class="c(ce('suffix'))">
       <slot name="suffix" />
     </span>

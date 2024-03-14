@@ -7,15 +7,19 @@ title: 基础使用
 </docs>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 const msg = ref('')
+const input = ref<HTMLInputElement>()
+onMounted(() => {
+  input.value!.focus()
+})
 </script>
 
 <template>
   <div class="show-box">
     <div>{{ `输入：${msg}` }}</div>
-    <m-input v-model="msg" size="small">
+    <m-input ref="input" v-model="msg" size="small">
       <template #prefix>
         123
       </template>
