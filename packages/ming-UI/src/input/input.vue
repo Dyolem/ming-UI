@@ -41,10 +41,14 @@ onMounted(() => {
 <script setup lang="ts">
 import { defineOptions, ref } from 'vue'
 import { useClassnames } from '@ming-UI/utils'
+import { omit, pick } from 'lodash-es'
 import type { InputProps } from './interface'
+
+import { originInputProps } from './interface'
 
 defineOptions({
   name: 'MInput',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(defineProps<InputProps>(), {
@@ -105,11 +109,11 @@ defineExpose({
 </script>
 
 <template>
-  <div :class="cls">
+  <div :class="cls" v-bind="omit($attrs, originInputProps)">
     <span v-if="$slots.prefix" :class="c(ce('prefix'))">
       <slot name="prefix" />
     </span>
-    <input ref="inputRef" :class="inputCls" :value="modelValue" type="text" :disabled="disabled" @focus="focus" @blur="blur" @input="handleInput">
+    <input ref="inputRef" :class="inputCls" :value="modelValue" type="text" :disabled="disabled" v-bind="pick($attrs, originInputProps)" @focus="focus" @blur="blur" @input="handleInput">
     <span v-if="$slots.suffix" :class="c(ce('suffix'))">
       <slot name="suffix" />
     </span>

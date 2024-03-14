@@ -19,7 +19,7 @@ onMounted(() => {
 <template>
   <div class="show-box">
     <div>{{ `输入：${msg}` }}</div>
-    <m-input ref="input" v-model="msg" size="small">
+    <m-input ref="input" v-model="msg" size="small" autocomplete="true">
       <template #prefix>
         123
       </template>
@@ -27,7 +27,7 @@ onMounted(() => {
         123
       </template>
     </m-input>
-    <m-input v-model="msg" disabled>
+    <!-- <m-input v-model="msg" disabled>
       <template #prefix>
         123
       </template>
@@ -35,6 +35,6 @@ onMounted(() => {
         123
       </template>
     </m-input>
-    <m-input v-model="msg" disabled size="large" />
+    <m-input v-model="msg" disabled size="large" /> -->
   </div>
 </template>
