@@ -2,8 +2,10 @@ import type { PropType, VNode } from 'vue'
 import { computed, createVNode, defineComponent, ref } from 'vue'
 
 import type { Placement } from '@floating-ui/vue'
-import { useFloating } from '@floating-ui/vue'
+import { offset, useFloating } from '@floating-ui/vue'
+
 import { filterEmpty, isBaseType } from '@v-c/utils'
+import { useClassnames } from '@ming-UI/utils'
 
 export default defineComponent({
   name: 'MTooltip',
@@ -20,15 +22,20 @@ export default defineComponent({
     const reference = ref(null)
     const floating = ref(null)
     const placement = computed(() => props.placement)
+    const { c } = useClassnames('tooltip')
     const { floatingStyles } = useFloating(reference, floating, {
       placement,
+      middleware: [offset(4)],
     })
     return () => {
       const renderTooltip = () => {
         if (!reference.value)
           return null
+        const cls = {
+          [c()]: true,
+        }
         return (
-          <div ref={floating} style={floatingStyles.value}>
+          <div class={cls} ref={floating} style={floatingStyles.value}>
             {slots.content ? slots.content?.() : props.content}
           </div>
         )
