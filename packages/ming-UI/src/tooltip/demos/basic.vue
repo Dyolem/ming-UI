@@ -5,7 +5,7 @@
 <template>
   <div class="show-box">
     <m-tooltip content="Hello!" placement="top">
-      <span>111</span>
+      <m-button>111</m-button>
       <template #content>
         <span style="color: red;">world</span>
       </template>
