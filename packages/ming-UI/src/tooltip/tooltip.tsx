@@ -17,6 +17,10 @@ export default defineComponent({
     content: {
       type: String as PropType<string>,
     },
+    trigger: {
+      type: String as PropType<'hover' | 'click'>,
+      default: 'hover',
+    },
   },
   setup(props, { slots }) {
     const reference = ref(null)
@@ -30,6 +34,8 @@ export default defineComponent({
     })
     let timer: ReturnType<typeof setTimeout> | undefined
     const handleMouseEnter = () => {
+      if (props.trigger === 'click')
+        return
       show.value = true
     }
     const handleMouseLeave = () => {
@@ -37,7 +43,9 @@ export default defineComponent({
         show.value = false
       }, 150)
     }
-
+    const handleClick = () => {
+      show.value = true
+    }
     return () => {
       const renderTooltip = () => {
         if (!reference.value)
@@ -47,6 +55,7 @@ export default defineComponent({
         const cls = {
           [c()]: true,
         }
+
         const events = {
           onMouseenter: () => {
             if (timer)
@@ -56,7 +65,9 @@ export default defineComponent({
           onMouseleave: () => {
             show.value = false
           },
+
         }
+
         return (
           <div {...events} class={cls} ref={floating} style={floatingStyles.value}>
             {slots.content ? slots.content?.() : props.content}
@@ -79,6 +90,7 @@ export default defineComponent({
       const events = {
         onMouseenter: handleMouseEnter,
         onMouseleave: handleMouseLeave,
+        onclick: handleClick,
       }
       const tipNode = createVNode(node as VNode, {
         ref: reference,
