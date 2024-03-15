@@ -48,11 +48,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
-    <button :class="cls" :disabled="disabled" @click="handclick">
-      <slot>
-        button
-      </slot>
-    </button>
-  </div>
+  <button :class="cls" :disabled="disabled" @click="handclick">
+    <slot>
+      button
+    </slot>
+  </button>
 </template>

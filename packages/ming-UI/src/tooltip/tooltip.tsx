@@ -12,7 +12,7 @@ export default defineComponent({
   props: {
     placement: {
       type: String as PropType<Placement>,
-      default: 'buttom-center',
+      default: 'bottom-center',
     },
     content: {
       type: String as PropType<string>,
