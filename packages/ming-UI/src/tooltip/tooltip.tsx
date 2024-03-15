@@ -1,5 +1,5 @@
 import type { PropType, VNode } from 'vue'
-import { computed, createVNode, defineComponent, ref } from 'vue'
+import { computed, createVNode, defineComponent, effect, ref } from 'vue'
 
 import type { Placement } from '@floating-ui/vue'
 import { offset, useFloating } from '@floating-ui/vue'
@@ -21,13 +21,17 @@ export default defineComponent({
       type: String as PropType<'hover' | 'click'>,
       default: 'hover',
     },
+    effect: {
+      type: String as PropType<'light' | 'dark' | 'customized' | 'fullCustomized'>,
+      default: 'light',
+    },
   },
-  setup(props, { slots }) {
+  setup(props, { slots, attrs }) {
     const reference = ref(null)
     const floating = ref(null)
     const placement = computed(() => props.placement)
     const show = ref(false)
-    const { c } = useClassnames('tooltip')
+    const { c, cm } = useClassnames('tooltip')
     const { floatingStyles } = useFloating(reference, floating, {
       placement,
       middleware: [offset(4)],
@@ -54,8 +58,16 @@ export default defineComponent({
           return null
         const cls = {
           [c()]: true,
+          [c(cm(props.effect))]: true,
         }
-
+        const customizedClass = attrs?.class
+        const customized = () => {
+          if (props.effect === 'fullCustomized')
+            return [customizedClass]
+          else if (props.effect === 'customized')
+            return ['ming-tooltip', customizedClass]
+          else return [cls]
+        }
         const events = {
           onMouseenter: () => {
             if (timer)
@@ -69,7 +81,7 @@ export default defineComponent({
         }
 
         return (
-          <div {...events} class={cls} ref={floating} style={floatingStyles.value}>
+          <div {...events} class={customized()} ref={floating} style={floatingStyles.value}>
             {slots.content ? slots.content?.() : props.content}
           </div>
         )
