@@ -34,6 +34,10 @@ export default defineConfig({
           text: 'Tooltip',
           link: '/components/tooltip/',
         },
+        {
+          text: 'Table',
+          link: '/components/table/',
+        },
       ],
       '/utils/': [
         {
