@@ -9,6 +9,7 @@ import { useClassnames } from '@ming-UI/utils'
 
 export default defineComponent({
   name: 'MTooltip',
+  inheritAttrs: false,
   props: {
     placement: {
       type: String as PropType<Placement>,
