@@ -23,19 +23,19 @@ export default defineConfig({
     sidebar: {
       '/components/': [
         {
-          text: '按钮',
+          text: 'Button按钮',
           link: '/components/button/',
         },
         {
-          text: '输入框',
+          text: 'Input输入框',
           link: '/components/input/',
         },
         {
-          text: 'Tooltip',
+          text: 'Tooltip文字提示',
           link: '/components/tooltip/',
         },
         {
-          text: 'Table',
+          text: 'Table表格',
           link: '/components/table/',
         },
       ],
