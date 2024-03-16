@@ -1,5 +1,5 @@
 import type { PropType, VNode } from 'vue'
-import { computed, createVNode, defineComponent, effect, ref } from 'vue'
+import { computed, createVNode, defineComponent, ref } from 'vue'
 
 import type { Placement } from '@floating-ui/vue'
 import { offset, useFloating } from '@floating-ui/vue'
@@ -12,10 +12,11 @@ export default defineComponent({
   props: {
     placement: {
       type: String as PropType<Placement>,
-      default: 'bottom-center',
+      default: 'bottom',
     },
     content: {
       type: String as PropType<string>,
+      default: '',
     },
     trigger: {
       type: String as PropType<'hover' | 'click'>,
@@ -23,7 +24,7 @@ export default defineComponent({
     },
     effect: {
       type: String as PropType<'light' | 'dark' | 'customized' | 'fullCustomized'>,
-      default: 'light',
+      default: 'dark',
     },
   },
   setup(props, { slots, attrs }) {
