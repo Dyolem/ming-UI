@@ -16,9 +16,12 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
+    // reporters: ['default', 'html'],
     coverage: {
+      // enabled: true,
       provider: 'v8',
       reporter: ['text'],
+      include: ['packages/**', '!packages/**/docs', '!packages/**/demos'],
     },
   },
 })
