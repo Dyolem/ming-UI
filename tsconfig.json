@@ -35,7 +35,8 @@
       "@ming-UI/icons": [
         "packages/icons/src"
       ]
-    }
+    },
+    "types": ["vitest/globals"]
   },
   "references": [
     { "path": "./tsconfig.node.json" },
