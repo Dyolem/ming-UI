@@ -22,8 +22,6 @@ export default defineComponent({
   emits: ['click'],
   setup(props, { emit }) {
     const handclick = (e: Event) => {
-      console.log(111)
-
       emit('click', e)
     }
     const { c, cx, cm } = useClassnames('button')
