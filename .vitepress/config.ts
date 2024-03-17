@@ -8,6 +8,7 @@ export default defineConfig({
     'docs/(.*)': '(.*)',
     'packages/ming-UI/src/:comp/(.*)': 'components/:comp/(.*)',
     'packages/utils/src/(.*)': 'utils/(.*)',
+    'packages/icons/docs/(.*)': 'components/icons/(.*)',
   },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
@@ -37,6 +38,10 @@ export default defineConfig({
         {
           text: 'Table表格',
           link: '/components/table/',
+        },
+        {
+          text: 'Icons图标',
+          link: '/components/icons/',
         },
       ],
       '/utils/': [

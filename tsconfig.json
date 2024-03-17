@@ -31,6 +31,9 @@
       ],
       "@ming-UI/utils": [
         "packages/utils/src"
+      ],
+      "@ming-UI/icons": [
+        "packages/icons/src"
       ]
     }
   },

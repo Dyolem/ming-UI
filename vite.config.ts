@@ -27,6 +27,10 @@ export default defineConfig({
         find: /^@ming-UI\/utils/,
         replacement: path.resolve(baseUrl, 'packages/utils/src'),
       },
+      {
+        find: /^@ming-UI\/icons/,
+        replacement: path.resolve(baseUrl, 'packages/icons/src'),
+      },
     ],
   },
 })
