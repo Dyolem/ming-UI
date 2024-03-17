@@ -13,4 +13,8 @@ export default defineConfig({
   resolve: {
     alias,
   },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+  },
 })
