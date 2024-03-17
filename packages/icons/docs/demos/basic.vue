@@ -3,5 +3,7 @@
 </script>
 
 <template>
-  <div>icons</div>
+  <div>
+    <img src="../svg/tennis.svg" alt="">
+  </div>
 </template>
