@@ -12,6 +12,7 @@ title: 基础使用
 
 <template>
   <div class="show-box">
+    <svg-icon name="tennis" />
     <m-button />
     <m-button type="dashed">
       按钮

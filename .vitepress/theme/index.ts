@@ -5,6 +5,8 @@ import DefaultTheme from 'vitepress/theme'
 import './style.css'
 import { AntdTheme } from 'vite-plugin-vitepress-demo/theme'
 import ming from 'ming-UI'
+
+// import icons from '@ming-UI/icons'
 import 'ming-UI/styles.ts'
 
 export default {
@@ -18,5 +20,6 @@ export default {
     // ...
     app.component('Demo', AntdTheme)
     app.use(ming)
+    // app.use(icons)
   },
 } satisfies Theme
