@@ -1,9 +1,17 @@
 <template>
   <div class="box">
-    <MLike />
-    <MPause />
-    <MVolumnUp />
-    <MMute />
+    <m-icon>
+      <Like />
+    </m-icon>
+    <m-icon>
+      <Pause />
+    </m-icon>
+    <m-icon>
+      <VolumnUp />
+    </m-icon>
+    <m-icon>
+      <Mute />
+    </m-icon>
   </div>
 </template>
 

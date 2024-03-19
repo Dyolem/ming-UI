@@ -61,38 +61,53 @@ async function copyIconsName(event) {
 
 <ul :class="$style.grid" class="vp-raw" @click="copyIconsName($event)">
   <li>
-    <MLike />
-    <span>Like</span>
-  </li>
-  <li>
-    <MMute />
+    <m-icon>
+      <Like />
+    </m-icon>
     <span>like</span>
   </li>
   <li>
-    <MDownload />
+    <m-icon>
+      <Mute />
+    </m-icon>
+    <span>Mute</span>
+  </li>
+  <li>
+    <m-icon>
+      <Download />
+    </m-icon>
     <span>Download</span>
   </li>
   <li>
-    <MPause />
+    <m-icon>
+      <Pause />
+    </m-icon>
     <span>Pause</span>
   </li>
   <li>
-    <MPlayOne />
+    <m-icon>
+      <PlayOne />
+    </m-icon>
     <span>PlayOne</span>
   </li>
   <li>
-    <MVoiceOne />
+    <m-icon>
+      <VoiceOne />
+    </m-icon>
     <span>VoiceOne</span>
   </li>
   <li>
-    <MVolumnDown />
+    <m-icon>
+      <VolumnDown />
+    </m-icon>
     <span>VolumnDown</span>
   </li>
-   <li>
-    <MVolumnUp />
-    <span>VolumnUp</span>
+  <li>
+    <m-icon>
+      <VolumnUp />
+    </m-icon>
+    <span>VolumnDown</span>
   </li>
-
 </ul>
 
 <style module>

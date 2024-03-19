@@ -1,25 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import type { iconStyleProp } from '../interface'
+import { inject, useAttrs } from 'vue'
 
 defineOptions({
-  name: 'MvolumnDown',
+  name: 'VolumnDown',
+  inheritAttrs: false,
 })
-withDefaults(defineProps<iconStyleProp>(), {
-  size: 16,
-  color: '#333',
-  fill: 'none',
-})
-const iconRef = ref(null)
-defineExpose({
-  iconRef,
-})
+
+const attrs = useAttrs()
+const injectedProps = inject('iconProps', {})
 </script>
 
 <template>
-  <div ref="iconRef">
-    <svg xmlns="http://www.w3.org/2000/svg" :weight="size" :height="size" :fill="color" viewBox="0 0 48 48"><path stroke-linejoin="round" stroke-width="4" :stroke="color" d="M24 6v36c-7 0-12.201-9.16-12.201-9.16H6a2 2 0 0 1-2-2V17.01a2 2 0 0 1 2-2h5.799S17 6 24 6Z" data-follow-stroke="#333" /><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" :stroke="color" d="M32 24h12" data-follow-stroke="#333" /></svg>
-  </div>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" v-bind="injectedProps === undefined ? attrs : injectedProps"><path d="M24 6v36c-7 0-12.201-9.16-12.201-9.16H6a2 2 0 0 1-2-2V17.01a2 2 0 0 1 2-2h5.799S17 6 24 6Z" /><path d="M32 24h12" /></svg>
 </template>
 
 <style>

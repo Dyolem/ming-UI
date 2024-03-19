@@ -1,25 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import type { iconStyleProp } from '../interface'
+import { inject, useAttrs } from 'vue'
 
 defineOptions({
-  name: 'MLike',
+  name: 'Like',
+  inheritAttrs: false,
 })
-withDefaults(defineProps<iconStyleProp>(), {
-  size: 16,
-  color: '#333',
-  fill: 'none',
-})
-const iconRef = ref(null)
-defineExpose({
-  iconRef,
-})
+
+const attrs = useAttrs()
+const injectedProps = inject('iconProps', {})
 </script>
 
 <template>
-  <div ref="iconRef">
-    <svg xmlns="http://www.w3.org/2000/svg" :weight="size" :height="size" :fill="fill" viewBox="0 0 48 48"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" :stroke="color" d="M15 8C8.925 8 4 12.925 4 19c0 11 13 21 20 23.326C31 40 44 30 44 19c0-6.075-4.925-11-11-11-3.72 0-7.01 1.847-9 4.674A10.987 10.987 0 0 0 15 8Z" data-follow-stroke="#333" /></svg>
-  </div>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" v-bind="injectedProps === undefined ? attrs : injectedProps"><path d="M15 8C8.925 8 4 12.925 4 19c0 11 13 21 20 23.326C31 40 44 30 44 19c0-6.075-4.925-11-11-11-3.72 0-7.01 1.847-9 4.674A10.987 10.987 0 0 0 15 8Z" /></svg>
 </template>
 
 <style>

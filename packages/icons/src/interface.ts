@@ -1,5 +1,6 @@
 export interface iconStyleProp {
   size?: number | string
-  color?: string
+  stroke?: string
   fill?: string
+  strokeWidth?: string | number
 }
