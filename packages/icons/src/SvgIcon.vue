@@ -16,8 +16,13 @@ export default defineComponent({
       type: String,
       default: '#333',
     },
+    size: {
+      type: Number,
+      default: 16,
+    },
   },
   setup(props) {
+    console.log(props.color)
     const symbolId = computed(() => `#${props.prefix}-${props.name}`)
     return { symbolId }
   },
@@ -26,6 +31,6 @@ export default defineComponent({
 
 <template>
   <svg aria-hidden="true">
-    <use :href="symbolId" :fill="color" />
+    <use :href="symbolId" :fill="color" :size="size" />
   </svg>
 </template>

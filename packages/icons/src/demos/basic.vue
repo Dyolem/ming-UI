@@ -1,7 +1,14 @@
 <script setup>
-import { SvgIcon } from '../index.ts'
+import { MLike, SvgIcon } from '../index.ts'
 </script>
 
 <template>
-  <SvgIcon name="tennis" />
+  <MLike color="orange" fill="red" size="30" class="test" />
 </template>
+
+<style scoped>
+.test {
+  transition: all 3s linear;
+    transform: translate(100px);
+}
+</style>
