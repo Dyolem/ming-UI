@@ -10,14 +10,17 @@ import { ref } from 'vue'
 
 const count = ref(0)
 
-const copyIconsName=(event)=>{
-  console.log(event.target)
-console.log(event.target.innerText)
+async function copyIconsName(event) {
+  const content = `<M${event.target?.innerText} />`
+  const type = "text/plain";
+  const blob = new Blob([content], { type });
+  const data = [new ClipboardItem({ [type]: blob })];
+  await navigator.clipboard.write(data);
 }
 
 </script>
 
-## Markdown Content
+## 图标集合
 
 <ul :class="$style.grid" class="vp-raw" @click="copyIconsName($event)">
   <li>
