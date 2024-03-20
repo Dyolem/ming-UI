@@ -112,7 +112,7 @@ app.mount('#app')
 
 async function copyIconsName(event) {
   if(event.target.innerText ===undefined) return
-  const content = `<M${event.target?.innerText} />`
+  const content = `<m-icon><${event.target?.innerText} /></m-icon>`
   const type = "text/plain";
   const blob = new Blob([content], { type });
   const data = [new ClipboardItem({ [type]: blob })];
@@ -126,7 +126,7 @@ async function copyIconsName(event) {
     <m-icon>
       <Like />
     </m-icon>
-    <span>like</span>
+    <span>Like</span>
   </li>
   <li>
     <m-icon>
