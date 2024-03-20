@@ -36,6 +36,7 @@ app.mount('#app')
 ```
 
 完成以上步骤后，`@ming-UI/icons` 图标库即成功集成到您的 Vue 应用中。现在，您可以在任何组件内自由使用图标组件，无需进一步的导入或注册。
+
 当然您也可以从`@ming-UI/icons` 图标库按需导入图标。
 
 ## 使用图标
@@ -46,6 +47,7 @@ app.mount('#app')
 
 ::: tip
 为了使用的灵活性，除了`viewBox`属性，SVG图标不含其他任何属性，可根据需要自行控制样式。
+如果您直接使用原生图标时，发现图标未显示，可能是因为您忘记了添加 `stroke`属性哦 :hand:
 :::
 
 <div :class="$style.box">
@@ -55,12 +57,55 @@ app.mount('#app')
       <Mute height="1rem" width="1rem" fill="none" stroke="#333" stroke-width="4" />
 </div>
 
-<demo src="./demos/basic.vue"></demo>
+```js
+<div>
+  <Like height="1rem" width="1rem" fill="none" stroke="#333" stroke-width="4" />
+  <Pause height="1rem" width="1rem" fill="none" stroke="#333" stroke-width="4" />
+  <VolumnUp height="1rem" width="1rem" fill="none" stroke="#333" stroke-width="4" />
+  <Mute height="1rem" width="1rem" fill="none" stroke="#333" stroke-width="4" />
+</div>
+```
+
+### 结合m-icon使用
+
+为了避免手动设置图标样式的麻烦，可以用`<m-icon></m-icon>`将原生SVG图标包裹，享受默认样式以及更灵活的使用方式。
+  <div :class="$style.box">
+    <m-icon>
+      <Like />
+    </m-icon>
+    <m-icon>
+      <Pause />
+    </m-icon>
+    <m-icon>
+      <VolumnUp />
+    </m-icon>
+    <m-icon>
+      <Mute />
+    </m-icon>
+  </div>
+
+```js
+  <div class="box">
+    <m-icon>
+      <Like />
+    </m-icon>
+    <m-icon>
+      <Pause />
+    </m-icon>
+    <m-icon>
+      <VolumnUp />
+    </m-icon>
+    <m-icon>
+      <Mute />
+    </m-icon>
+  </div>
+```
+
+<!-- <demo src="./demos/basic.vue"></demo> -->
+
+## 图标集合
 
 <script setup>
-import { ref } from 'vue'
-
-const count = ref(0)
 
 async function copyIconsName(event) {
   if(event.target.innerText ===undefined) return
@@ -72,8 +117,6 @@ async function copyIconsName(event) {
 }
 
 </script>
-
-## 图标集合
 
 <ul :class="$style.grid" class="vp-raw" @click="copyIconsName($event)">
   <li>
@@ -155,7 +198,6 @@ async function copyIconsName(event) {
       display: flex;
       justify-content: space-around;
       width: 100%;
-      background-color:red
     }
 </style>
 
@@ -167,4 +209,11 @@ async function copyIconsName(event) {
 | -------- | ------------------ | -------------------------------- | ------- |
 | fill     | 闭合曲线图标内部的填充色     | String | 'none' |
 | size     | SVG 图标的大小，size x size | `number` \| `string` | 16 |
-| color | SVG 图标的轮廓颜色 | String   | #333   |
+| stroke | SVG 图标的轮廓颜色 | String   | #333   |
+| strokeWidth | 轮廓粗细 | `number` \| `string` | 4  |
+
+### Slots
+
+| 名称     | 说明               |
+| -------- | ------------------ |
+| default     | 自定义默认内容   |

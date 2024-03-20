@@ -1,7 +1,8 @@
 <template>
   <div class="box">
-    <Like height="1rem" width="1rem" fill="none" stroke="#333" stroke-width="4" />
-
+    <m-icon>
+      <Like />
+    </m-icon>
     <m-icon>
       <Pause />
     </m-icon>

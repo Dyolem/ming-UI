@@ -7,7 +7,7 @@ defineOptions({
 })
 
 const attrs = useAttrs()
-const injectedProps = inject('iconProps', {})
+const injectedProps = inject('iconProps', undefined)
 </script>
 
 <template>
