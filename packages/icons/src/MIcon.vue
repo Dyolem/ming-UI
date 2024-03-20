@@ -27,7 +27,7 @@ provide('iconProps', defaultSVGProps)
 </script>
 
 <template>
-  <div class="icon">
+  <div>
     <slot />
   </div>
 </template>

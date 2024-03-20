@@ -104,7 +104,7 @@ app.mount('#app')
 ::: tip
 结合m-icon使用时，如果同时给原生SVG直接设置属性，直接设置的属性并不会生效。
 :::
-<!-- <demo src="./demos/basic.vue"></demo> -->
+<demo src="./demos/basic.vue"></demo>
 
 ## 图标集合
 

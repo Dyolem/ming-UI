@@ -1,8 +1,9 @@
 <template>
   <div class="box">
-    <m-icon>
+    <m-icon class="icon">
       <Like />
     </m-icon>
+
     <m-icon>
       <Pause />
     </m-icon>
