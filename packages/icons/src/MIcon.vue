@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<iconStyleProp>(), {
   strokeWidth: '4px',
 })
 
-const defaultSVGProps = computed(() => {
+const sVGAttributesData = computed(() => {
   return {
     height: props.size,
     width: props.size,
@@ -23,7 +23,7 @@ const defaultSVGProps = computed(() => {
   }
 })
 // 提供 size 属性给任何深层嵌套的组件
-provide('iconProps', defaultSVGProps)
+provide('iconProps', sVGAttributesData)
 </script>
 
 <template>
