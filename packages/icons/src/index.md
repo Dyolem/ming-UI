@@ -35,11 +35,26 @@ app.use(icons)
 app.mount('#app')
 ```
 
-完成以上步骤后，@ming-UI/icons 图标库即成功集成到您的 Vue 应用中。现在，您可以在任何组件内自由使用图标组件，无需进一步的导入或注册。
+完成以上步骤后，`@ming-UI/icons` 图标库即成功集成到您的 Vue 应用中。现在，您可以在任何组件内自由使用图标组件，无需进一步的导入或注册。
+当然您也可以从`@ming-UI/icons` 图标库按需导入图标。
 
 ## 使用图标
 
-图标组件库安装后，可直接在模板中通过注册的图标组件名使用各个图标。例如：
+图标组件库安装后，可通过以下两种方式使用图标。
+
+### 直接使用SVG图标
+
+::: tip
+为了使用的灵活性，除了`viewBox`属性，SVG图标不含其他任何属性，可根据需要自行控制样式。
+:::
+
+<div :class="$style.box">
+      <Like height="1rem" width="1rem" fill="none" stroke="#333" stroke-width="4" />
+      <Pause height="1rem" width="1rem" fill="none" stroke="#333" stroke-width="4" />
+      <VolumnUp height="1rem" width="1rem" fill="none" stroke="#333" stroke-width="4" />
+      <Mute height="1rem" width="1rem" fill="none" stroke="#333" stroke-width="4" />
+</div>
+
 <demo src="./demos/basic.vue"></demo>
 
 <script setup>
@@ -48,6 +63,7 @@ import { ref } from 'vue'
 const count = ref(0)
 
 async function copyIconsName(event) {
+  if(event.target.innerText ===undefined) return
   const content = `<M${event.target?.innerText} />`
   const type = "text/plain";
   const blob = new Blob([content], { type });
@@ -106,7 +122,7 @@ async function copyIconsName(event) {
     <m-icon>
       <VolumnUp />
     </m-icon>
-    <span>VolumnDown</span>
+    <span>VolumnUp</span>
   </li>
 </ul>
 
@@ -135,6 +151,12 @@ async function copyIconsName(event) {
             background-color: #f2f6fc;
             transition: all 0.3s linear;
         }
+  .box {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      background-color:red
+    }
 </style>
 
 ## API
