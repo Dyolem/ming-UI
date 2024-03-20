@@ -43,6 +43,10 @@ export default defineConfig({
           text: 'Icons图标',
           link: '/components/icons/',
         },
+        {
+          text: 'ColorPicker取色器',
+          link: '/components/color-picker/',
+        },
       ],
       '/utils/': [
         {
