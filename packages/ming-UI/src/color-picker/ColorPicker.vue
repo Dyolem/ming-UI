@@ -1,49 +1,67 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 defineOptions({
   name: 'MColorPicker',
 })
+const initPosition = {
+  x: 8,
+  y: 8,
+}
 
 const saturationSquareRef = ref(null)
-const huePickerRef = ref(null)
+const hueBandRef = ref(null)
 const hueSliderRef = ref(null)
+const hueSliderRefHalfHeight = ref('')
+onMounted(() => {
+  computeHueDegree(0)
+  hueSliderRefHalfHeight.value = hueSliderRef.value.offsetHeight / 2
+  initHueSliderPosition()
+})
 
+function initHueSliderPosition() {
+  const hueBandRect = hueBandRef.value.getBoundingClientRect()
+  const hueSliderRect = hueSliderRef.value.getBoundingClientRect()
+  initPosition.x = hueBandRect.width / 2 - hueSliderRect.width / 2
+  initPosition.y = hueSliderRect.height / 2
+  hueSliderRef.value.style.top = `${-initPosition.y}px`
+  hueSliderRef.value.style.left = `${initPosition.x}px`
+}
 function computeHueDegree(height) {
-  const hue = 360 / hueSliderRef.value.offsetHeight * height
+  console.log(height)
+  const hue = 360 / hueBandRef.value.offsetHeight * height
   const colorPickerBackground = `linear-gradient(0deg, #000, transparent), linear-gradient(90deg, #fff, hsl(${hue}, 100%, 50%))`
   saturationSquareRef.value.style.background = colorPickerBackground
-  // hueDegree.value=360/hueSliderRef.value.offsetHeight*height
 }
 
-function updateHuePickerPosition(e) {
-  const huePickerRefHalfHeight = huePickerRef.value.offsetHeight / 2
-  const hueSliderRect = huePickerRef.value.parentElement.getBoundingClientRect()
-  let position = e.clientY - hueSliderRect.top - huePickerRefHalfHeight
-  // 确保滑块位置在色带范围内
-  position = Math.max(0, position)
-  position = Math.min(hueSliderRect.height, position)
-  huePickerRef.value.style.transform = `translate(${(hueSliderRef.value.offsetWidth) / 2 - huePickerRefHalfHeight}px,${position - huePickerRefHalfHeight}px)`
+function updateHueSliderPosition(e) {
+  const hueBandRect = hueBandRef.value.getBoundingClientRect()
+  const mouseInnerPositionY = Number.parseInt(e.clientY - hueBandRect.top)
+
+  if (mouseInnerPositionY <= hueBandRef.value.getBoundingClientRect().height && mouseInnerPositionY >= 0) {
+    hueSliderRef.value.style.transform = `translate(0,${mouseInnerPositionY}px)`
+    console.log(mouseInnerPositionY)
+    computeHueDegree(mouseInnerPositionY)
+  }
 }
 
-const isDrag = ref(false)
-function huePickerDown() {
-  document.addEventListener('mousemove', dragHuePicker)
-  document.addEventListener('mouseup', huePickerUp)
-  isDrag.value = true
+let isDrag = false
+function hueSliderDown() {
+  document.addEventListener('mousemove', dragHueSlider)
+  document.addEventListener('mouseup', hueSliderUp)
+  isDrag = true
 }
-function huePickerUp(e) {
-  document.removeEventListener('mousemove', dragHuePicker)
-  document.removeEventListener('mouseup', huePickerUp)
-  updateHuePickerPosition(e)
-  computeHueDegree(e.offsetY)
-  isDrag.value = false
+function hueSliderUp(e) {
+  document.removeEventListener('mousemove', dragHueSlider)
+  document.removeEventListener('mouseup', hueSliderUp)
+
+  updateHueSliderPosition(e)
+  isDrag = false
 }
-function dragHuePicker(e) {
-  if (isDrag.value) {
+function dragHueSlider(e) {
+  if (isDrag) {
     requestAnimationFrame(() => {
-      updateHuePickerPosition(e)
-      computeHueDegree(e.offsetY)
+      updateHueSliderPosition(e)
     })
   }
 }
@@ -53,8 +71,8 @@ function dragHuePicker(e) {
   <div class="contanier">
     <div class="color-gradient-wheel">
       <div ref="saturationSquareRef" class="saturation-Value-square" />
-      <div ref="hueSliderRef" class="hue-slider" @mouseup="huePickerUp($event)" @mousedown="huePickerDown($event)" @mousemove="dragHuePicker($event)">
-        <div ref="huePickerRef" class="hue-picker" />
+      <div ref="hueBandRef" class="hue-band" @mouseup="hueSliderUp($event)" @mousedown="hueSliderDown($event)" @mousemove="dragHueSlider($event)">
+        <div ref="hueSliderRef" class="hue-slider" />
       </div>
     </div>
     <div class="color-value-form" />
@@ -79,10 +97,11 @@ function dragHuePicker(e) {
 .saturation-Value-square {
     width: 70%;
     height: 100%;
-    background: linear-gradient(0deg, #000, transparent),
-              linear-gradient(90deg, #fff, hsl(200, 100%, 50%));
+    /* background: linear-gradient(0deg, #000, transparent),
+              linear-gradient(90deg, #fff, hsl(200, 100%, 50%)); */
 }
-.hue-slider {
+.hue-band {
+    position: relative;
     width: 10%;
     height: 100%;
     border-radius: 5px;
@@ -90,16 +109,16 @@ function dragHuePicker(e) {
     #ff0000 0%, #ffff00 17%, #00ff00 33%,
     #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
 }
-.hue-picker {
+.hue-slider {
   position: relative;
+  /* top: v-bind(initPosition.y + 'px');
+  left: v-bind(initPosition.x + 'px'); */
   width: 16px;
   height: 16px;
-  transform: translate(100%,-8px);
-  /* background-color: #fff; */
   border-radius: 50%;
   border: 1px solid black;
 }
-.hue-picker::after {
+.hue-slider::after {
   content: '';
   position: absolute;
   width: 100%;
