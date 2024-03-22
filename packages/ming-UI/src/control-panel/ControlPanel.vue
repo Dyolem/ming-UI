@@ -1,29 +1,38 @@
-<script setup>
-import { onMounted, ref } from 'vue'
+<script setup lang="ts">
+import { onMounted, ref, useAttrs } from 'vue'
+import type { ControlPanelProps } from './interface'
 
 defineOptions({
   name: 'MControlPanel',
+  inheritAttrs: false,
 })
-const backgroundBoardRef = ref(null)
-const sliderRef = ref(null)
-const placeholderBoxRef = ref(null)
+const props = withDefaults(defineProps<ControlPanelProps>(), {
+  vertical: false,
+  styleObject: undefined,
+  distanceRatio: 0,
+})
+
+const emit = defineEmits(['update:modelValue'])
+const backgroundBoardRef = ref<HTMLDivElement>()
+const sliderRef = ref<HTMLDivElement>()
+const placeholderBoxRef = ref<HTMLDivElement>()
 const mouseInnerPosition = ref({
   verticalToTraveledDistance: '',
   traveledDistance: '',
 })
-const vertical = ref(false)
+
 onMounted(() => {
   initSliderPosition()
 })
 function initSliderPosition() {
-  const backgroundBoardRect = backgroundBoardRef.value.getBoundingClientRect()
-  const sliderRect = sliderRef.value.getBoundingClientRect()
+  const backgroundBoardRect = backgroundBoardRef.value?.getBoundingClientRect()
+  const sliderRect = sliderRef.value?.getBoundingClientRect()
   const top = (backgroundBoardRect.height - sliderRect.height) / 2
   const left = -sliderRect.width / 2
   backgroundBoardRef.value.style.transformOrigin = `${backgroundBoardRect.height / 2}px ${backgroundBoardRect.height / 2}px`
   sliderRef.value.style.top = `${top}px`
   sliderRef.value.style.left = `${left}px`
-  if (vertical.value) {
+  if (props.vertical) {
     backgroundBoardRef.value.style.transform = `rotate(90deg)`
     placeholderBoxRef.value.style.height = `${backgroundBoardRect.width}px`
     placeholderBoxRef.value.style.width = `${backgroundBoardRect.height}px`
@@ -40,15 +49,20 @@ function updateSliderPosition(e) {
   mouseInnerPosition.value.traveledDistance = Number.parseInt(e.clientX - left)
   mouseInnerPosition.value.verticalToTraveledDistance = Number.parseInt(e.clientY - top)
 
-  if (vertical.value) {
+  if (props.vertical) {
     [mouseInnerPosition.value.verticalToTraveledDistance, mouseInnerPosition.value.traveledDistance]
     = [mouseInnerPosition.value.traveledDistance, mouseInnerPosition.value.verticalToTraveledDistance];
 
     [travelMax, verticalMax] = [verticalMax, travelMax]
   }
 
-  if (mouseInnerPosition.value.traveledDistance <= travelMax && mouseInnerPosition.value.traveledDistance >= 0)
+  if (mouseInnerPosition.value.traveledDistance <= travelMax && mouseInnerPosition.value.traveledDistance >= 0) {
     sliderRef.value.style.transform = `translate(${mouseInnerPosition.value.traveledDistance}px,0)`
+    const mouseTravelDistance = mouseInnerPosition.value.traveledDistance
+    console.log(mouseTravelDistance)
+
+    emit('update:modelValue', { mouseTravelDistance, travelMax })
+  }
 }
 
 let isDrag = false
@@ -72,11 +86,13 @@ function dragSlider(e) {
     })
   }
 }
+const attrs = useAttrs()
+console.log(attrs)
 </script>
 
 <template>
   <div ref="placeholderBoxRef" class="placeholder-box">
-    <div ref="backgroundBoardRef" class="background-board" @mouseup="sliderUp($event)" @mousedown="sliderDown($event)">
+    <div ref="backgroundBoardRef" :style="styleObject" class="background-board" @mouseup="sliderUp($event)" @mousedown="sliderDown($event)">
       <div class="track-bar" />
       <!-- <m-icon>
       <like />

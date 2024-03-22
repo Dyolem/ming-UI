@@ -1,6 +1,7 @@
 <script setup>
 import { nextTick, onMounted, ref } from 'vue'
 import { useMouseInnerPosition } from '@ming-UI/utils'
+import ControlPanel from 'ming-UI/control-panel/ControlPanel.vue'
 
 defineOptions({
   name: 'MColorPicker',
@@ -65,6 +66,21 @@ function dragHueSlider(e) {
     })
   }
 }
+function computedSome(distance) {
+  console.log(distance)
+  const hue = 360 / distance.travelMax * distance.mouseTravelDistance
+  const colorPickerBackground = `linear-gradient(0deg, #000, transparent), linear-gradient(90deg, #fff, hsl(${hue}, 100%, 50%))`
+  saturationSquareRef.value.style.background = colorPickerBackground
+}
+const styleObject = ref({
+  background: `linear-gradient(to right,
+    #ff0000 0%, #ffff00 17%, #00ff00 33%,
+    #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%)`, // 背景颜色
+  color: 'white', // 文本颜色
+  width: '100px', // 内边距
+  height: '50px',
+  // 可以根据需要添加更多样式
+})
 </script>
 
 <template>
@@ -76,7 +92,7 @@ function dragHueSlider(e) {
       </div>
     </div>
     <div class="color-value-form">
-      <!-- {{ `x:${positionX},y:${positionY}` }} -->
+      <ControlPanel :vertical="false" :style-object="styleObject" @update:model-value="computedSome" />
     </div>
   </div>
 </template>
@@ -111,6 +127,7 @@ function dragHueSlider(e) {
     #ff0000 0%, #ffff00 17%, #00ff00 33%,
     #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
 }
+
 .hue-slider {
   position: relative;
   /* top: v-bind(initPosition.y + 'px');
