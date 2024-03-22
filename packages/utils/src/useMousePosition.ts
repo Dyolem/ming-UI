@@ -8,11 +8,14 @@ import { useEventListener } from './useDomEvent'
  * @returns
  */
 export function useMouseInnerPosition(innerElement: HTMLElement) {
+  console.log(innerElement)
+
   const x = ref(0)
   const y = ref(0)
-
   // 使用函数并将 event 显式地断言为 MouseEvent 类型
   useEventListener(innerElement, 'mousemove', (event: Event) => {
+    console.log(event)
+
     const mouseEvent = event as MouseEvent
     x.value = mouseEvent.clientX - innerElement.getBoundingClientRect().left
     y.value = mouseEvent.clientY - innerElement.getBoundingClientRect().top

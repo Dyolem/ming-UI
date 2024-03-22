@@ -1,18 +1,20 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { nextTick, onMounted, ref } from 'vue'
+import { useMouseInnerPosition } from '@ming-UI/utils'
 
 defineOptions({
   name: 'MColorPicker',
 })
 const initPosition = {
-  x: 8,
-  y: 8,
+  x: '',
+  y: '',
 }
 
 const saturationSquareRef = ref(null)
 const hueBandRef = ref(null)
 const hueSliderRef = ref(null)
 const hueSliderRefHalfHeight = ref('')
+
 onMounted(() => {
   computeHueDegree(0)
   hueSliderRefHalfHeight.value = hueSliderRef.value.offsetHeight / 2
@@ -28,7 +30,6 @@ function initHueSliderPosition() {
   hueSliderRef.value.style.left = `${initPosition.x}px`
 }
 function computeHueDegree(height) {
-  console.log(height)
   const hue = 360 / hueBandRef.value.offsetHeight * height
   const colorPickerBackground = `linear-gradient(0deg, #000, transparent), linear-gradient(90deg, #fff, hsl(${hue}, 100%, 50%))`
   saturationSquareRef.value.style.background = colorPickerBackground
@@ -40,7 +41,6 @@ function updateHueSliderPosition(e) {
 
   if (mouseInnerPositionY <= hueBandRef.value.getBoundingClientRect().height && mouseInnerPositionY >= 0) {
     hueSliderRef.value.style.transform = `translate(0,${mouseInnerPositionY}px)`
-    console.log(mouseInnerPositionY)
     computeHueDegree(mouseInnerPositionY)
   }
 }
@@ -71,11 +71,13 @@ function dragHueSlider(e) {
   <div class="contanier">
     <div class="color-gradient-wheel">
       <div ref="saturationSquareRef" class="saturation-Value-square" />
-      <div ref="hueBandRef" class="hue-band" @mouseup="hueSliderUp($event)" @mousedown="hueSliderDown($event)" @mousemove="dragHueSlider($event)">
+      <div ref="hueBandRef" class="hue-band" @mouseup="hueSliderUp($event)" @mousedown="hueSliderDown($event)">
         <div ref="hueSliderRef" class="hue-slider" />
       </div>
     </div>
-    <div class="color-value-form" />
+    <div class="color-value-form">
+      <!-- {{ `x:${positionX},y:${positionY}` }} -->
+    </div>
   </div>
 </template>
 

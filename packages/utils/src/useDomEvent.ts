@@ -19,10 +19,9 @@ export function useEventListener(
   callback: EventListenerOrEventListenerObject,
 ) {
   const realTarget = (target instanceof HTMLElement || target instanceof Window || target instanceof Document) ? target : target.value
+  console.log(realTarget)
 
-  onMounted(() => {
-    realTarget?.addEventListener(eventType, callback)
-  })
+  realTarget?.addEventListener(eventType, callback)
 
   onUnmounted(() => {
     realTarget?.removeEventListener(eventType, callback)
