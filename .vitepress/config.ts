@@ -47,6 +47,11 @@ export default defineConfig({
           text: 'ColorPicker取色器',
           link: '/components/color-picker/',
         },
+        {
+          text: 'ControlPanel控制板',
+          link: '/components/control-panel/',
+        },
+
       ],
       '/utils/': [
         {
