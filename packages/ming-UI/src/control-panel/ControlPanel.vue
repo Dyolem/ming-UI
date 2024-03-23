@@ -62,7 +62,6 @@ function updateSliderPosition(e) {
     if (mouseInnerPosition.value.traveledDistance <= travelMax && mouseInnerPosition.value.traveledDistance >= 0 && mouseInnerPosition.value.verticalToTraveledDistance <= verticalMax && mouseInnerPosition.value.verticalToTraveledDistance >= 0) {
       sliderRef.value.style.transform = `translate(${mouseInnerPosition.value.traveledDistance}px,${mouseInnerPosition.value.verticalToTraveledDistance}px)`
       const distanceMax = { travelMax, verticalMax }
-
       emit('update:modelValue', { mouseInnerPosition, distanceMax })
     }
   }
@@ -70,7 +69,6 @@ function updateSliderPosition(e) {
     if (mouseInnerPosition.value.traveledDistance <= travelMax && mouseInnerPosition.value.traveledDistance >= 0) {
       sliderRef.value.style.transform = `translate(${mouseInnerPosition.value.traveledDistance}px,0)`
       const distanceMax = { travelMax, verticalMax }
-
       emit('update:modelValue', { mouseInnerPosition, distanceMax })
     }
   }

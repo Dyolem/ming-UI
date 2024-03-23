@@ -66,11 +66,14 @@ function dragHueSlider(e) {
     })
   }
 }
-const hue = ref(0)
+
+const H = ref(0)
+const S = ref(0)
+const L = ref(0)
 function computedSome(position) {
-  console.log(position)
-  hue.value = 360 / position.distanceMax.travelMax * position.mouseInnerPosition.value.traveledDistance
-  const colorPickerBackground = `linear-gradient(0deg, #000, transparent), linear-gradient(90deg, #fff, hsl(${hue.value}, 100%, 50%))`
+  // console.log(position)
+  H.value = 360 / position.distanceMax.travelMax * position.mouseInnerPosition.value.traveledDistance
+  const colorPickerBackground = `linear-gradient(0deg, #000, transparent), linear-gradient(90deg, #fff, hsl(${H.value}, 100%, 50%))`
   saturationSquareRef.value.style.background = colorPickerBackground
 }
 const styleObject = ref({
@@ -79,22 +82,28 @@ const styleObject = ref({
     #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%)`, // 背景颜色
   color: 'white', // 文本颜色
   width: '100px', // 内边距
-  height: '50px',
+  height: '100px',
   // 可以根据需要添加更多样式
 })
 
+function computedColorParameter(parameter) {
+  S.value = 100 / parameter.distanceMax.travelMax * parameter.mouseInnerPosition.value.traveledDistance
+  const baseL = 100
+  const decrementTravel = 50 / parameter.distanceMax.travelMax * parameter.mouseInnerPosition.value.traveledDistance
+  const dynamicBase = baseL - decrementTravel
+  const decrementVerticalToTravel = dynamicBase / parameter.distanceMax.verticalMax * parameter.mouseInnerPosition.value.verticalToTraveledDistance
+  L.value = Math.round(dynamicBase - decrementVerticalToTravel)
+}
+
 const style = computed(() => {
   return {
-    background: `linear-gradient(0deg, #000, transparent), linear-gradient(90deg, #fff, hsl(${hue.value}, 100%, 50%))`, // 背景颜色
+    background: `linear-gradient(0deg, #000, transparent), linear-gradient(90deg, #fff, hsl(${H.value}, 100%, 50%))`, // 背景颜色
     color: 'white', // 文本颜色
     width: '100px', // 内边距
-    height: '50px',
+    height: '100px',
   // 可以根据需要添加更多样式
   }
 })
-function computedColorParameter(parameter) {
-  console.log(parameter)
-}
 </script>
 
 <template>
@@ -110,6 +119,9 @@ function computedColorParameter(parameter) {
     </div>
   </div>
   <ControlPanel :dimensional-movement="true" :style-object="style" @update:model-value="computedColorParameter" />
+  <div class="test">
+    {{ `s:${S},l:${L}` }}
+  </div>
 </template>
 
 <style scoped>
