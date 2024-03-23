@@ -17,38 +17,38 @@ export default defineConfig({
     nav: [
       { text: '首页', link: '/' },
       { text: '介绍', link: '/introduce' },
-      { text: '组件', link: '/components/' },
+      { text: '组件', link: '/components/button/' },
       { text: '工具', link: '/utils/' },
     ],
 
     sidebar: {
       '/components/': [
         {
-          text: 'Button按钮',
+          text: 'Button 按钮',
           link: '/components/button/',
         },
         {
-          text: 'Input输入框',
+          text: 'Input 输入框',
           link: '/components/input/',
         },
         {
-          text: 'Tooltip文字提示',
+          text: 'Tooltip 文字提示',
           link: '/components/tooltip/',
         },
         {
-          text: 'Table表格',
+          text: 'Table 表格',
           link: '/components/table/',
         },
         {
-          text: 'Icons图标',
+          text: 'Icons 图标',
           link: '/components/icons/',
         },
         {
-          text: 'ColorPicker取色器',
+          text: 'ColorPicker 取色器',
           link: '/components/color-picker/',
         },
         {
-          text: 'ControlPanel控制板',
+          text: 'ControlPanel 控制板',
           link: '/components/control-panel/',
         },
 
