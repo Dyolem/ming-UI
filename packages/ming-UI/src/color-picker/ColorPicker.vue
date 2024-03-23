@@ -6,88 +6,25 @@ import ControlPanel from 'ming-UI/control-panel/ControlPanel.vue'
 defineOptions({
   name: 'MColorPicker',
 })
-const initPosition = {
-  x: '',
-  y: '',
-}
-
-const saturationSquareRef = ref(null)
-const hueBandRef = ref(null)
-const hueSliderRef = ref(null)
-const hueSliderRefHalfHeight = ref('')
-
-onMounted(() => {
-  computeHueDegree(0)
-  hueSliderRefHalfHeight.value = hueSliderRef.value.offsetHeight / 2
-  initHueSliderPosition()
-})
-
-function initHueSliderPosition() {
-  const hueBandRect = hueBandRef.value.getBoundingClientRect()
-  const hueSliderRect = hueSliderRef.value.getBoundingClientRect()
-  initPosition.x = hueBandRect.width / 2 - hueSliderRect.width / 2
-  initPosition.y = hueSliderRect.height / 2
-  hueSliderRef.value.style.top = `${-initPosition.y}px`
-  hueSliderRef.value.style.left = `${initPosition.x}px`
-}
-function computeHueDegree(height) {
-  const hue = 360 / hueBandRef.value.offsetHeight * height
-  const colorPickerBackground = `linear-gradient(0deg, #000, transparent), linear-gradient(90deg, #fff, hsl(${hue}, 100%, 50%))`
-  saturationSquareRef.value.style.background = colorPickerBackground
-}
-
-function updateHueSliderPosition(e) {
-  const hueBandRect = hueBandRef.value.getBoundingClientRect()
-  const mouseInnerPositionY = Number.parseInt(e.clientY - hueBandRect.top)
-
-  if (mouseInnerPositionY <= hueBandRef.value.getBoundingClientRect().height && mouseInnerPositionY >= 0) {
-    hueSliderRef.value.style.transform = `translate(0,${mouseInnerPositionY}px)`
-    computeHueDegree(mouseInnerPositionY)
-  }
-}
-
-let isDrag = false
-function hueSliderDown() {
-  document.addEventListener('mousemove', dragHueSlider)
-  document.addEventListener('mouseup', hueSliderUp)
-  isDrag = true
-}
-function hueSliderUp(e) {
-  document.removeEventListener('mousemove', dragHueSlider)
-  document.removeEventListener('mouseup', hueSliderUp)
-
-  updateHueSliderPosition(e)
-  isDrag = false
-}
-function dragHueSlider(e) {
-  if (isDrag) {
-    requestAnimationFrame(() => {
-      updateHueSliderPosition(e)
-    })
-  }
-}
 
 const H = ref(0)
 const S = ref(0)
 const L = ref(0)
 function computedSome(position) {
-  // console.log(position)
   H.value = Math.round(360 / position.distanceMax.travelMax * position.mouseInnerPosition.value.traveledDistance)
-  const colorPickerBackground = `linear-gradient(0deg, #000, transparent), linear-gradient(90deg, #fff, hsl(${H.value}, 100%, 50%))`
-  saturationSquareRef.value.style.background = colorPickerBackground
 }
-const styleObject = ref({
+const hueBandStyle = ref({
   background: `linear-gradient(to right,
     #ff0000 0%, #ffff00 17%, #00ff00 33%,
     #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%)`, // 背景颜色
-  color: 'white', // 文本颜色
-  width: '100px', // 内边距
-  height: '100px',
+  borderRadius: '5px',
+  width: '200px', // 内边距
+  height: '30px',
   // 可以根据需要添加更多样式
 })
 
 function computedColorParameter(parameter) {
-  S.value = 100 / parameter.distanceMax.travelMax * parameter.mouseInnerPosition.value.traveledDistance
+  S.value = Math.round(100 / parameter.distanceMax.travelMax * parameter.mouseInnerPosition.value.traveledDistance)
   const baseL = 100
   const decrementTravel = 50 / parameter.distanceMax.travelMax * parameter.mouseInnerPosition.value.traveledDistance
   const dynamicBase = baseL - decrementTravel
@@ -100,12 +37,17 @@ function computedColorParameter(parameter) {
   console.log(test)
 }
 
-const style = computed(() => {
+// const traveledDistance =ref(0)
+// const verticalToTraveledDistance =ref(0)
+// function colorConvertDistance(){
+
+// }
+const saturationSquareStyle = computed(() => {
   return {
     background: `linear-gradient(0deg, #000, transparent), linear-gradient(90deg, #fff, hsl(${H.value}, 100%, 50%))`, // 背景颜色
     color: 'white', // 文本颜色
-    width: '100px', // 内边距
-    height: '100px',
+    width: '200px', // 内边距
+    height: '200px',
   // 可以根据需要添加更多样式
   }
 })
@@ -114,18 +56,14 @@ const style = computed(() => {
 <template>
   <div class="contanier">
     <div class="color-gradient-wheel">
-      <div ref="saturationSquareRef" class="saturation-Value-square" />
-      <div ref="hueBandRef" class="hue-band" @mouseup="hueSliderUp($event)" @mousedown="hueSliderDown($event)">
-        <div ref="hueSliderRef" class="hue-slider" />
-      </div>
+      <ControlPanel :dimensional-movement="true" :background-style="saturationSquareStyle" @update:model-value="computedColorParameter" />
+      <ControlPanel :vertical="true" :background-style="hueBandStyle" @update:model-value="computedSome" />
     </div>
     <div class="color-value-form">
-      <ControlPanel :vertical="false" :style-object="styleObject" @update:model-value="computedSome" />
+      <div class="hsl">
+        {{ `h:${H},s:${S},l:${L}` }}
+      </div>
     </div>
-  </div>
-  <ControlPanel :dimensional-movement="true" :style-object="style" @update:model-value="computedColorParameter" />
-  <div class="hsl">
-    {{ `h:${H},s:${S},l:${L}` }}
   </div>
 </template>
 
@@ -162,8 +100,6 @@ const style = computed(() => {
 
 .hue-slider {
   position: relative;
-  /* top: v-bind(initPosition.y + 'px');
-  left: v-bind(initPosition.x + 'px'); */
   width: 16px;
   height: 16px;
   border-radius: 50%;

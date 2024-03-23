@@ -1,6 +1,6 @@
 export interface ControlPanelProps {
   vertical?: boolean
-  styleObject?: object
+  backgroundStyle?: object
   distanceRatio?: number
   dimensionalMovement?: boolean
 }

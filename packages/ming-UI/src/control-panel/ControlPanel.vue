@@ -8,7 +8,7 @@ defineOptions({
 })
 const props = withDefaults(defineProps<ControlPanelProps>(), {
   vertical: false,
-  styleObject: undefined,
+  backgroundStyle: undefined,
   distanceRatio: 0,
   dimensionalMovement: false,
 })
@@ -81,14 +81,14 @@ function sliderDown() {
   document.addEventListener('mouseup', sliderUp)
   isDrag = true
 }
-function sliderUp(e) {
+function sliderUp(e: Event) {
   document.removeEventListener('mousemove', dragSlider)
   document.removeEventListener('mouseup', sliderUp)
 
   updateSliderPosition(e)
   isDrag = false
 }
-function dragSlider(e) {
+function dragSlider(e: Event) {
   if (isDrag) {
     requestAnimationFrame(() => {
       updateSliderPosition(e)
@@ -101,7 +101,7 @@ console.log(attrs)
 
 <template>
   <div ref="placeholderBoxRef" class="placeholder-box">
-    <div ref="backgroundBoardRef" :style="styleObject" class="background-board" @mouseup="sliderUp($event)" @mousedown="sliderDown($event)">
+    <div ref="backgroundBoardRef" :style="backgroundStyle" class="background-board" @mouseup="sliderUp($event)" @mousedown="sliderDown()">
       <div class="track-bar" />
       <!-- <m-icon>
       <like />
@@ -110,8 +110,6 @@ console.log(attrs)
       <div ref="sliderRef" class="slider" />
     </div>
   </div>
-
-  <div class="test" />
 </template>
 
 <style scoped>
@@ -127,7 +125,7 @@ console.log(attrs)
     position: relative;
     width: 100%;
     height: 10px;
-    background-color: aquamarine;
+    background-color: transparent;
 }
 .slider {
   position: absolute;
@@ -146,11 +144,6 @@ console.log(attrs)
   transform: scale(0.9);
 }
 .placeholder-box {
-    background-color: blue;
-}
-.test {
-    width: 100px;
-    height: 100px;
-    background-color: pink;
+    background-color: transparent;
 }
 </style>
