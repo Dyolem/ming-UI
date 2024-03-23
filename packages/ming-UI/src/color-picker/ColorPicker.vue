@@ -1,6 +1,6 @@
 <script setup>
 import { computed, nextTick, onMounted, ref } from 'vue'
-import { useMouseInnerPosition } from '@ming-UI/utils'
+import { useHslToRgb, userRgbToHex } from '@ming-UI/utils'
 import ControlPanel from 'ming-UI/control-panel/ControlPanel.vue'
 
 defineOptions({
@@ -72,7 +72,7 @@ const S = ref(0)
 const L = ref(0)
 function computedSome(position) {
   // console.log(position)
-  H.value = 360 / position.distanceMax.travelMax * position.mouseInnerPosition.value.traveledDistance
+  H.value = Math.round(360 / position.distanceMax.travelMax * position.mouseInnerPosition.value.traveledDistance)
   const colorPickerBackground = `linear-gradient(0deg, #000, transparent), linear-gradient(90deg, #fff, hsl(${H.value}, 100%, 50%))`
   saturationSquareRef.value.style.background = colorPickerBackground
 }
@@ -93,6 +93,11 @@ function computedColorParameter(parameter) {
   const dynamicBase = baseL - decrementTravel
   const decrementVerticalToTravel = dynamicBase / parameter.distanceMax.verticalMax * parameter.mouseInnerPosition.value.verticalToTraveledDistance
   L.value = Math.round(dynamicBase - decrementVerticalToTravel)
+  const { r, g, b } = useHslToRgb(H.value, S.value, L.value)
+  console.log(r, g, b)
+  const test = userRgbToHex(r, g, b)
+
+  console.log(test)
 }
 
 const style = computed(() => {
@@ -119,8 +124,8 @@ const style = computed(() => {
     </div>
   </div>
   <ControlPanel :dimensional-movement="true" :style-object="style" @update:model-value="computedColorParameter" />
-  <div class="test">
-    {{ `s:${S},l:${L}` }}
+  <div class="hsl">
+    {{ `h:${H},s:${S},l:${L}` }}
   </div>
 </template>
 
