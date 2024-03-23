@@ -10,6 +10,7 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
   vertical: false,
   styleObject: undefined,
   distanceRatio: 0,
+  dimensionalMovement: false,
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -27,8 +28,10 @@ onMounted(() => {
 function initSliderPosition() {
   const backgroundBoardRect = backgroundBoardRef.value?.getBoundingClientRect()
   const sliderRect = sliderRef.value?.getBoundingClientRect()
-  const top = (backgroundBoardRect.height - sliderRect.height) / 2
+  let top = (backgroundBoardRect.height - sliderRect.height) / 2
   const left = -sliderRect.width / 2
+  if (props.dimensionalMovement)
+    top = -sliderRect.height / 2
   backgroundBoardRef.value.style.transformOrigin = `${backgroundBoardRect.height / 2}px ${backgroundBoardRect.height / 2}px`
   sliderRef.value.style.top = `${top}px`
   sliderRef.value.style.left = `${left}px`
@@ -55,13 +58,21 @@ function updateSliderPosition(e) {
 
     [travelMax, verticalMax] = [verticalMax, travelMax]
   }
+  if (props.dimensionalMovement) {
+    if (mouseInnerPosition.value.traveledDistance <= travelMax && mouseInnerPosition.value.traveledDistance >= 0 && mouseInnerPosition.value.verticalToTraveledDistance <= verticalMax && mouseInnerPosition.value.verticalToTraveledDistance >= 0) {
+      sliderRef.value.style.transform = `translate(${mouseInnerPosition.value.traveledDistance}px,${mouseInnerPosition.value.verticalToTraveledDistance}px)`
+      const distanceMax = { travelMax, verticalMax }
 
-  if (mouseInnerPosition.value.traveledDistance <= travelMax && mouseInnerPosition.value.traveledDistance >= 0) {
-    sliderRef.value.style.transform = `translate(${mouseInnerPosition.value.traveledDistance}px,0)`
-    const mouseTravelDistance = mouseInnerPosition.value.traveledDistance
-    console.log(mouseTravelDistance)
+      emit('update:modelValue', { mouseInnerPosition, distanceMax })
+    }
+  }
+  else {
+    if (mouseInnerPosition.value.traveledDistance <= travelMax && mouseInnerPosition.value.traveledDistance >= 0) {
+      sliderRef.value.style.transform = `translate(${mouseInnerPosition.value.traveledDistance}px,0)`
+      const distanceMax = { travelMax, verticalMax }
 
-    emit('update:modelValue', { mouseTravelDistance, travelMax })
+      emit('update:modelValue', { mouseInnerPosition, distanceMax })
+    }
   }
 }
 

@@ -1,5 +1,5 @@
 <script setup>
-import { nextTick, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import { useMouseInnerPosition } from '@ming-UI/utils'
 import ControlPanel from 'ming-UI/control-panel/ControlPanel.vue'
 
@@ -66,10 +66,11 @@ function dragHueSlider(e) {
     })
   }
 }
-function computedSome(distance) {
-  console.log(distance)
-  const hue = 360 / distance.travelMax * distance.mouseTravelDistance
-  const colorPickerBackground = `linear-gradient(0deg, #000, transparent), linear-gradient(90deg, #fff, hsl(${hue}, 100%, 50%))`
+const hue = ref(0)
+function computedSome(position) {
+  console.log(position)
+  hue.value = 360 / position.distanceMax.travelMax * position.mouseInnerPosition.value.traveledDistance
+  const colorPickerBackground = `linear-gradient(0deg, #000, transparent), linear-gradient(90deg, #fff, hsl(${hue.value}, 100%, 50%))`
   saturationSquareRef.value.style.background = colorPickerBackground
 }
 const styleObject = ref({
@@ -81,6 +82,19 @@ const styleObject = ref({
   height: '50px',
   // 可以根据需要添加更多样式
 })
+
+const style = computed(() => {
+  return {
+    background: `linear-gradient(0deg, #000, transparent), linear-gradient(90deg, #fff, hsl(${hue.value}, 100%, 50%))`, // 背景颜色
+    color: 'white', // 文本颜色
+    width: '100px', // 内边距
+    height: '50px',
+  // 可以根据需要添加更多样式
+  }
+})
+function computedColorParameter(parameter) {
+  console.log(parameter)
+}
 </script>
 
 <template>
@@ -95,6 +109,7 @@ const styleObject = ref({
       <ControlPanel :vertical="false" :style-object="styleObject" @update:model-value="computedSome" />
     </div>
   </div>
+  <ControlPanel :dimensional-movement="true" :style-object="style" @update:model-value="computedColorParameter" />
 </template>
 
 <style scoped>
