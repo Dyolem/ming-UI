@@ -3,4 +3,5 @@ export interface ControlPanelProps {
   backgroundStyle?: object
   distanceRatio?: number
   dimensionalMovement?: boolean
+  modelValue?: { verticalToTraveledDistance: number;traveledDistance: number }
 }

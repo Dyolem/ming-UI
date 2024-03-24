@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, useAttrs } from 'vue'
+import { onMounted, ref, useAttrs, watch } from 'vue'
 import type { ControlPanelProps } from './interface'
 
 defineOptions({
@@ -11,6 +11,10 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
   backgroundStyle: undefined,
   distanceRatio: 0,
   dimensionalMovement: false,
+  modelValue: () => ({
+    verticalToTraveledDistance: 0,
+    traveledDistance: 0,
+  }),
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -21,9 +25,24 @@ const mouseInnerPosition = ref({
   verticalToTraveledDistance: '',
   traveledDistance: '',
 })
-
+const travelMax = ref(0)
+const verticalMax = ref(0)
+watch(() => props.modelValue, (newVal, oldVal) => {
+  console.log(`new:${newVal.traveledDistance}`, `old:${oldVal.traveledDistance}`)
+  if (props.dimensionalMovement)
+    sliderRef.value.style.transform = `translate(${mouseInnerPosition.value.traveledDistance}px,${mouseInnerPosition.value.verticalToTraveledDistance}px)`
+  else
+    sliderRef.value.style.transform = `translate(${newVal.traveledDistance}px,0)`
+}, { deep: true })
 onMounted(() => {
+  travelMax.value = backgroundBoardRef.value!.getBoundingClientRect().width
+  verticalMax.value = backgroundBoardRef.value!.getBoundingClientRect().height
+  console.log(travelMax.value, verticalMax.value)
   initSliderPosition()
+})
+defineExpose({
+  travelMax,
+  verticalMax,
 })
 function initSliderPosition() {
   const backgroundBoardRect = backgroundBoardRef.value?.getBoundingClientRect()
@@ -61,15 +80,16 @@ function updateSliderPosition(e) {
   if (props.dimensionalMovement) {
     if (mouseInnerPosition.value.traveledDistance <= travelMax && mouseInnerPosition.value.traveledDistance >= 0 && mouseInnerPosition.value.verticalToTraveledDistance <= verticalMax && mouseInnerPosition.value.verticalToTraveledDistance >= 0) {
       sliderRef.value.style.transform = `translate(${mouseInnerPosition.value.traveledDistance}px,${mouseInnerPosition.value.verticalToTraveledDistance}px)`
-      const distanceMax = { travelMax, verticalMax }
-      emit('update:modelValue', { mouseInnerPosition, distanceMax })
+      // const distanceMax = { travelMax, verticalMax }
+      emit('update:modelValue', { traveledDistance: mouseInnerPosition.value.traveledDistance, verticalToTraveledDistance: mouseInnerPosition.value.verticalToTraveledDistance })
     }
   }
   else {
     if (mouseInnerPosition.value.traveledDistance <= travelMax && mouseInnerPosition.value.traveledDistance >= 0) {
       sliderRef.value.style.transform = `translate(${mouseInnerPosition.value.traveledDistance}px,0)`
-      const distanceMax = { travelMax, verticalMax }
-      emit('update:modelValue', { mouseInnerPosition, distanceMax })
+      // const distanceMax = { travelMax, verticalMax }
+      // emit('update:modelValue', { mouseInnerPosition, distanceMax })
+      emit('update:modelValue', { traveledDistance: mouseInnerPosition.value.traveledDistance, verticalToTraveledDistance: mouseInnerPosition.value.verticalToTraveledDistance })
     }
   }
 }

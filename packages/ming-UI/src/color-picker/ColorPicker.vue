@@ -1,5 +1,5 @@
 <script setup>
-import { computed, nextTick, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useHslToRgb, userRgbToHex } from '@ming-UI/utils'
 import ControlPanel from 'ming-UI/control-panel/ControlPanel.vue'
 
@@ -8,11 +8,25 @@ defineOptions({
 })
 
 const H = ref(0)
+const hueControlRef = ref(null)
+onMounted(() => {
+  console.log(hueControlRef.value.travelMax)
+})
+
+const hConvertToTravelDistance = ref({
+  traveledDistance: (H.value / 360) * (hueControlRef.value?.travelMax ?? 0),
+  verticalToTraveledDistance: 0,
+})
+watch(H, (newHue) => {
+  hConvertToTravelDistance.value.traveledDistance = (newHue / 360) * (hueControlRef.value.travelMax)
+  hConvertToTravelDistance.value.verticalToTraveledDistance = 0
+})
+watch(hConvertToTravelDistance, (newVal) => {
+  H.value = Math.round(360 / (hueControlRef.value.travelMax) * newVal.traveledDistance)
+})
 const S = ref(0)
 const L = ref(0)
-function computedSome(position) {
-  H.value = Math.round(360 / position.distanceMax.travelMax * position.mouseInnerPosition.value.traveledDistance)
-}
+
 const hueBandStyle = ref({
   background: `linear-gradient(to right,
     #ff0000 0%, #ffff00 17%, #00ff00 33%,
@@ -57,11 +71,14 @@ const saturationSquareStyle = computed(() => {
   <div class="contanier">
     <div class="color-gradient-wheel">
       <ControlPanel :dimensional-movement="true" :background-style="saturationSquareStyle" @update:model-value="computedColorParameter" />
-      <ControlPanel :vertical="true" :background-style="hueBandStyle" @update:model-value="computedSome" />
+      <ControlPanel ref="hueControlRef" v-model:model-value="hConvertToTravelDistance" :vertical="true" :background-style="hueBandStyle" />
     </div>
     <div class="color-value-form">
       <div class="hsl">
         {{ `h:${H},s:${S},l:${L}` }}
+      </div>
+      <div class="hsl-form">
+        <m-input v-model="H" size="small" />
       </div>
     </div>
   </div>

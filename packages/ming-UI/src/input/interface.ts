@@ -1,5 +1,5 @@
 export interface InputProps {
-  modelValue?: string
+  modelValue?: string | number
   disabled?: boolean
   size?: 'small' | 'default' | 'large'
   originInputProps?: ['autocomplete']
