@@ -37,14 +37,13 @@ const hConvertToDistance = ref({
 watch(H, (newHue) => {
   hConvertToDistance.value.traveledDistance = (newHue / 360) * (hueControlRef.value.travelMax)
   hConvertToDistance.value.verticalToTraveledDistance = 0
-})
-watch(hConvertToDistance, (newVal) => {
-  H.value = Math.round(360 / (hueControlRef.value.travelMax) * newVal.traveledDistance)
-
   const { r, g, b } = useHslToRgb(H.value, S.value, L.value)
   R.value = r
   G.value = g
   B.value = b
+})
+watch(hConvertToDistance, (newVal) => {
+  H.value = Math.round(360 / (hueControlRef.value.travelMax) * newVal.traveledDistance)
 })
 const saturationSquareStyle = computed(() => {
   return {
@@ -65,16 +64,15 @@ onMounted(() => {
   watch([S, L], ([newSaturation, newLight]) => {
     slConvertToDistance.value.traveledDistance = (colorTakingControlRef.value.travelMax) / 100 * newSaturation
     slConvertToDistance.value.verticalToTraveledDistance = (100 - newLight) * colorTakingControlRef.value.verticalMax / 100
+    const { r, g, b } = useHslToRgb(H.value, S.value, L.value)
+    R.value = r
+    G.value = g
+    B.value = b
   }, { immediate: true })
 })
 watch(slConvertToDistance, (newVal) => {
   S.value = Math.round(100 / hueControlRef.value.travelMax * newVal.traveledDistance)
   L.value = Math.round(100 - (100 / colorTakingControlRef.value.verticalMax * newVal.verticalToTraveledDistance))
-
-  const { r, g, b } = useHslToRgb(H.value, S.value, L.value)
-  R.value = r
-  G.value = g
-  B.value = b
 })
 
 watch([R, G, B], ([r, g, b]) => {
