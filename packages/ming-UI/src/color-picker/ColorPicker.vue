@@ -1,7 +1,8 @@
 <script setup>
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useHexToRgb, useHslToRgb, useRgbToHex, useRgbToHsl } from '@ming-UI/utils'
 import ControlPanel from 'ming-UI/control-panel/ControlPanel.vue'
+import EyeDropper from './components/EyeDropper.vue'
 
 defineOptions({
   name: 'MColorPicker',
@@ -123,6 +124,9 @@ const rgbCom = computed(() => {
       </div>
     </div>
     <div>{{ rgbCom }}</div>
+    <div class="eye-dropper-box">
+      <EyeDropper />
+    </div>
   </div>
 </template>
 

@@ -6,5 +6,6 @@ export default mist({
     'jsonc/sort-keys': 0,
     'sort-keys': 0,
     'no-debugger': 0,
+    'no-alert': 0,
   },
 })
