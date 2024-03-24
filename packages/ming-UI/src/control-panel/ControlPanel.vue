@@ -12,8 +12,8 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
   distanceRatio: 0,
   dimensionalMovement: false,
   modelValue: () => ({
-    verticalToTraveledDistance: 0,
     traveledDistance: 0,
+    verticalToTraveledDistance: 0,
   }),
 })
 
@@ -21,82 +21,82 @@ const emit = defineEmits(['update:modelValue'])
 const backgroundBoardRef = ref<HTMLDivElement>()
 const sliderRef = ref<HTMLDivElement>()
 const placeholderBoxRef = ref<HTMLDivElement>()
-const mouseInnerPosition = ref({
-  verticalToTraveledDistance: '',
-  traveledDistance: '',
-})
+
 const travelMax = ref(0)
 const verticalMax = ref(0)
-watch(() => props.modelValue, (newVal, oldVal) => {
-  console.log(`new:${newVal.traveledDistance}`, `old:${oldVal.traveledDistance}`)
+watch(() => props.modelValue, (newVal) => {
+  // 确保传入的移动距离在合法范围内
+  const traveledDistance = Math.min(Math.max(newVal.traveledDistance, 0), travelMax.value)
+  const verticalToTraveledDistance = Math.min(Math.max(newVal.verticalToTraveledDistance, 0), verticalMax.value)
+
   if (props.dimensionalMovement)
-    sliderRef.value.style.transform = `translate(${mouseInnerPosition.value.traveledDistance}px,${mouseInnerPosition.value.verticalToTraveledDistance}px)`
-  else
-    sliderRef.value.style.transform = `translate(${newVal.traveledDistance}px,0)`
+    sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px)`
+
+  else sliderRef.value!.style.transform = `translate(${traveledDistance}px,0)`
 }, { deep: true })
+
 onMounted(() => {
   travelMax.value = backgroundBoardRef.value!.getBoundingClientRect().width
   verticalMax.value = backgroundBoardRef.value!.getBoundingClientRect().height
-  console.log(travelMax.value, verticalMax.value)
   initSliderPosition()
 })
+
 defineExpose({
   travelMax,
   verticalMax,
 })
+
 function initSliderPosition() {
-  const backgroundBoardRect = backgroundBoardRef.value?.getBoundingClientRect()
-  const sliderRect = sliderRef.value?.getBoundingClientRect()
+  const backgroundBoardRect = backgroundBoardRef.value!.getBoundingClientRect()
+  const sliderRect = sliderRef.value!.getBoundingClientRect()
   let top = (backgroundBoardRect.height - sliderRect.height) / 2
   const left = -sliderRect.width / 2
   if (props.dimensionalMovement)
     top = -sliderRect.height / 2
-  backgroundBoardRef.value.style.transformOrigin = `${backgroundBoardRect.height / 2}px ${backgroundBoardRect.height / 2}px`
-  sliderRef.value.style.top = `${top}px`
-  sliderRef.value.style.left = `${left}px`
+  backgroundBoardRef.value!.style.transformOrigin = `${backgroundBoardRect.height / 2}px ${backgroundBoardRect.height / 2}px`
+  sliderRef.value!.style.top = `${top}px`
+  sliderRef.value!.style.left = `${left}px`
   if (props.vertical) {
-    backgroundBoardRef.value.style.transform = `rotate(90deg)`
-    placeholderBoxRef.value.style.height = `${backgroundBoardRect.width}px`
-    placeholderBoxRef.value.style.width = `${backgroundBoardRect.height}px`
+    backgroundBoardRef.value!.style.transform = `rotate(90deg)`
+    placeholderBoxRef.value!.style.height = `${backgroundBoardRect.width}px`
+    placeholderBoxRef.value!.style.width = `${backgroundBoardRect.height}px`
   }
 }
 
-function updateSliderPosition(e) {
-  const backgroundBoardRect = backgroundBoardRef.value.getBoundingClientRect()
+function updateSliderPosition(e: Event) {
+  let traveledDistance = 0
+  let verticalToTraveledDistance = 0
+  const backgroundBoardRect = backgroundBoardRef.value!.getBoundingClientRect()
   let travelMax = backgroundBoardRect.width
   let verticalMax = backgroundBoardRect.height
   const left = backgroundBoardRect.left
   const top = backgroundBoardRect.top
 
-  mouseInnerPosition.value.traveledDistance = Number.parseInt(e.clientX - left)
-  mouseInnerPosition.value.verticalToTraveledDistance = Number.parseInt(e.clientY - top)
+  traveledDistance = Number.parseInt(e.clientX - left)
+  verticalToTraveledDistance = Number.parseInt(e.clientY - top)
 
   if (props.vertical) {
-    [mouseInnerPosition.value.verticalToTraveledDistance, mouseInnerPosition.value.traveledDistance]
-    = [mouseInnerPosition.value.traveledDistance, mouseInnerPosition.value.verticalToTraveledDistance];
+    [verticalToTraveledDistance, traveledDistance]
+    = [traveledDistance, verticalToTraveledDistance];
 
     [travelMax, verticalMax] = [verticalMax, travelMax]
   }
   if (props.dimensionalMovement) {
-    if (mouseInnerPosition.value.traveledDistance <= travelMax && mouseInnerPosition.value.traveledDistance >= 0 && mouseInnerPosition.value.verticalToTraveledDistance <= verticalMax && mouseInnerPosition.value.verticalToTraveledDistance >= 0) {
-      sliderRef.value.style.transform = `translate(${mouseInnerPosition.value.traveledDistance}px,${mouseInnerPosition.value.verticalToTraveledDistance}px)`
-      // const distanceMax = { travelMax, verticalMax }
-      emit('update:modelValue', { traveledDistance: mouseInnerPosition.value.traveledDistance, verticalToTraveledDistance: mouseInnerPosition.value.verticalToTraveledDistance })
+    if (traveledDistance <= travelMax && traveledDistance >= 0 && verticalToTraveledDistance <= verticalMax && verticalToTraveledDistance >= 0) {
+      sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px)`
+      emit('update:modelValue', { traveledDistance, verticalToTraveledDistance })
     }
   }
   else {
-    if (mouseInnerPosition.value.traveledDistance <= travelMax && mouseInnerPosition.value.traveledDistance >= 0) {
-      sliderRef.value.style.transform = `translate(${mouseInnerPosition.value.traveledDistance}px,0)`
-      // const distanceMax = { travelMax, verticalMax }
-      // emit('update:modelValue', { mouseInnerPosition, distanceMax })
-      emit('update:modelValue', { traveledDistance: mouseInnerPosition.value.traveledDistance, verticalToTraveledDistance: mouseInnerPosition.value.verticalToTraveledDistance })
+    if (traveledDistance <= travelMax && traveledDistance >= 0) {
+      sliderRef.value!.style.transform = `translate(${traveledDistance}px,0)`
+      emit('update:modelValue', { traveledDistance, verticalToTraveledDistance })
     }
   }
 }
 
 let isDrag = false
 function sliderDown() {
-  console.log(sliderRef.value)
   document.addEventListener('mousemove', dragSlider)
   document.addEventListener('mouseup', sliderUp)
   isDrag = true

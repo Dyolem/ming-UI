@@ -7,26 +7,6 @@ defineOptions({
   name: 'MColorPicker',
 })
 
-const H = ref(0)
-const hueControlRef = ref(null)
-onMounted(() => {
-  console.log(hueControlRef.value.travelMax)
-})
-
-const hConvertToTravelDistance = ref({
-  traveledDistance: (H.value / 360) * (hueControlRef.value?.travelMax ?? 0),
-  verticalToTraveledDistance: 0,
-})
-watch(H, (newHue) => {
-  hConvertToTravelDistance.value.traveledDistance = (newHue / 360) * (hueControlRef.value.travelMax)
-  hConvertToTravelDistance.value.verticalToTraveledDistance = 0
-})
-watch(hConvertToTravelDistance, (newVal) => {
-  H.value = Math.round(360 / (hueControlRef.value.travelMax) * newVal.traveledDistance)
-})
-const S = ref(0)
-const L = ref(0)
-
 const hueBandStyle = ref({
   background: `linear-gradient(to right,
     #ff0000 0%, #ffff00 17%, #00ff00 33%,
@@ -37,25 +17,32 @@ const hueBandStyle = ref({
   // 可以根据需要添加更多样式
 })
 
-function computedColorParameter(parameter) {
-  S.value = Math.round(100 / parameter.distanceMax.travelMax * parameter.mouseInnerPosition.value.traveledDistance)
-  const baseL = 100
-  const decrementTravel = 50 / parameter.distanceMax.travelMax * parameter.mouseInnerPosition.value.traveledDistance
-  const dynamicBase = baseL - decrementTravel
-  const decrementVerticalToTravel = dynamicBase / parameter.distanceMax.verticalMax * parameter.mouseInnerPosition.value.verticalToTraveledDistance
-  L.value = Math.round(dynamicBase - decrementVerticalToTravel)
+const H = ref(0)
+const S = ref(0)
+const L = ref(0)
+
+const R = ref(0)
+const G = ref(0)
+const B = ref(0)
+
+const hueControlRef = ref(null)
+const hConvertToDistance = ref({
+  traveledDistance: 0,
+  verticalToTraveledDistance: 0,
+})
+
+watch(H, (newHue) => {
+  hConvertToDistance.value.traveledDistance = (newHue / 360) * (hueControlRef.value.travelMax)
+  hConvertToDistance.value.verticalToTraveledDistance = 0
+})
+watch(hConvertToDistance, (newVal) => {
+  H.value = Math.round(360 / (hueControlRef.value.travelMax) * newVal.traveledDistance)
+
   const { r, g, b } = useHslToRgb(H.value, S.value, L.value)
-  console.log(r, g, b)
-  const test = userRgbToHex(r, g, b)
-
-  console.log(test)
-}
-
-// const traveledDistance =ref(0)
-// const verticalToTraveledDistance =ref(0)
-// function colorConvertDistance(){
-
-// }
+  R.value = r
+  G.value = g
+  B.value = b
+})
 const saturationSquareStyle = computed(() => {
   return {
     background: `linear-gradient(0deg, #000, transparent), linear-gradient(90deg, #fff, hsl(${H.value}, 100%, 50%))`, // 背景颜色
@@ -65,13 +52,32 @@ const saturationSquareStyle = computed(() => {
   // 可以根据需要添加更多样式
   }
 })
+
+const colorTakingControlRef = ref(null)
+const slConvertToDistance = ref({
+  traveledDistance: 0,
+  verticalToTraveledDistance: 0,
+})
+watch([S, L], ([newSaturation, newLight]) => {
+  slConvertToDistance.value.traveledDistance = (colorTakingControlRef.value.travelMax) / 100 * newSaturation
+  slConvertToDistance.value.verticalToTraveledDistance = (100 - newLight) * colorTakingControlRef.value.verticalMax / 100
+})
+watch(slConvertToDistance, (newVal) => {
+  S.value = Math.round(100 / hueControlRef.value.travelMax * newVal.traveledDistance)
+  L.value = Math.round(100 - (100 / colorTakingControlRef.value.verticalMax * newVal.verticalToTraveledDistance))
+
+  const { r, g, b } = useHslToRgb(H.value, S.value, L.value)
+  R.value = r
+  G.value = g
+  B.value = b
+})
 </script>
 
 <template>
   <div class="contanier">
     <div class="color-gradient-wheel">
-      <ControlPanel :dimensional-movement="true" :background-style="saturationSquareStyle" @update:model-value="computedColorParameter" />
-      <ControlPanel ref="hueControlRef" v-model:model-value="hConvertToTravelDistance" :vertical="true" :background-style="hueBandStyle" />
+      <ControlPanel ref="colorTakingControlRef" v-model:model-value="slConvertToDistance" :dimensional-movement="true" :background-style="saturationSquareStyle" />
+      <ControlPanel ref="hueControlRef" v-model:model-value="hConvertToDistance" :vertical="true" :background-style="hueBandStyle" />
     </div>
     <div class="color-value-form">
       <div class="hsl">
@@ -79,6 +85,13 @@ const saturationSquareStyle = computed(() => {
       </div>
       <div class="hsl-form">
         <m-input v-model="H" size="small" />
+        <m-input v-model="S" size="small" />
+        <m-input v-model="L" size="small" />
+      </div>
+      <div class="rgb-form">
+        <m-input v-model="R" size="small" />
+        <m-input v-model="G" size="small" />
+        <m-input v-model="B" size="small" />
       </div>
     </div>
   </div>
