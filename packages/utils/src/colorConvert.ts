@@ -1,10 +1,26 @@
 type hexParameterType = number
-export function userRgbToHex(r: hexParameterType, g: hexParameterType, b: hexParameterType) {
+export function useRgbToHex(r: hexParameterType, g: hexParameterType, b: hexParameterType): string {
   // 将单个颜色值转换为两位的十六进制数
   const toHex = (color: number) => color.toString(16).padStart(2, '0')
 
   // 组合成完整的Hex颜色代码
-  return `#${toHex(r)}${toHex(g)}${toHex(b)}`
+  return `${toHex(r)}${toHex(g)}${toHex(b)}`
+}
+
+export function useHexToRgb(hex: string): [number, number, number] | null {
+  // 检查输入是否为有效的十六进制颜色值
+  if (hex.startsWith('#'))
+    hex = hex.substring(1)
+
+  if (hex.length !== 6)
+    return null
+
+  // 解析十六进制颜色值
+  const r = Number.parseInt(hex.slice(0, 2), 16)
+  const g = Number.parseInt(hex.slice(2, 4), 16)
+  const b = Number.parseInt(hex.slice(4, 6), 16)
+
+  return [r, g, b]
 }
 
 type hslParameterType = number
@@ -56,4 +72,51 @@ export function useHslToRgb(h: hslParameterType, s: hslParameterType, l: hslPara
   b = Math.round((b + m) * 255)
 
   return { r, g, b }
+}
+
+export function useRgbToHsl(r: number, g: number, b: number): [number, number, number] {
+  // 将RGB值从0-255转换为0-1
+  r /= 255
+  g /= 255
+  b /= 255
+
+  // 找到最大和最小的RGB值
+  const max = Math.max(r, g, b)
+  const min = Math.min(r, g, b)
+  let h: number, s: number, l: number
+
+  // 亮度是最大和最小RGB值的平均值
+  l = (max + min) / 2
+
+  if (max === min) {
+    // 如果所有颜色值都相等，那么色相为0，饱和度为0
+    h = 0
+    s = 0
+  }
+  else {
+    const d = max - min
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+
+    switch (max) {
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0)
+        break
+      case g:
+        h = (b - r) / d + 2
+        break
+      case b:
+        h = (r - g) / d + 4
+        break
+    }
+
+    h /= 6
+  }
+
+  // 将色相转换为角度
+  h = Math.round(h * 360)
+  // 将饱和度和亮度值转换为百分比
+  s = Math.round(s * 100)
+  l = Math.round(l * 100)
+
+  return [h, s, l]
 }

@@ -1,6 +1,6 @@
 <script setup>
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
-import { useHslToRgb, userRgbToHex } from '@ming-UI/utils'
+import { useHexToRgb, useHslToRgb, useRgbToHex, useRgbToHsl } from '@ming-UI/utils'
 import ControlPanel from 'ming-UI/control-panel/ControlPanel.vue'
 
 defineOptions({
@@ -24,6 +24,8 @@ const L = ref(0)
 const R = ref(0)
 const G = ref(0)
 const B = ref(0)
+
+const hex = ref('000000')
 
 const hueControlRef = ref(null)
 const hConvertToDistance = ref({
@@ -58,9 +60,11 @@ const slConvertToDistance = ref({
   traveledDistance: 0,
   verticalToTraveledDistance: 0,
 })
-watch([S, L], ([newSaturation, newLight]) => {
-  slConvertToDistance.value.traveledDistance = (colorTakingControlRef.value.travelMax) / 100 * newSaturation
-  slConvertToDistance.value.verticalToTraveledDistance = (100 - newLight) * colorTakingControlRef.value.verticalMax / 100
+onMounted(() => {
+  watch([S, L], ([newSaturation, newLight]) => {
+    slConvertToDistance.value.traveledDistance = (colorTakingControlRef.value.travelMax) / 100 * newSaturation
+    slConvertToDistance.value.verticalToTraveledDistance = (100 - newLight) * colorTakingControlRef.value.verticalMax / 100
+  }, { immediate: true })
 })
 watch(slConvertToDistance, (newVal) => {
   S.value = Math.round(100 / hueControlRef.value.travelMax * newVal.traveledDistance)
@@ -70,6 +74,27 @@ watch(slConvertToDistance, (newVal) => {
   R.value = r
   G.value = g
   B.value = b
+})
+
+watch([R, G, B], ([r, g, b]) => {
+  const [h, s, l] = useRgbToHsl(r, g, b)
+  H.value = h
+  S.value = s
+  L.value = l
+  hex.value = useRgbToHex(r, g, b)
+})
+watch(hex, (newVal) => {
+  const rgb = useHexToRgb(`#${newVal}`)
+  if (rgb === null)
+    return
+  R.value = rgb[0]
+  G.value = rgb[1]
+  B.value = rgb[2]
+})
+const rgbCom = computed(() => {
+  console.log(111)
+  const rgb = useHslToRgb(H.value, S.value, L.value)
+  return rgb
 })
 </script>
 
@@ -93,7 +118,11 @@ watch(slConvertToDistance, (newVal) => {
         <m-input v-model="G" size="small" />
         <m-input v-model="B" size="small" />
       </div>
+      <div class="hex-form">
+        <m-input v-model="hex" size="small" />
+      </div>
     </div>
+    <div>{{ rgbCom }}</div>
   </div>
 </template>
 
