@@ -76,19 +76,20 @@ watch(slConvertToDistance, (newVal) => {
 })
 
 watch([R, G, B], ([r, g, b]) => {
-  const [h, s, l] = useRgbToHsl(r, g, b)
+  const { h, s, l } = useRgbToHsl(r, g, b)
   H.value = h
   S.value = s
   L.value = l
+  console.log(r, g, b)
   hex.value = useRgbToHex(r, g, b)
 })
 watch(hex, (newVal) => {
-  const rgb = useHexToRgb(`#${newVal}`)
-  if (rgb === null)
+  const { r = undefined, g = undefined, b = undefined } = useHexToRgb(`#${newVal}`)
+  if (r === undefined || g === undefined || b === undefined)
     return
-  R.value = rgb[0]
-  G.value = rgb[1]
-  B.value = rgb[2]
+  R.value = r
+  G.value = g
+  B.value = b
 })
 const rgbCom = computed(() => {
   console.log(111)

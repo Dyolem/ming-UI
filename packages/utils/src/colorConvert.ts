@@ -1,13 +1,15 @@
 type hexParameterType = number
 export function useRgbToHex(r: hexParameterType, g: hexParameterType, b: hexParameterType): string {
   // 将单个颜色值转换为两位的十六进制数
+  console.log(r, g, b)
+
   const toHex = (color: number) => color.toString(16).padStart(2, '0')
 
   // 组合成完整的Hex颜色代码
   return `${toHex(r)}${toHex(g)}${toHex(b)}`
 }
 
-export function useHexToRgb(hex: string): [number, number, number] | null {
+export function useHexToRgb(hex: string): { r: number; g: number; b: number } | null {
   // 检查输入是否为有效的十六进制颜色值
   if (hex.startsWith('#'))
     hex = hex.substring(1)
@@ -20,7 +22,7 @@ export function useHexToRgb(hex: string): [number, number, number] | null {
   const g = Number.parseInt(hex.slice(2, 4), 16)
   const b = Number.parseInt(hex.slice(4, 6), 16)
 
-  return [r, g, b]
+  return { r, g, b }
 }
 
 type hslParameterType = number
@@ -74,7 +76,7 @@ export function useHslToRgb(h: hslParameterType, s: hslParameterType, l: hslPara
   return { r, g, b }
 }
 
-export function useRgbToHsl(r: number, g: number, b: number): [number, number, number] {
+export function useRgbToHsl(r: number, g: number, b: number): { h: number; s: number; l: number } {
   // 将RGB值从0-255转换为0-1
   r /= 255
   g /= 255
@@ -118,5 +120,5 @@ export function useRgbToHsl(r: number, g: number, b: number): [number, number, n
   s = Math.round(s * 100)
   l = Math.round(l * 100)
 
-  return [h, s, l]
+  return { h, s, l }
 }
