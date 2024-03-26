@@ -1,5 +1,5 @@
 export interface InputProps {
-  type: 'text' | 'number'
+  type?: 'text' | 'number'
   modelValue?: string | number
   disabled?: boolean
   size?: 'small' | 'default' | 'large'
