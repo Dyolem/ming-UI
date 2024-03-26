@@ -57,6 +57,7 @@ const props = withDefaults(defineProps<InputProps>(), {
 
 const emit = defineEmits<{
   'update:modelValue': [string]
+  'input': [string]
 }>()
 
 defineSlots<{
@@ -76,6 +77,7 @@ function handleInput(e: Event) {
   }
   // 如果modelValue被绑定，则正常处理输入
   emit('update:modelValue', target.value)
+  emit('input', target.value)
 }
 
 // 组件样式代码
