@@ -26,20 +26,6 @@ const colorManager = ref({
   hex: 'ff0000',
 })
 
-watch(hConvertToDistance, (newVal) => {
-  const newH = Math.round(360 / (hueControlRef.value.travelMax) * newVal.traveledDistance)
-
-  updateColor('h', newH)
-})
-
-watch(slConvertToDistance, (newVal) => {
-  const newS = Math.round(100 / hueControlRef.value.travelMax * newVal.traveledDistance)
-  const newL = Math.round(100 - (100 / colorTakingControlRef.value.verticalMax * newVal.verticalToTraveledDistance))
-
-  updateColor('s', newS)
-  updateColor('l', newL)
-})
-
 const hueBandStyle = ref({
   background: `linear-gradient(to right,
     #ff0000 0%, #ffff00 17%, #00ff00 33%,
@@ -98,15 +84,48 @@ function updateColor(component, value) {
     const { h, s, l } = useRgbToHsl(r, g, b)
     colorManager.value.hsl = { h, s, l }
   }
+  updateSliderPosition()
+}
+function updateSliderPosition() {
+  hConvertToDistance.value.traveledDistance = (colorManager.value.hsl.h / 360) * (hueControlRef.value.travelMax)
+  hConvertToDistance.value.verticalToTraveledDistance = 0
+
+  slConvertToDistance.value.traveledDistance = colorManager.value.hsl.s / 100 * colorTakingControlRef.value.travelMax
+  slConvertToDistance.value.verticalToTraveledDistance = (100 - colorManager.value.hsl.l) * colorTakingControlRef.value.verticalMax / 100
+}
+function positionUpdateColor(colorType, val) {
+  if (colorType === 'h') {
+    const newH = Math.round(360 / (hueControlRef.value.travelMax) * val.traveledDistance)
+    const checkedH = checkColorValue('h', newH)
+    colorManager.value.hsl.h = checkedH
+
+    const { h, s, l } = colorManager.value.hsl
+    const { r, g, b } = useHslToRgb(h, s, l)
+    colorManager.value.rgb = { r, g, b }
+    colorManager.value.hex = useRgbToHex(r, g, b)
+  }
+  else {
+    const newS = Math.round(100 / colorTakingControlRef.value.travelMax * val.traveledDistance)
+    const newL = Math.round(100 - (100 / colorTakingControlRef.value.verticalMax * val.verticalToTraveledDistance))
+
+    const checkedS = checkColorValue('h', newS)
+    colorManager.value.hsl.s = checkedS
+    const checkedL = checkColorValue('h', newL)
+    colorManager.value.hsl.l = checkedL
+    const { h, s, l } = colorManager.value.hsl
+    const { r, g, b } = useHslToRgb(h, s, l)
+    colorManager.value.rgb = { r, g, b }
+    colorManager.value.hex = useRgbToHex(r, g, b)
+  }
 }
 </script>
 
 <template>
   <div class="contanier">
     <div class="color-gradient-wheel">
-      <ControlPanel ref="colorTakingControlRef" v-model:model-value="slConvertToDistance" :dimensional-movement="true" :background-style="saturationSquareStyle" />
+      <ControlPanel ref="colorTakingControlRef" v-model:model-value="slConvertToDistance" :dimensional-movement="true" :background-style="saturationSquareStyle" @drag="value => positionUpdateColor('sl', value)" />
       <div class="hue-box">
-        <ControlPanel ref="hueControlRef" v-model:model-value="hConvertToDistance" :vertical="true" :background-style="hueBandStyle" />
+        <ControlPanel ref="hueControlRef" v-model:model-value="hConvertToDistance" :vertical="true" :background-style="hueBandStyle" @drag="value => positionUpdateColor('h', value)" />
         <div class="eye-dropper-box">
           <EyeDropper />
         </div>
@@ -215,5 +234,6 @@ function updateColor(component, value) {
   width: 30px;
   height: 30px;
   border-radius: 4px;
+  background-color: antiquewhite
 }
 </style>

@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
   }),
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'drag'])
 const backgroundBoardRef = ref<HTMLDivElement>()
 const sliderRef = ref<HTMLDivElement>()
 const placeholderBoxRef = ref<HTMLDivElement>()
@@ -89,12 +89,14 @@ function updateSliderPosition(e: Event) {
     if (traveledDistance <= travelMax && traveledDistance >= 0 && verticalToTraveledDistance <= verticalMax && verticalToTraveledDistance >= 0) {
       sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px)`
       emit('update:modelValue', { traveledDistance, verticalToTraveledDistance })
+      emit('drag', { traveledDistance, verticalToTraveledDistance })
     }
   }
   else {
     if (traveledDistance <= travelMax && traveledDistance >= 0) {
       sliderRef.value!.style.transform = `translate(${traveledDistance}px,0)`
       emit('update:modelValue', { traveledDistance, verticalToTraveledDistance })
+      emit('drag', { traveledDistance, verticalToTraveledDistance })
     }
   }
 }
