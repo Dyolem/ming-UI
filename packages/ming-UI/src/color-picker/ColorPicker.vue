@@ -27,6 +27,7 @@ const colorManager = ref({
 })
 onMounted(() => {
   updateColor('h', colorManager.value.hsl.h)
+  updateColorSelectBox()
 })
 const hueBandStyle = ref({
   background: `linear-gradient(to right,
@@ -46,6 +47,12 @@ const saturationSquareStyle = computed(() => {
   }
 })
 
+const chosenColorRef = ref(null)
+function updateColorSelectBox() {
+  console.log(`#${colorManager.value.hex}`)
+  chosenColorRef.value.style.backgroundColor = `#${colorManager.value.hex}`
+}
+
 function checkColorValue(type, value) {
   if (type === 'h')
     return Math.max(Math.min(360, value), 0)
@@ -58,6 +65,7 @@ function checkColorValue(type, value) {
   else if (type === 'hex')
     return value.replace(/[^a-fA-F0-9]/g, '').substring(0, 6)
 }
+
 // 统一更新函数
 function updateColor(component, value) {
   value = checkColorValue(component, value)
@@ -87,6 +95,7 @@ function updateColor(component, value) {
     colorManager.value.hsl = { h, s, l }
   }
   updateSliderPosition()
+  updateColorSelectBox()
 }
 function updateSliderPosition() {
   hConvertToDistance.value.traveledDistance = (colorManager.value.hsl.h / 360) * (hueControlRef.value.travelMax)
@@ -119,6 +128,7 @@ function positionUpdateColor(colorType, val) {
     colorManager.value.rgb = { r, g, b }
     colorManager.value.hex = useRgbToHex(r, g, b)
   }
+  updateColorSelectBox()
 }
 </script>
 
@@ -131,7 +141,7 @@ function positionUpdateColor(colorType, val) {
         <div class="eye-dropper-box">
           <EyeDropper />
         </div>
-        <div class="chosen-color" />
+        <div ref="chosenColorRef" class="chosen-color" />
       </div>
     </div>
     <div class="color-value-form">
@@ -181,7 +191,7 @@ function positionUpdateColor(colorType, val) {
     align-items: center;
     width: 100%;
     height: 300px;
-    background-color: #e6dbf7;
+    background-color: #AB8FD6;
     border-radius: 10px;
 }
 .color-gradient-wheel {
@@ -236,6 +246,7 @@ function positionUpdateColor(colorType, val) {
   width: 30px;
   height: 30px;
   border-radius: 4px;
-  background-color: antiquewhite
+  background-color: antiquewhite;
+  border: 1px solid #E5D9F7;
 }
 </style>
