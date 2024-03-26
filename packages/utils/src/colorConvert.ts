@@ -1,7 +1,6 @@
 type hexParameterType = number
 export function useRgbToHex(r: hexParameterType, g: hexParameterType, b: hexParameterType): string {
   // 将单个颜色值转换为两位的十六进制数
-  console.log(r, g, b)
 
   const toHex = (color: number) => color.toString(16).padStart(2, '0')
 
