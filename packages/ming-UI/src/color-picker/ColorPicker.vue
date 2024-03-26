@@ -58,10 +58,24 @@ const saturationSquareStyle = computed(() => {
   }
 })
 
+function checkColorValue(type, value) {
+  if (type === 'h')
+    return Math.max(Math.min(360, value), 0)
+
+  else if (type === 's' || type === 'l')
+    return Math.max(Math.min(100, value), 0)
+
+  else if (['r', 'g', 'b'].includes(type))
+    return Math.max(Math.min(255, value), 0)
+  else if (type === 'hex')
+    return value.replace(/[^a-fA-F0-9]/g, '').substring(0, 6)
+}
 // 统一更新函数
 function updateColor(component, value) {
+  value = checkColorValue(component, value)
   if (['h', 's', 'l'].includes(component)) {
     colorManager.value.hsl[component] = value
+
     const { h, s, l } = colorManager.value.hsl
     const { r, g, b } = useHslToRgb(h, s, l)
     colorManager.value.rgb = { r, g, b }
@@ -76,6 +90,7 @@ function updateColor(component, value) {
     colorManager.value.hex = useRgbToHex(r, g, b)
   }
   else if (component === 'hex') {
+    colorManager.value.hex = value
     if (useHexToRgb(`#${value}`) === null)
       return
     const { r, g, b } = useHexToRgb(`#${value}`)
@@ -94,15 +109,15 @@ function updateColor(component, value) {
     </div>
     <div class="color-value-form">
       <div class="hsl-form">
-        <m-input v-model="colorManager.hsl.h" size="small" @input="value => updateColor('h', value)" />
-        <m-input v-model="colorManager.hsl.s" size="small" @input="value => updateColor('s', value)" />
-        <m-input v-model="colorManager.hsl.l" size="small" @input="value => updateColor('l', value)" />
+        <m-input v-model.number="colorManager.hsl.h" size="small" type="number" min="0" max="360" @input="value => updateColor('h', value)" />
+        <m-input v-model="colorManager.hsl.s" size="small" type="number" min="0" max="100" @input="value => updateColor('s', value)" />
+        <m-input v-model="colorManager.hsl.l" size="small" type="number" min="0" max="100" @input="value => updateColor('l', value)" />
       </div>
 
       <div class="rgb-form">
-        <m-input v-model="colorManager.rgb.r" size="small" @input="value => updateColor('r', value)" />
-        <m-input v-model="colorManager.rgb.g" size="small" @input="value => updateColor('g', value)" />
-        <m-input v-model="colorManager.rgb.b" size="small" @input="value => updateColor('b', value)" />
+        <m-input v-model="colorManager.rgb.r" size="small" type="number" min="0" max="255" @input="value => updateColor('r', value)" />
+        <m-input v-model="colorManager.rgb.g" size="small" type="number" min="0" max="255" @input="value => updateColor('g', value)" />
+        <m-input v-model="colorManager.rgb.b" size="small" type="number" min="0" max="255" @input="value => updateColor('b', value)" />
       </div>
       <div class="hex-form">
         <m-input v-model="colorManager.hex" size="small" @input="value => updateColor('hex', value)" />
