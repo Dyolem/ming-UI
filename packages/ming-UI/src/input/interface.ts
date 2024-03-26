@@ -1,4 +1,5 @@
 export interface InputProps {
+  type: 'text' | 'number'
   modelValue?: string | number
   disabled?: boolean
   size?: 'small' | 'default' | 'large'
@@ -6,4 +7,4 @@ export interface InputProps {
 }
 
 // 透传Attributes数组,可控制哪些input原生属性可以使用。
-export const originInputProps = ['autocomplete']
+export const originInputProps = ['autocomplete', 'max', 'min', 'maxlength', 'minlength']
