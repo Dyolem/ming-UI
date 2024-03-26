@@ -61,6 +61,10 @@ function initSliderPosition() {
     placeholderBoxRef.value!.style.height = `${backgroundBoardRect.width}px`
     placeholderBoxRef.value!.style.width = `${backgroundBoardRect.height}px`
   }
+  else {
+    placeholderBoxRef.value!.style.height = `${backgroundBoardRect.height}px`
+    placeholderBoxRef.value!.style.width = `${backgroundBoardRect.width}px`
+  }
 }
 
 function updateSliderPosition(e: Event) {
