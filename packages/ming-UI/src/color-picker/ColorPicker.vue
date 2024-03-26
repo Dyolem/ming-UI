@@ -21,11 +21,13 @@ const slConvertToDistance = ref({
 })
 
 const colorManager = ref({
-  hsl: { h: 0, s: 100, l: 50 },
-  rgb: { r: 255, g: 0, b: 0 },
-  hex: 'ff0000',
+  hsl: { h: 264, s: 65, l: 91 },
+  rgb: { r: 229, g: 217, b: 247 },
+  hex: 'E5D9F7',
 })
-
+onMounted(() => {
+  updateColor('h', colorManager.value.hsl.h)
+})
 const hueBandStyle = ref({
   background: `linear-gradient(to right,
     #ff0000 0%, #ffff00 17%, #00ff00 33%,
