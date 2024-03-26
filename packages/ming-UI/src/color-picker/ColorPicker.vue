@@ -15,18 +15,7 @@ const hueBandStyle = ref({
   borderRadius: '5px',
   width: '200px', // 内边距
   height: '30px',
-  // 可以根据需要添加更多样式
 })
-
-const H = ref(0)
-const S = ref(0)
-const L = ref(0)
-
-const R = ref(0)
-const G = ref(0)
-const B = ref(0)
-
-const hex = ref('000000')
 
 const hueControlRef = ref(null)
 const hConvertToDistance = ref({
@@ -34,68 +23,67 @@ const hConvertToDistance = ref({
   verticalToTraveledDistance: 0,
 })
 
-watch(H, (newHue) => {
-  hConvertToDistance.value.traveledDistance = (newHue / 360) * (hueControlRef.value.travelMax)
-  hConvertToDistance.value.verticalToTraveledDistance = 0
-  const { r, g, b } = useHslToRgb(H.value, S.value, L.value)
-  R.value = r
-  G.value = g
-  B.value = b
-})
-watch(hConvertToDistance, (newVal) => {
-  H.value = Math.round(360 / (hueControlRef.value.travelMax) * newVal.traveledDistance)
-})
-const saturationSquareStyle = computed(() => {
-  return {
-    background: `linear-gradient(0deg, #000, transparent), linear-gradient(90deg, #fff, hsl(${H.value}, 100%, 50%))`, // 背景颜色
-    color: 'white', // 文本颜色
-    width: '200px', // 内边距
-    height: '200px',
-  // 可以根据需要添加更多样式
-  }
-})
-
 const colorTakingControlRef = ref(null)
 const slConvertToDistance = ref({
   traveledDistance: 0,
   verticalToTraveledDistance: 0,
 })
-onMounted(() => {
-  watch([S, L], ([newSaturation, newLight]) => {
-    slConvertToDistance.value.traveledDistance = (colorTakingControlRef.value.travelMax) / 100 * newSaturation
-    slConvertToDistance.value.verticalToTraveledDistance = (100 - newLight) * colorTakingControlRef.value.verticalMax / 100
-    const { r, g, b } = useHslToRgb(H.value, S.value, L.value)
-    R.value = r
-    G.value = g
-    B.value = b
-  }, { immediate: true })
-})
-watch(slConvertToDistance, (newVal) => {
-  S.value = Math.round(100 / hueControlRef.value.travelMax * newVal.traveledDistance)
-  L.value = Math.round(100 - (100 / colorTakingControlRef.value.verticalMax * newVal.verticalToTraveledDistance))
+
+const colorManager = ref({
+  hsl: { h: 0, s: 100, l: 50 },
+  rgb: { r: 255, g: 0, b: 0 },
+  hex: 'ff0000',
 })
 
-watch([R, G, B], ([r, g, b]) => {
-  const { h, s, l } = useRgbToHsl(r, g, b)
-  H.value = h
-  S.value = s
-  L.value = l
-  console.log(r, g, b)
-  hex.value = useRgbToHex(r, g, b)
+watch(hConvertToDistance, (newVal) => {
+  const newH = Math.round(360 / (hueControlRef.value.travelMax) * newVal.traveledDistance)
+
+  updateColor('h', newH)
 })
-watch(hex, (newVal) => {
-  const { r = undefined, g = undefined, b = undefined } = useHexToRgb(`#${newVal}`)
-  if (r === undefined || g === undefined || b === undefined)
-    return
-  R.value = r
-  G.value = g
-  B.value = b
+
+watch(slConvertToDistance, (newVal) => {
+  const newS = Math.round(100 / hueControlRef.value.travelMax * newVal.traveledDistance)
+  const newL = Math.round(100 - (100 / colorTakingControlRef.value.verticalMax * newVal.verticalToTraveledDistance))
+
+  updateColor('s', newS)
+  updateColor('l', newL)
 })
-const rgbCom = computed(() => {
-  console.log(111)
-  const rgb = useHslToRgb(H.value, S.value, L.value)
-  return rgb
+
+const saturationSquareStyle = computed(() => {
+  return {
+    background: `linear-gradient(0deg, #000, transparent), linear-gradient(90deg, #fff, hsl(${colorManager.value.hsl.h}, 100%, 50%))`, // 背景颜色
+    color: 'white', // 文本颜色
+    width: '200px', // 内边距
+    height: '200px',
+  }
 })
+
+// 统一更新函数
+function updateColor(component, value) {
+  if (['h', 's', 'l'].includes(component)) {
+    colorManager.value.hsl[component] = value
+    const { h, s, l } = colorManager.value.hsl
+    const { r, g, b } = useHslToRgb(h, s, l)
+    colorManager.value.rgb = { r, g, b }
+    colorManager.value.hex = useRgbToHex(r, g, b)
+  }
+  else if (['r', 'g', 'b'].includes(component)) {
+    colorManager.value.rgb[component] = value
+    const { r, g, b } = colorManager.value.rgb
+    colorManager.value.rgb = { r, g, b }
+    const { h, s, l } = useRgbToHsl(r, g, b)
+    colorManager.value.hsl = { h, s, l }
+    colorManager.value.hex = useRgbToHex(r, g, b)
+  }
+  else if (component === 'hex') {
+    if (useHexToRgb(`#${value}`) === null)
+      return
+    const { r, g, b } = useHexToRgb(`#${value}`)
+    colorManager.value.rgb = { r, g, b }
+    const { h, s, l } = useRgbToHsl(r, g, b)
+    colorManager.value.hsl = { h, s, l }
+  }
+}
 </script>
 
 <template>
@@ -105,24 +93,22 @@ const rgbCom = computed(() => {
       <ControlPanel ref="hueControlRef" v-model:model-value="hConvertToDistance" :vertical="true" :background-style="hueBandStyle" />
     </div>
     <div class="color-value-form">
-      <div class="hsl">
-        {{ `h:${H},s:${S},l:${L}` }}
-      </div>
       <div class="hsl-form">
-        <m-input v-model="H" size="small" />
-        <m-input v-model="S" size="small" />
-        <m-input v-model="L" size="small" />
+        <m-input v-model="colorManager.hsl.h" size="small" @input="value => updateColor('h', value)" />
+        <m-input v-model="colorManager.hsl.s" size="small" @input="value => updateColor('s', value)" />
+        <m-input v-model="colorManager.hsl.l" size="small" @input="value => updateColor('l', value)" />
       </div>
+
       <div class="rgb-form">
-        <m-input v-model="R" size="small" />
-        <m-input v-model="G" size="small" />
-        <m-input v-model="B" size="small" />
+        <m-input v-model="colorManager.rgb.r" size="small" @input="value => updateColor('r', value)" />
+        <m-input v-model="colorManager.rgb.g" size="small" @input="value => updateColor('g', value)" />
+        <m-input v-model="colorManager.rgb.b" size="small" @input="value => updateColor('b', value)" />
       </div>
       <div class="hex-form">
-        <m-input v-model="hex" size="small" />
+        <m-input v-model="colorManager.hex" size="small" @input="value => updateColor('hex', value)" />
       </div>
     </div>
-    <div>{{ rgbCom }}</div>
+
     <div class="eye-dropper-box">
       <EyeDropper />
     </div>
