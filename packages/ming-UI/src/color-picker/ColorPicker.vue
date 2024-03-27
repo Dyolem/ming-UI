@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useHexToRgb, useHslToRgb, useRgbToHex, useRgbToHsl } from '@ming-UI/utils'
 import ControlPanel from 'ming-UI/control-panel/ControlPanel.vue'
 import EyeDropper from './components/EyeDropper.vue'
@@ -7,6 +7,8 @@ import EyeDropper from './components/EyeDropper.vue'
 defineOptions({
   name: 'MColorPicker',
 })
+
+const isFullFunction = ref(false)
 
 const hueControlRef = ref(null)
 const hConvertToDistance = ref({
@@ -26,7 +28,8 @@ const colorManager = ref({
   hex: 'E5D9F7',
 })
 onMounted(() => {
-  updateColor('h', colorManager.value.hsl.h)
+  if (isFullFunction.value)
+    updateColor('h', colorManager.value.hsl.h)
   updateColorSelectBox()
 })
 const hueBandStyle = ref({
@@ -49,7 +52,6 @@ const saturationSquareStyle = computed(() => {
 
 const chosenColorRef = ref(null)
 function updateColorSelectBox() {
-  console.log(`#${colorManager.value.hex}`)
   chosenColorRef.value.style.backgroundColor = `#${colorManager.value.hex}`
 }
 
@@ -94,16 +96,21 @@ function updateColor(component, value) {
     const { h, s, l } = useRgbToHsl(r, g, b)
     colorManager.value.hsl = { h, s, l }
   }
-  updateSliderPosition()
+  if (isFullFunction.value)
+    updateSliderPosition()
   updateColorSelectBox()
 }
-function updateSliderPosition() {
+async function updateSliderPosition() {
+  console.log(hueControlRef.value)
+  if (isFullFunction.value)
+    await nextTick()
   hConvertToDistance.value.traveledDistance = (colorManager.value.hsl.h / 360) * (hueControlRef.value.travelMax)
   hConvertToDistance.value.verticalToTraveledDistance = 0
 
   slConvertToDistance.value.traveledDistance = colorManager.value.hsl.s / 100 * colorTakingControlRef.value.travelMax
   slConvertToDistance.value.verticalToTraveledDistance = (100 - colorManager.value.hsl.l) * colorTakingControlRef.value.verticalMax / 100
 }
+
 function positionUpdateColor(colorType, val) {
   if (colorType === 'h') {
     const newH = Math.round(360 / (hueControlRef.value.travelMax) * val.traveledDistance)
@@ -134,27 +141,45 @@ function positionUpdateColor(colorType, val) {
 function eyedropperResolve(colorType, { sRGBHex }) {
   updateColor(colorType, sRGBHex)
 }
+
+let timer = null
+const interruptOpenEyeDropper = ref(false)
+const pressAnimation = ref(false)
+function openColorBoard() {
+  pressAnimation.value = !pressAnimation.value
+  timer = setTimeout(() => {
+    interruptOpenEyeDropper.value = true
+    isFullFunction.value = !isFullFunction.value
+    updateSliderPosition()
+  }, 400) // 1000毫秒后执行
+}
+
+function cancelOpenBehavior() {
+  pressAnimation.value = !pressAnimation.value
+  interruptOpenEyeDropper.value = false
+  clearTimeout(timer)
+}
 </script>
 
 <template>
-  <div class="container">
+  <div class="container" :class="isFullFunction ? 'full' : 'partial'">
     <div class="color-gradient-wheel">
-      <ControlPanel ref="colorTakingControlRef" v-model:model-value="slConvertToDistance" :dimensional-movement="true" :background-style="saturationSquareStyle" @drag="value => positionUpdateColor('sl', value)" />
+      <ControlPanel v-if="isFullFunction" ref="colorTakingControlRef" v-model:model-value="slConvertToDistance" :dimensional-movement="true" :background-style="saturationSquareStyle" @drag="value => positionUpdateColor('sl', value)" />
       <div class="hue-box">
-        <ControlPanel ref="hueControlRef" v-model:model-value="hConvertToDistance" :vertical="true" :background-style="hueBandStyle" @drag="value => positionUpdateColor('h', value)" />
-        <div class="eye-dropper-box">
-          <EyeDropper @update:color="value => eyedropperResolve('hex', value)" />
+        <ControlPanel v-if="isFullFunction" ref="hueControlRef" v-model:model-value="hConvertToDistance" :vertical="true" :background-style="hueBandStyle" @drag="value => positionUpdateColor('h', value)" />
+        <div class="eye-dropper-box" :class="pressAnimation ? 'loading' : ''" @mousedown="openColorBoard" @mouseup="cancelOpenBehavior">
+          <EyeDropper :interrupt="interruptOpenEyeDropper" @update:color="value => eyedropperResolve('hex', value)" />
         </div>
         <m-tooltip :content="`#${colorManager.hex}`">
           <div ref="chosenColorRef" class="chosen-color" />
         </m-tooltip>
       </div>
     </div>
-    <div class="color-value-form">
+    <div v-if="isFullFunction" class="color-value-form">
       <div class="hsl-form">
         <div class="color-input-box">
           <span>H</span>
-          <m-input v-model.number="colorManager.hsl.h" size="small" type="number" min="0" max="360" @input="value => updateColor('h', value)" />
+          <m-input v-model="colorManager.hsl.h" size="small" type="number" min="0" max="360" @input="value => updateColor('h', value)" />
         </div>
         <div class="color-input-box">
           <span>S</span>
@@ -195,10 +220,21 @@ function eyedropperResolve(colorType, { sRGBHex }) {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    height: 300px;
+    /* width: 50px;
+    height: 100px; */
+  width: 100%;
+  height: 300px;
     background-color: #AB8FD6;
     border-radius: 10px;
+    transition: all .4s ease-in-out;
+}
+.full {
+  width: 100%;
+  height: 300px;
+}
+.partial {
+      width: 50px;
+    height: 100px;
 }
 .color-gradient-wheel {
     display: flex;
@@ -215,6 +251,7 @@ function eyedropperResolve(colorType, { sRGBHex }) {
   width: 40px;
   height: 100%;
   justify-content: space-around;
+  align-items: center;
 }
 
 .color-value-form {
@@ -247,7 +284,12 @@ function eyedropperResolve(colorType, { sRGBHex }) {
 }
 .eye-dropper-box {
   margin-top: 10px;
+  transition: all 500ms ease-in-out;
 }
+.loading {
+  transform: rotate(360deg);
+}
+
 .chosen-color {
   width: 30px;
   height: 30px;

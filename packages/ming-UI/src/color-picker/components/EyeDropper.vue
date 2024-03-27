@@ -6,13 +6,17 @@ defineOptions({
 const props = withDefaults(defineProps<{
   autoClose?: boolean
   delay?: number
+  interrupt?: boolean
 }>(), {
   autoClose: false,
   delay: 5000,
+  interrupt: false,
 })
 const emit = defineEmits(['update:color'])
 
 function openColorPicker() {
+  if (props.interrupt)
+    return
   if (!window.EyeDropper) {
     alert('你的浏览器不支持 EyeDropper API')
     return
