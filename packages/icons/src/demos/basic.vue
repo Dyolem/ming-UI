@@ -8,7 +8,7 @@
       <Pause />
     </m-icon>
     <m-icon>
-      <VolumnUp />
+      <VolumeUp />
     </m-icon>
     <m-icon>
       <Mute />
