@@ -137,7 +137,7 @@ function eyedropperResolve(colorType, { sRGBHex }) {
 </script>
 
 <template>
-  <div class="contanier">
+  <div class="container">
     <div class="color-gradient-wheel">
       <ControlPanel ref="colorTakingControlRef" v-model:model-value="slConvertToDistance" :dimensional-movement="true" :background-style="saturationSquareStyle" @drag="value => positionUpdateColor('sl', value)" />
       <div class="hue-box">
@@ -191,7 +191,7 @@ function eyedropperResolve(colorType, { sRGBHex }) {
 </template>
 
 <style scoped>
-.contanier {
+.container {
     display: flex;
     justify-content: center;
     align-items: center;
