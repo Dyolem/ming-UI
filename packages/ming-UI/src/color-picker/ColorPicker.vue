@@ -181,7 +181,7 @@ function eyedropperResolve(colorType, { sRGBHex }) {
       <div class="hex-form">
         <div class="color-input-box">
           <span>#</span>
-          <m-input v-model="colorManager.hex" size="small" @input="value => updateColor('hex', value)" />
+          <m-input v-model="colorManager.hex" :input-style="{ width: '50px' }" size="small" @input="value => updateColor('hex', value)" />
         </div>
       </div>
     </div>

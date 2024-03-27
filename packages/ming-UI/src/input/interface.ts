@@ -3,7 +3,8 @@ export interface InputProps {
   modelValue?: string | number
   disabled?: boolean
   size?: 'small' | 'default' | 'large'
-  originInputProps?: ['autocomplete']
+  inputStyle?: object | null
+
 }
 
 // 透传Attributes数组,可控制哪些input原生属性可以使用。
