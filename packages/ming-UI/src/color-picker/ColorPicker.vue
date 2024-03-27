@@ -145,7 +145,9 @@ function eyedropperResolve(colorType, { sRGBHex }) {
         <div class="eye-dropper-box">
           <EyeDropper @update:color="value => eyedropperResolve('hex', value)" />
         </div>
-        <div ref="chosenColorRef" class="chosen-color" />
+        <m-tooltip :content="`#${colorManager.hex}`">
+          <div ref="chosenColorRef" class="chosen-color" />
+        </m-tooltip>
       </div>
     </div>
     <div class="color-value-form">
