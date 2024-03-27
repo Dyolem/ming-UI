@@ -130,6 +130,10 @@ function positionUpdateColor(colorType, val) {
   }
   updateColorSelectBox()
 }
+
+function eyedropperResolve(colorType, { sRGBHex }) {
+  updateColor(colorType, sRGBHex)
+}
 </script>
 
 <template>
@@ -139,7 +143,7 @@ function positionUpdateColor(colorType, val) {
       <div class="hue-box">
         <ControlPanel ref="hueControlRef" v-model:model-value="hConvertToDistance" :vertical="true" :background-style="hueBandStyle" @drag="value => positionUpdateColor('h', value)" />
         <div class="eye-dropper-box">
-          <EyeDropper />
+          <EyeDropper @update:color="value => eyedropperResolve('hex', value)" />
         </div>
         <div ref="chosenColorRef" class="chosen-color" />
       </div>
