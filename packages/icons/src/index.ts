@@ -7,8 +7,8 @@ import Mute from './icon/Mute.vue'
 import Pause from './icon/Pause.vue'
 import PlayOne from './icon/PlayOne.vue'
 import VoiceOne from './icon/VoiceOne.vue'
-import VolumnDown from './icon/VolumnDown.vue'
-import VolumnUp from './icon/VolumnUp.vue'
+import VolumeDown from './icon/VolumeDown.vue'
+import VolumeUp from './icon/VolumeUp.vue'
 import ColorExtractor from './icon/ColorExtractor.vue'
 
 // 导入SVG图标注册脚本
@@ -24,8 +24,8 @@ const icons = {
   Pause,
   PlayOne,
   VoiceOne,
-  VolumnDown,
-  VolumnUp,
+  VolumeDown,
+  VolumeUp,
   ColorExtractor,
   // ...其他图标组件
 }
@@ -38,8 +38,8 @@ export {
   Pause,
   PlayOne,
   VoiceOne,
-  VolumnDown,
-  VolumnUp,
+  VolumeDown,
+  VolumeUp,
   ColorExtractor,
 }
 

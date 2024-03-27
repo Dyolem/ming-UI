@@ -53,7 +53,7 @@ app.mount('#app')
 <div :class="$style.box">
       <Like height="1rem" width="1rem" fill="none" stroke="#333" stroke-width="4" />
       <Pause height="1rem" width="1rem" fill="none" stroke="#333" stroke-width="4" />
-      <VolumnUp height="1rem" width="1rem" fill="none" stroke="#333" stroke-width="4" />
+      <VolumeUp height="1rem" width="1rem" fill="none" stroke="#333" stroke-width="4" />
       <Mute height="1rem" width="1rem" fill="none" stroke="#333" stroke-width="4" />
 </div>
 
@@ -61,7 +61,7 @@ app.mount('#app')
 <div>
   <Like height="1rem" width="1rem" fill="none" stroke="#333" stroke-width="4" />
   <Pause height="1rem" width="1rem" fill="none" stroke="#333" stroke-width="4" />
-  <VolumnUp height="1rem" width="1rem" fill="none" stroke="#333" stroke-width="4" />
+  <VolumeUp height="1rem" width="1rem" fill="none" stroke="#333" stroke-width="4" />
   <Mute height="1rem" width="1rem" fill="none" stroke="#333" stroke-width="4" />
 </div>
 ```
@@ -77,7 +77,7 @@ app.mount('#app')
       <Pause />
     </m-icon>
     <m-icon>
-      <VolumnUp />
+      <VolumeUp />
     </m-icon>
     <m-icon>
       <Mute />
@@ -93,7 +93,7 @@ app.mount('#app')
       <Pause />
     </m-icon>
     <m-icon>
-      <VolumnUp />
+      <VolumeUp />
     </m-icon>
     <m-icon>
       <Mute />
@@ -160,15 +160,15 @@ async function copyIconsName(event) {
   </li>
   <li>
     <m-icon>
-      <VolumnDown />
+      <VolumeDown />
     </m-icon>
-    <span>VolumnDown</span>
+    <span>VolumeDown</span>
   </li>
   <li>
     <m-icon>
-      <VolumnUp />
+      <VolumeUp />
     </m-icon>
-    <span>VolumnUp</span>
+    <span>VolumeUp</span>
   </li>
 </ul>
 

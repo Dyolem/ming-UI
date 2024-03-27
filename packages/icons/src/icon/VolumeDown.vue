@@ -2,7 +2,7 @@
 import { inject, useAttrs } from 'vue'
 
 defineOptions({
-  name: 'VolumnDown',
+  name: 'VolumeDown',
   inheritAttrs: false,
 })
 
