@@ -9,6 +9,7 @@ import PlayOne from './icon/PlayOne.vue'
 import VoiceOne from './icon/VoiceOne.vue'
 import VolumnDown from './icon/VolumnDown.vue'
 import VolumnUp from './icon/VolumnUp.vue'
+import ColorExtractor from './icon/ColorExtractor.vue'
 
 // 导入SVG图标注册脚本
 import 'virtual:svg-icons-register'
@@ -25,6 +26,7 @@ const icons = {
   VoiceOne,
   VolumnDown,
   VolumnUp,
+  ColorExtractor,
   // ...其他图标组件
 }
 export {
@@ -38,6 +40,7 @@ export {
   VoiceOne,
   VolumnDown,
   VolumnUp,
+  ColorExtractor,
 }
 
 // 全局注册函数
