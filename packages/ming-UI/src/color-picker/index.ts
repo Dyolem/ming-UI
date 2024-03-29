@@ -1,7 +1,7 @@
 import type { App } from 'vue'
 import ColorPicker from './ColorPicker.vue'
 
-import ColorPickerPlugin from './colorPickerPlugin'
+import ColorPickerPlugin, { openColorPicker } from './colorPickerPlugin'
 
 ColorPicker.install = (app: App) => {
   app.component(ColorPicker.name as string, ColorPicker)
@@ -9,3 +9,4 @@ ColorPicker.install = (app: App) => {
 }
 
 export default ColorPicker
+export { openColorPicker }
