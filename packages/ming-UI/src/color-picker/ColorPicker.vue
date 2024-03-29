@@ -1,7 +1,10 @@
 <script setup>
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useHexToRgb, useHslToRgb, useRgbToHex, useRgbToHsl } from '@ming-UI/utils'
-import ControlPanel from 'ming-UI/control-panel/ControlPanel.vue'
+import MIcon from '@ming-UI/icons'
+
+import { MControlPanel, MInput, MTooltip } from 'ming-UI'
+
 import EyeDropper from './components/EyeDropper.vue'
 
 defineOptions({
@@ -101,7 +104,6 @@ function updateColor(component, value) {
   updateColorSelectBox()
 }
 async function updateSliderPosition() {
-  console.log(hueControlRef.value)
   if (isFullFunction.value)
     await nextTick()
   hConvertToDistance.value.traveledDistance = (colorManager.value.hsl.h / 360) * (hueControlRef.value.travelMax)
@@ -164,51 +166,51 @@ function cancelOpenBehavior() {
 <template>
   <div class="container" :class="isFullFunction ? 'full' : 'partial'">
     <div class="color-gradient-wheel">
-      <ControlPanel v-if="isFullFunction" ref="colorTakingControlRef" v-model:model-value="slConvertToDistance" :dimensional-movement="true" :background-style="saturationSquareStyle" @drag="value => positionUpdateColor('sl', value)" />
+      <MControlPanel v-if="isFullFunction" ref="colorTakingControlRef" v-model:model-value="slConvertToDistance" :dimensional-movement="true" :background-style="saturationSquareStyle" @drag="value => positionUpdateColor('sl', value)" />
       <div class="hue-box">
-        <ControlPanel v-if="isFullFunction" ref="hueControlRef" v-model:model-value="hConvertToDistance" :vertical="true" :background-style="hueBandStyle" @drag="value => positionUpdateColor('h', value)" />
+        <MControlPanel v-if="isFullFunction" ref="hueControlRef" v-model:model-value="hConvertToDistance" :vertical="true" :background-style="hueBandStyle" @drag="value => positionUpdateColor('h', value)" />
         <div class="eye-dropper-box" :class="pressAnimation ? 'loading' : ''" @mousedown="openColorBoard" @mouseup="cancelOpenBehavior">
           <EyeDropper :interrupt="interruptOpenEyeDropper" @update:color="value => eyedropperResolve('hex', value)" />
         </div>
-        <m-tooltip :content="`#${colorManager.hex}`">
+        <MTooltip :content="`#${colorManager.hex}`">
           <div ref="chosenColorRef" class="chosen-color" />
-        </m-tooltip>
+        </MTooltip>
       </div>
     </div>
     <div v-if="isFullFunction" class="color-value-form">
       <div class="hsl-form">
         <div class="color-input-box">
           <span>H</span>
-          <m-input v-model="colorManager.hsl.h" size="small" type="number" min="0" max="360" @input="value => updateColor('h', value)" />
+          <MInput v-model="colorManager.hsl.h" size="small" type="number" min="0" max="360" @input="value => updateColor('h', value)" />
         </div>
         <div class="color-input-box">
           <span>S</span>
-          <m-input v-model="colorManager.hsl.s" size="small" type="number" min="0" max="100" @input="value => updateColor('s', value)" />
+          <MInput v-model="colorManager.hsl.s" size="small" type="number" min="0" max="100" @input="value => updateColor('s', value)" />
         </div>
         <div class="color-input-box">
           <span>L</span>
-          <m-input v-model="colorManager.hsl.l" size="small" type="number" min="0" max="100" @input="value => updateColor('l', value)" />
+          <MInput v-model="colorManager.hsl.l" size="small" type="number" min="0" max="100" @input="value => updateColor('l', value)" />
         </div>
       </div>
 
       <div class="rgb-form">
         <div class="color-input-box">
           <span>R</span>
-          <m-input v-model="colorManager.rgb.r" size="small" type="number" min="0" max="255" @input="value => updateColor('r', value)" />
+          <MInput v-model="colorManager.rgb.r" size="small" type="number" min="0" max="255" @input="value => updateColor('r', value)" />
         </div>
         <div class="color-input-box">
           <span>G</span>
-          <m-input v-model="colorManager.rgb.g" size="small" type="number" min="0" max="255" @input="value => updateColor('g', value)" />
+          <MInput v-model="colorManager.rgb.g" size="small" type="number" min="0" max="255" @input="value => updateColor('g', value)" />
         </div>
         <div class="color-input-box">
           <span>B</span>
-          <m-input v-model="colorManager.rgb.b" size="small" type="number" min="0" max="255" @input="value => updateColor('b', value)" />
+          <MInput v-model="colorManager.rgb.b" size="small" type="number" min="0" max="255" @input="value => updateColor('b', value)" />
         </div>
       </div>
       <div class="hex-form">
         <div class="color-input-box">
           <span>#</span>
-          <m-input v-model="colorManager.hex" :input-style="{ width: '50px' }" size="small" @input="value => updateColor('hex', value)" />
+          <MInput v-model="colorManager.hex" :input-style="{ width: '50px' }" size="small" @input="value => updateColor('hex', value)" />
         </div>
       </div>
     </div>
@@ -218,18 +220,14 @@ function cancelOpenBehavior() {
 <style scoped>
 .container {
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
-    /* width: 50px;
-    height: 100px; */
-  width: 100%;
-  height: 300px;
     background-color: #AB8FD6;
     border-radius: 10px;
     transition: all .4s ease-in-out;
 }
 .full {
-  width: 100%;
+  width: 500px;
   height: 300px;
 }
 .partial {
@@ -240,7 +238,7 @@ function cancelOpenBehavior() {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    flex: 0.6;
+    flex: 0.7;
     height: 90%;
 
 }
@@ -283,7 +281,6 @@ function cancelOpenBehavior() {
   color: #333333;
 }
 .eye-dropper-box {
-  margin-top: 10px;
   transition: all 500ms ease-in-out;
 }
 .loading {

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ColorExtractor, MIcon } from '@ming-UI/icons'
+
 defineOptions({
   name: 'EyeDropper',
 })
@@ -47,9 +49,9 @@ defineExpose({
 
 <template>
   <div class="eye-dropper-button" @click="openColorPicker">
-    <m-icon fill="#black" stroke-width="10px">
+    <MIcon fill="#black" stroke-width="10px">
       <ColorExtractor />
-    </m-icon>
+    </MIcon>
   </div>
 </template>
 
