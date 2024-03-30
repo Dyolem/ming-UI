@@ -109,14 +109,12 @@ app.mount('#app')
 ## 图标集合
 
 <script setup>
+import { useClipBoard } from '@ming-UI/utils'
 
-async function copyIconsName(event) {
-  if(event.target.innerText ===undefined) return
-  const content = `<m-icon><${event.target?.innerText} /></m-icon>`
-  const type = "text/plain";
-  const blob = new Blob([content], { type });
-  const data = [new ClipboardItem({ [type]: blob })];
-  await navigator.clipboard.write(data);
+function copyIconsName(event) {
+  if(event.target?.innerText ===undefined) return
+    const content = `<m-icon><${event.target?.innerText} /></m-icon>`
+  useClipBoard(content)
 }
 
 </script>
