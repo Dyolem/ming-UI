@@ -11,6 +11,7 @@ defineOptions({
   name: 'MColorPicker',
 })
 
+const display = ref(true)
 const isFullFunction = ref(false)
 
 const hueControlRef = ref(null)
@@ -31,9 +32,10 @@ const colorManager = ref({
   hex: 'E5D9F7',
 })
 onMounted(() => {
-  if (isFullFunction.value)
+  if (display.value) {
     updateColor('h', colorManager.value.hsl.h)
-  updateColorSelectBox()
+    updateColorSelectBox()
+  }
 })
 const hueBandStyle = ref({
   background: `linear-gradient(to right,
@@ -153,7 +155,7 @@ function openColorBoard() {
     interruptOpenEyeDropper.value = true
     isFullFunction.value = !isFullFunction.value
     updateSliderPosition()
-  }, 400) // 1000毫秒后执行
+  }, 400) // 400毫秒后执行
 }
 
 function cancelOpenBehavior() {
@@ -161,10 +163,14 @@ function cancelOpenBehavior() {
   interruptOpenEyeDropper.value = false
   clearTimeout(timer)
 }
+
+function closeColorBoard() {
+  display.value = false
+}
 </script>
 
 <template>
-  <div class="container" :class="isFullFunction ? 'full' : 'partial'">
+  <div v-if="display" class="container" :class="isFullFunction ? 'full' : 'partial'">
     <div class="color-gradient-wheel">
       <MControlPanel v-if="isFullFunction" ref="colorTakingControlRef" v-model:model-value="slConvertToDistance" :dimensional-movement="true" :background-style="saturationSquareStyle" @drag="value => positionUpdateColor('sl', value)" />
       <div class="hue-box">
@@ -173,7 +179,7 @@ function cancelOpenBehavior() {
           <EyeDropper :interrupt="interruptOpenEyeDropper" @update:color="value => eyedropperResolve('hex', value)" />
         </div>
         <MTooltip :content="`#${colorManager.hex}`">
-          <div ref="chosenColorRef" class="chosen-color" />
+          <div ref="chosenColorRef" class="chosen-color" @dblclick="closeColorBoard" />
         </MTooltip>
       </div>
     </div>
