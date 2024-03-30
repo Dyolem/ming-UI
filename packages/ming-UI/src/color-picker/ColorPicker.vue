@@ -1,6 +1,6 @@
 <script setup>
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
-import { useHexToRgb, useHslToRgb, useRgbToHex, useRgbToHsl } from '@ming-UI/utils'
+import { useClipBoard, useHexToRgb, useHslToRgb, useRgbToHex, useRgbToHsl } from '@ming-UI/utils'
 import MIcon from '@ming-UI/icons'
 
 import { MControlPanel, MInput, MTooltip } from 'ming-UI'
@@ -167,6 +167,10 @@ function cancelOpenBehavior() {
 function closeColorBoard() {
   display.value = false
 }
+
+function copyColorValue(content) {
+  useClipBoard(content)
+}
 </script>
 
 <template>
@@ -179,7 +183,7 @@ function closeColorBoard() {
           <EyeDropper :interrupt="interruptOpenEyeDropper" @update:color="value => eyedropperResolve('hex', value)" />
         </div>
         <MTooltip :content="`#${colorManager.hex}`">
-          <div ref="chosenColorRef" class="chosen-color" @dblclick="closeColorBoard" />
+          <div ref="chosenColorRef" class="chosen-color" @click="copyColorValue(`#${colorManager.hex}`)" @dblclick="closeColorBoard" />
         </MTooltip>
       </div>
     </div>
