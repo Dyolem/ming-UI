@@ -1,33 +1,17 @@
 <script setup>
 import { getCurrentInstance } from 'vue'
 import { openColorPicker } from 'ming-UI'
-import { Like, MIcon } from '@ming-UI/icons'
 
 // const { appContext } = getCurrentInstance()
 // const openColorPicker = appContext.config.globalProperties.$openColorPicker
 function open() {
   openColorPicker()
 }
-function test(val) {
-  console.log(val)
-}
 </script>
 
 <template>
-  <MColorPicker @update:color="test">
-    <MIcon fill="#black" stroke-width="10px">
-      <Like />
-    </MIcon>
-  </MColorPicker>
+  <MColorPicker />
   <div class="test" @click="open">
-    123
+    <button>click</button>
   </div>
 </template>
-
-<style scoped>
-.test {
-  width: 100px;
-  height: 100px;
-  background-color: antiquewhite;
-}
-</style>
