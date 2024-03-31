@@ -39,7 +39,7 @@
 | model-value / v-model | 绑定值 | `string` \| `number`             | --   |
 | size     | 设置输入框的大小     | `default` \| `small` \| `large`  | default |
 | disabled | 设置输入框的禁用状态 | Boolean                          | false   |
-| autocomlete | 原生 autocomplete 属性 | `string`   |   off   |
+| autocomplete | 原生 autocomplete 属性 | `string`   |   off   |
 | 原生 max 属性，设置最大值 | 只对特定type的输入框生效 | --   |    --   |
 | 原生 min 属性，设置最小值 | 只对特定type的输入框生效 | --   |   --    |
 | input-style | 设置输入框的禁用状态 | `object` \| `null`           |   null   |
