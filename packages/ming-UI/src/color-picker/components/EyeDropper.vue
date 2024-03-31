@@ -49,9 +49,11 @@ defineExpose({
 
 <template>
   <div class="eye-dropper-button" @click="openColorPicker">
-    <MIcon fill="#black" stroke-width="10px">
-      <ColorExtractor />
-    </MIcon>
+    <slot>
+      <MIcon fill="#black" stroke-width="10px">
+        <ColorExtractor />
+      </MIcon>
+    </slot>
   </div>
 </template>
 
