@@ -15,11 +15,12 @@ const props = withDefaults(defineProps<InputProps>(), {
   type: 'text',
   size: 'default',
   inputStyle: null,
+
 })
 
 const emit = defineEmits<{
-  'update:modelValue': [string]
-  'input': [string]
+  'update:modelValue': [string | number]
+  'input': [string | number]
 }>()
 
 defineSlots<{
@@ -30,10 +31,27 @@ defineSlots<{
 // 受控组件实现逻辑
 function handleInput(e: Event) {
   const target = e.target as HTMLInputElement
+  let value: string | number = target.value
+  if (props.modelModifiers?.number) {
+    value = Number.parseFloat(value)
+    // 仅当值有效时才发射事件
+    if (!Number.isNaN(value)) {
+      emit('update:modelValue', value)
+      emit('input', value)
+    }
+    else if (value === '') {
+      emit('update:modelValue', value)
+      emit('input', value)
+    }
+    // 如果不需要转换或者转换失败，不进行任何操作
+    return
+  }
+
   // 检查props.modelValue是否被定义
   if (props.modelValue === undefined) {
-    // 如果modelValue未被绑定，则可以在这里阻止更新操作
+    // 如果modelValue未被绑定，阻止更新操作
     // 例如，可以选择不emit更新事件，或者重置输入框的值
+
     target.value = '' // 这将清空输入框，因为没有modelValue绑定
     // 早期返回，不执行emit
   }
