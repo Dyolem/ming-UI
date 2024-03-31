@@ -1,41 +1,53 @@
-<script setup>
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+<script setup lang="ts">
+import { computed, nextTick, onMounted, ref } from 'vue'
 import { useClipBoard, useHexToRgb, useHslToRgb, useRgbToHex, useRgbToHsl } from '@ming-UI/utils'
-import MIcon from '@ming-UI/icons'
-
 import { MControlPanel, MInput, MTooltip } from 'ming-UI'
-
 import EyeDropper from './components/EyeDropper.vue'
 
+interface distanceType {
+  traveledDistance: number
+  verticalToTraveledDistance: number
+}
 defineOptions({
   name: 'MColorPicker',
 })
 
-const display = ref(true)
-const isFullFunction = ref(false)
+const display = ref<boolean>(true)
+const isFullFunction = ref<boolean>(false)
 
-const hueControlRef = ref(null)
-const hConvertToDistance = ref({
+const hueControlRef = ref<InstanceType<typeof MControlPanel> | null>(null)
+const hConvertToDistance = ref<distanceType>({
   traveledDistance: 0,
   verticalToTraveledDistance: 0,
 })
 
-const colorTakingControlRef = ref(null)
-const slConvertToDistance = ref({
+const colorTakingControlRef = ref<InstanceType<typeof MControlPanel> | null>(null)
+const slConvertToDistance = ref<distanceType>({
   traveledDistance: 0,
   verticalToTraveledDistance: 0,
 })
 
-const colorManager = ref({
+interface colorManagerType {
+  hsl: {
+    h: number
+    s: number
+    l: number
+  }
+  rgb: {
+    r: number
+    g: number
+    b: number
+  }
+  hex: string
+}
+const colorManager = ref<colorManagerType>({
   hsl: { h: 264, s: 65, l: 91 },
   rgb: { r: 229, g: 217, b: 247 },
   hex: 'E5D9F7',
 })
 onMounted(() => {
-  if (display.value) {
+  if (display.value)
     updateColor('h', colorManager.value.hsl.h)
-    updateColorSelectBox()
-  }
 })
 const hueBandStyle = ref({
   background: `linear-gradient(to right,
@@ -55,48 +67,64 @@ const saturationSquareStyle = computed(() => {
   }
 })
 
-const chosenColorRef = ref(null)
+const chosenColorStyle = ref({})
 function updateColorSelectBox() {
-  chosenColorRef.value.style.backgroundColor = `#${colorManager.value.hex}`
+  chosenColorStyle.value = {
+    backgroundColor: `#${colorManager.value.hex}`,
+  }
 }
 
-function checkColorValue(type, value) {
-  if (type === 'h')
-    return Math.max(Math.min(360, value), 0)
+function checkColorValue<T extends number | string>(type: string, value: T): T {
+  if (typeof value === 'number') {
+    if (type === 'h' || type === 's' || type === 'l') {
+      // 使用 as T 断言返回类型符合泛型约束
+      return Math.max(Math.min(type === 'h' ? 360 : 100, value), 0) as T
+    }
+    else if (['r', 'g', 'b'].includes(type)) {
+      return Math.max(Math.min(255, value), 0) as T
+    }
+  }
+  else if (typeof value === 'string' && type === 'hex') {
+    // 对字符串进行处理并断言返回类型为 T
+    return value.replace(/[^a-fA-F0-9]/g, '').substring(0, 6) as T
+  }
+  // 在不满足任何条件时，返回原始值，需要确保这里的处理逻辑和类型T兼容
+  console.log(value)
 
-  else if (type === 's' || type === 'l')
-    return Math.max(Math.min(100, value), 0)
-
-  else if (['r', 'g', 'b'].includes(type))
-    return Math.max(Math.min(255, value), 0)
-  else if (type === 'hex')
-    return value.replace(/[^a-fA-F0-9]/g, '').substring(0, 6)
+  return value
 }
 
 // 统一更新函数
-function updateColor(component, value) {
+function updateColor(component: string, value: number | string) {
   value = checkColorValue(component, value)
-  if (['h', 's', 'l'].includes(component)) {
-    colorManager.value.hsl[component] = value
+  if (typeof value === 'number') {
+    if (['h', 's', 'l'].includes(component)) {
+      // 明确地更新 hsl 对象
+      const hslUpdate = { ...colorManager.value.hsl, [component]: value }
+      colorManager.value.hsl = hslUpdate
 
-    const { h, s, l } = colorManager.value.hsl
-    const { r, g, b } = useHslToRgb(h, s, l)
-    colorManager.value.rgb = { r, g, b }
-    colorManager.value.hex = useRgbToHex(r, g, b)
+      // 更新其他颜色表示
+      const { r, g, b } = useHslToRgb(hslUpdate.h, hslUpdate.s, hslUpdate.l)
+      colorManager.value.rgb = { r, g, b }
+      colorManager.value.hex = useRgbToHex(r, g, b)
+    }
+    else if (['r', 'g', 'b'].includes(component)) {
+      // 明确地更新 rgb 对象
+      const rgbUpdate = { ...colorManager.value.rgb, [component]: value }
+      colorManager.value.rgb = rgbUpdate
+
+      // 更新其他颜色表示
+      const { h, s, l } = useRgbToHsl(rgbUpdate.r, rgbUpdate.g, rgbUpdate.b)
+      colorManager.value.hsl = { h, s, l }
+      colorManager.value.hex = useRgbToHex(rgbUpdate.r, rgbUpdate.g, rgbUpdate.b)
+      console.log(colorManager.value.hex)
+    }
   }
-  else if (['r', 'g', 'b'].includes(component)) {
-    colorManager.value.rgb[component] = value
-    const { r, g, b } = colorManager.value.rgb
-    colorManager.value.rgb = { r, g, b }
-    const { h, s, l } = useRgbToHsl(r, g, b)
-    colorManager.value.hsl = { h, s, l }
-    colorManager.value.hex = useRgbToHex(r, g, b)
-  }
-  else if (component === 'hex') {
+  else if (typeof value === 'string') {
     colorManager.value.hex = value
     if (useHexToRgb(`#${value}`) === null)
       return
-    const { r, g, b } = useHexToRgb(`#${value}`)
+    const { r, g, b } = useHexToRgb(`#${value}`)!
     colorManager.value.rgb = { r, g, b }
     const { h, s, l } = useRgbToHsl(r, g, b)
     colorManager.value.hsl = { h, s, l }
@@ -108,14 +136,16 @@ function updateColor(component, value) {
 async function updateSliderPosition() {
   if (isFullFunction.value)
     await nextTick()
-  hConvertToDistance.value.traveledDistance = (colorManager.value.hsl.h / 360) * (hueControlRef.value.travelMax)
+  hConvertToDistance.value.traveledDistance = (colorManager.value.hsl.h / 360) * (hueControlRef.value!.travelMax)
   hConvertToDistance.value.verticalToTraveledDistance = 0
 
-  slConvertToDistance.value.traveledDistance = colorManager.value.hsl.s / 100 * colorTakingControlRef.value.travelMax
-  slConvertToDistance.value.verticalToTraveledDistance = (100 - colorManager.value.hsl.l) * colorTakingControlRef.value.verticalMax / 100
+  slConvertToDistance.value.traveledDistance = colorManager.value.hsl.s / 100 * colorTakingControlRef.value!.travelMax
+  slConvertToDistance.value.verticalToTraveledDistance = (100 - colorManager.value.hsl.l) * colorTakingControlRef.value!.verticalMax / 100
 }
 
-function positionUpdateColor(colorType, val) {
+function positionUpdateColor(colorType: string, val: distanceType) {
+  if (hueControlRef.value === null || colorTakingControlRef.value === null)
+    return
   if (colorType === 'h') {
     const newH = Math.round(360 / (hueControlRef.value.travelMax) * val.traveledDistance)
     const checkedH = checkColorValue('h', newH)
@@ -142,13 +172,13 @@ function positionUpdateColor(colorType, val) {
   updateColorSelectBox()
 }
 
-function eyedropperResolve(colorType, { sRGBHex }) {
+function eyedropperResolve(colorType: string, { sRGBHex }: { sRGBHex: string }) {
   updateColor(colorType, sRGBHex)
 }
 
-let timer = null
-const interruptOpenEyeDropper = ref(false)
-const pressAnimation = ref(false)
+let timer: any = null
+const interruptOpenEyeDropper = ref<boolean>(false)
+const pressAnimation = ref<boolean>(false)
 function openColorBoard() {
   pressAnimation.value = !pressAnimation.value
   timer = setTimeout(() => {
@@ -168,7 +198,7 @@ function closeColorBoard() {
   display.value = false
 }
 
-function copyColorValue(content) {
+function copyColorValue(content: string) {
   useClipBoard(content)
 }
 </script>
@@ -183,7 +213,7 @@ function copyColorValue(content) {
           <EyeDropper :interrupt="interruptOpenEyeDropper" @update:color="value => eyedropperResolve('hex', value)" />
         </div>
         <MTooltip :content="`#${colorManager.hex}`">
-          <div ref="chosenColorRef" class="chosen-color" @click="copyColorValue(`#${colorManager.hex}`)" @dblclick="closeColorBoard" />
+          <div :style="chosenColorStyle" class="chosen-color" @click="copyColorValue(`#${colorManager.hex}`)" @dblclick="closeColorBoard" />
         </MTooltip>
       </div>
     </div>
@@ -191,30 +221,30 @@ function copyColorValue(content) {
       <div class="hsl-form">
         <div class="color-input-box">
           <span>H</span>
-          <MInput v-model="colorManager.hsl.h" size="small" type="number" min="0" max="360" @input="value => updateColor('h', value)" />
+          <MInput v-model.number="colorManager.hsl.h" size="small" type="number" min="0" max="360" @input="value => updateColor('h', value)" />
         </div>
         <div class="color-input-box">
           <span>S</span>
-          <MInput v-model="colorManager.hsl.s" size="small" type="number" min="0" max="100" @input="value => updateColor('s', value)" />
+          <MInput v-model.number="colorManager.hsl.s" size="small" type="number" min="0" max="100" @input="value => updateColor('s', value)" />
         </div>
         <div class="color-input-box">
           <span>L</span>
-          <MInput v-model="colorManager.hsl.l" size="small" type="number" min="0" max="100" @input="value => updateColor('l', value)" />
+          <MInput v-model.number="colorManager.hsl.l" size="small" type="number" min="0" max="100" @input="value => updateColor('l', value)" />
         </div>
       </div>
 
       <div class="rgb-form">
         <div class="color-input-box">
           <span>R</span>
-          <MInput v-model="colorManager.rgb.r" size="small" type="number" min="0" max="255" @input="value => updateColor('r', value)" />
+          <MInput v-model.number="colorManager.rgb.r" size="small" type="number" min="0" max="255" @input="value => updateColor('r', value)" />
         </div>
         <div class="color-input-box">
           <span>G</span>
-          <MInput v-model="colorManager.rgb.g" size="small" type="number" min="0" max="255" @input="value => updateColor('g', value)" />
+          <MInput v-model.number="colorManager.rgb.g" size="small" type="number" min="0" max="255" @input="value => updateColor('g', value)" />
         </div>
         <div class="color-input-box">
           <span>B</span>
-          <MInput v-model="colorManager.rgb.b" size="small" type="number" min="0" max="255" @input="value => updateColor('b', value)" />
+          <MInput v-model.number="colorManager.rgb.b" size="small" type="number" min="0" max="255" @input="value => updateColor('b', value)" />
         </div>
       </div>
       <div class="hex-form">
