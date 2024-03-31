@@ -110,8 +110,8 @@ function sliderDown() {
 function sliderUp(e: Event) {
   document.removeEventListener('mousemove', dragSlider)
   document.removeEventListener('mouseup', sliderUp)
-
-  updateSliderPosition(e)
+  if (isDrag)
+    updateSliderPosition(e)
   isDrag = false
 }
 function dragSlider(e: Event) {
