@@ -3,6 +3,7 @@ import { computed, nextTick, onMounted, ref } from 'vue'
 import { useClipBoard, useHexToRgb, useHslToRgb, useRgbToHex, useRgbToHsl } from '@ming-UI/utils'
 import { MControlPanel, MInput, MTooltip } from 'ming-UI'
 import EyeDropper from './components/EyeDropper.vue'
+import type { ColorPickerProps } from './interface'
 
 interface distanceType {
   traveledDistance: number
@@ -11,9 +12,29 @@ interface distanceType {
 defineOptions({
   name: 'MColorPicker',
 })
+const props = withDefaults(defineProps<ColorPickerProps>(), {
+  enableClose: false,
+  fullFunction: true,
+  effect: 'dark',
+})
+const emit = defineEmits<{
+  'update:color': [{
+    hsl: {
+      h: number
+      s: number
+      l: number
+    }
+    rgb: {
+      r: number
+      g: number
+      b: number
+    }
+    hex: string
+  }]
+}>()
 
 const display = ref<boolean>(true)
-const isFullFunction = ref<boolean>(false)
+const isFullFunction = ref<boolean>(props.fullFunction)
 
 const hueControlRef = ref<InstanceType<typeof MControlPanel> | null>(null)
 const hConvertToDistance = ref<distanceType>({
@@ -77,7 +98,7 @@ function updateColorSelectBox() {
 function checkColorValue<T extends number | string>(type: string, value: T): T {
   if (typeof value === 'number') {
     if (type === 'h' || type === 's' || type === 'l') {
-      // 使用 as T 断言返回类型符合泛型约束
+      // 使用 as T 断言返回类型满足泛型约束
       return Math.max(Math.min(type === 'h' ? 360 : 100, value), 0) as T
     }
     else if (['r', 'g', 'b'].includes(type)) {
@@ -88,7 +109,7 @@ function checkColorValue<T extends number | string>(type: string, value: T): T {
     // 对字符串进行处理并断言返回类型为 T
     return value.replace(/[^a-fA-F0-9]/g, '').substring(0, 6) as T
   }
-  // 在不满足任何条件时，返回原始值，需要确保这里的处理逻辑和类型T兼容
+  // 在不满足任何条件时，返回原始值，处理逻辑和类型T兼容
   console.log(value)
 
   return value
@@ -132,6 +153,7 @@ function updateColor(component: string, value: number | string) {
   if (isFullFunction.value)
     updateSliderPosition()
   updateColorSelectBox()
+  emit('update:color', colorManager.value)
 }
 async function updateSliderPosition() {
   if (isFullFunction.value)
@@ -170,6 +192,7 @@ function positionUpdateColor(colorType: string, val: distanceType) {
     colorManager.value.hex = useRgbToHex(r, g, b)
   }
   updateColorSelectBox()
+  emit('update:color', colorManager.value)
 }
 
 function eyedropperResolve(colorType: string, { sRGBHex }: { sRGBHex: string }) {
@@ -195,7 +218,10 @@ function cancelOpenBehavior() {
 }
 
 function closeColorBoard() {
-  display.value = false
+  console.log(props.enableClose)
+
+  if (props.enableClose)
+    display.value = false
 }
 
 function copyColorValue(content: string) {
@@ -210,9 +236,11 @@ function copyColorValue(content: string) {
       <div class="hue-box">
         <MControlPanel v-if="isFullFunction" ref="hueControlRef" v-model:model-value="hConvertToDistance" :vertical="true" :background-style="hueBandStyle" @drag="value => positionUpdateColor('h', value)" />
         <div class="eye-dropper-box" :class="pressAnimation ? 'loading' : ''" @mousedown="openColorBoard" @mouseup="cancelOpenBehavior">
-          <EyeDropper :interrupt="interruptOpenEyeDropper" @update:color="value => eyedropperResolve('hex', value)" />
+          <EyeDropper :interrupt="interruptOpenEyeDropper" @update:color="value => eyedropperResolve('hex', value)">
+            <slot />
+          </EyeDropper>
         </div>
-        <MTooltip :content="`#${colorManager.hex}`">
+        <MTooltip :content="`#${colorManager.hex}`" :effect="effect">
           <div :style="chosenColorStyle" class="chosen-color" @click="copyColorValue(`#${colorManager.hex}`)" @dblclick="closeColorBoard" />
         </MTooltip>
       </div>
