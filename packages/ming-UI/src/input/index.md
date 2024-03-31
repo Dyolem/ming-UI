@@ -35,14 +35,21 @@
 
 | 属性     | 说明               | 类型                             | 默认值  |
 | -------- | ------------------ | -------------------------------- | ------- |
-| size     | 设置输入框的大小     | `default` \| `small` \| `large`    | default |
+| type    | 类型                 | `text` \| `number`              | text   |
+| model-value / v-model | 绑定值 | `string` \| `number`             | --   |
+| size     | 设置输入框的大小     | `default` \| `small` \| `large`  | default |
 | disabled | 设置输入框的禁用状态 | Boolean                          | false   |
+| autocomlete | 原生 autocomplete 属性 | `string`   |   off   |
+| 原生 max 属性，设置最大值 | 只对特定type的输入框生效 | --   |    --   |
+| 原生 min 属性，设置最小值 | 只对特定type的输入框生效 | --   |   --    |
+| input-style | 设置输入框的禁用状态 | `object` \| `null`           |   null   |
 
 ### Events
 
 | 事件  | 说明             | 类型                  |
 | ----- | ---------------- | --------------------- |
 | click | 点击时触发的事件 | `(event:Event)=>void` |
+| input | 在 Input 值改变时触发 | `(event:Event)=>void` |
 
 ### Slots
 
