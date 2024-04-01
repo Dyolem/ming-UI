@@ -1,11 +1,11 @@
 <script setup>
-import { Like, Micon } from '@ming-UI/icons'
+import { Like, MIcon } from '@ming-UI/icons'
 </script>
 
 <template>
-  <MColorPicker>
-    <Micon>
+  <MColorPicker :full-function="false">
+    <MIcon>
       <Like />
-    </Micon>
+    </MIcon>
   </MColorPicker>
 </template>
