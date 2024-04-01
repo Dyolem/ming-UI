@@ -8,13 +8,19 @@ defineOptions({
 })
 const props = withDefaults(defineProps<ControlPanelProps>(), {
   vertical: false,
-  backgroundStyle: undefined,
   distanceRatio: 0,
   dimensionalMovement: false,
+  displayTrack: true,
+  hiddenBackgroundBoard: true,
+  backgroundStyle: () => ({
+    width: '200px',
+    height: '30px',
+  }),
   modelValue: () => ({
     traveledDistance: 0,
     verticalToTraveledDistance: 0,
   }),
+
 })
 
 const emit = defineEmits(['update:modelValue', 'drag'])
@@ -101,21 +107,21 @@ function updateSliderPosition(e: Event) {
   }
 }
 
-let isDrag = false
+const isDrag = ref(false)
 function sliderDown() {
   document.addEventListener('mousemove', dragSlider)
   document.addEventListener('mouseup', sliderUp)
-  isDrag = true
+  isDrag.value = true
 }
 function sliderUp(e: Event) {
   document.removeEventListener('mousemove', dragSlider)
   document.removeEventListener('mouseup', sliderUp)
-  if (isDrag)
+  if (isDrag.value)
     updateSliderPosition(e)
-  isDrag = false
+  isDrag.value = false
 }
 function dragSlider(e: Event) {
-  if (isDrag) {
+  if (isDrag.value) {
     requestAnimationFrame(() => {
       updateSliderPosition(e)
     })
@@ -127,13 +133,13 @@ console.log(attrs)
 
 <template>
   <div ref="placeholderBoxRef" class="placeholder-box">
-    <div ref="backgroundBoardRef" :style="backgroundStyle" class="background-board" @mouseup="sliderUp($event)" @mousedown="sliderDown()">
+    <div ref="backgroundBoardRef" :style="backgroundStyle" :class="hiddenBackgroundBoard ? 'background-board-transparent' : ''" class="background-board" @mouseup="sliderUp($event)" @mousedown="sliderDown()">
       <div class="track-bar" />
       <!-- <m-icon>
       <like />
     </m-icon> -->
 
-      <div ref="sliderRef" class="slider" />
+      <div ref="sliderRef" class="slider" :class="isDrag ? 'dragging' : ''" />
     </div>
   </div>
 </template>
@@ -147,11 +153,15 @@ console.log(attrs)
     height: 30px;
     background-color: antiquewhite;
 }
+.background-board-transparent {
+  background-color: transparent;
+}
 .track-bar {
     position: relative;
     width: 100%;
     height: 10px;
-    background-color: transparent;
+    background-color: #e4e7ed;
+    border-radius: 5px;
 }
 .slider {
   position: absolute;
@@ -159,6 +169,7 @@ console.log(attrs)
   height: 16px;
   border-radius: 50%;
   border: 1px solid black;
+  cursor: grab
 }
 .slider::after {
   content: '';
@@ -168,6 +179,9 @@ console.log(attrs)
   border-radius: 50%;
   border: 1px solid #fff;
   transform: scale(0.9);
+}
+.dragging {
+  cursor: grabbing;
 }
 .placeholder-box {
     background-color: transparent;
