@@ -13,6 +13,7 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
   displayTrack: true,
   hiddenBackgroundBoard: true,
   sliderRotate: 0,
+  trackHeight: 10,
   backgroundStyle: () => ({
     width: '200px',
     height: '30px',
@@ -147,7 +148,7 @@ function dragSlider(e: Event) {
 <template>
   <div ref="placeholderBoxRef" class="placeholder-box">
     <div ref="backgroundBoardRef" :style="backgroundStyle" :class="hiddenBackgroundBoard ? 'background-board-transparent' : ''" class="background-board" @mouseup="sliderUp($event)" @mousedown="sliderDown()">
-      <div class="track-bar" />
+      <div v-if="displayTrack" class="track-bar" />
 
       <div ref="sliderRef" class="slider" :class="{ 'dragging': isDrag, 'slider-default': !customizedSlider }">
         <slot name="slider-icon">
@@ -171,18 +172,16 @@ function dragSlider(e: Event) {
   background-color: transparent;
 }
 .track-bar {
-    /* position: relative; */
     width: 100%;
-    height: 10px;
+    height: v-bind(`${trackHeight}px`);
     background-color: #e4e7ed;
-    border-radius: 5px;
+    border-radius: v-bind(`${trackHeight / 2}px`);
 }
 .slider {
   position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
-
   cursor: grab
 }
 .slider-default {
