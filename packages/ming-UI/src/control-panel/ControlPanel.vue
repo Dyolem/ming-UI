@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, useAttrs, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, useSlots, watch } from 'vue'
 import type { ControlPanelProps } from './interface'
 
 defineOptions({
@@ -12,6 +12,7 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
   dimensionalMovement: false,
   displayTrack: true,
   hiddenBackgroundBoard: true,
+  sliderRotate: 0,
   backgroundStyle: () => ({
     width: '200px',
     height: '30px',
@@ -24,6 +25,13 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
 })
 
 const emit = defineEmits(['update:modelValue', 'drag'])
+const rotateOffset = computed<number>(() => {
+  if (props.vertical)
+    return -90
+  else
+    return 0
+})
+
 const backgroundBoardRef = ref<HTMLDivElement>()
 const sliderRef = ref<HTMLDivElement>()
 const placeholderBoxRef = ref<HTMLDivElement>()
@@ -36,14 +44,18 @@ watch(() => props.modelValue, (newVal) => {
   const verticalToTraveledDistance = Math.min(Math.max(newVal.verticalToTraveledDistance, 0), verticalMax.value)
 
   if (props.dimensionalMovement)
-    sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px)`
+    sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px) rotate(${props.sliderRotate + rotateOffset.value})deg`
 
-  else sliderRef.value!.style.transform = `translate(${traveledDistance}px,0)`
+  else sliderRef.value!.style.transform = `translate(${traveledDistance}px,0) rotate(${props.sliderRotate + rotateOffset.value}deg`
 }, { deep: true })
 
+const slots = useSlots()
+const customizedSlider = ref(false)
 onMounted(() => {
   travelMax.value = backgroundBoardRef.value!.getBoundingClientRect().width
   verticalMax.value = backgroundBoardRef.value!.getBoundingClientRect().height
+  if ('slider-icon' in slots)
+    customizedSlider.value = true
   initSliderPosition()
 })
 
@@ -52,10 +64,12 @@ defineExpose({
   verticalMax,
 })
 
-function initSliderPosition() {
+async function initSliderPosition() {
+  await nextTick()
   const backgroundBoardRect = backgroundBoardRef.value!.getBoundingClientRect()
   const sliderRect = sliderRef.value!.getBoundingClientRect()
   let top = (backgroundBoardRect.height - sliderRect.height) / 2
+
   const left = -sliderRect.width / 2
   if (props.dimensionalMovement)
     top = -sliderRect.height / 2
@@ -66,6 +80,7 @@ function initSliderPosition() {
     backgroundBoardRef.value!.style.transform = `rotate(90deg)`
     placeholderBoxRef.value!.style.height = `${backgroundBoardRect.width}px`
     placeholderBoxRef.value!.style.width = `${backgroundBoardRect.height}px`
+    sliderRef.value!.style.transform = `rotate(${props.sliderRotate + rotateOffset.value}deg)`
   }
   else {
     placeholderBoxRef.value!.style.height = `${backgroundBoardRect.height}px`
@@ -93,14 +108,14 @@ function updateSliderPosition(e: Event) {
   }
   if (props.dimensionalMovement) {
     if (traveledDistance <= travelMax && traveledDistance >= 0 && verticalToTraveledDistance <= verticalMax && verticalToTraveledDistance >= 0) {
-      sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px)`
+      sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px) rotate(${props.sliderRotate + rotateOffset.value}deg`
       emit('update:modelValue', { traveledDistance, verticalToTraveledDistance })
       emit('drag', { traveledDistance, verticalToTraveledDistance })
     }
   }
   else {
     if (traveledDistance <= travelMax && traveledDistance >= 0) {
-      sliderRef.value!.style.transform = `translate(${traveledDistance}px,0)`
+      sliderRef.value!.style.transform = `translate(${traveledDistance}px,0) rotate(${props.sliderRotate + rotateOffset.value}deg`
       emit('update:modelValue', { traveledDistance, verticalToTraveledDistance })
       emit('drag', { traveledDistance, verticalToTraveledDistance })
     }
@@ -127,19 +142,18 @@ function dragSlider(e: Event) {
     })
   }
 }
-const attrs = useAttrs()
-console.log(attrs)
 </script>
 
 <template>
   <div ref="placeholderBoxRef" class="placeholder-box">
     <div ref="backgroundBoardRef" :style="backgroundStyle" :class="hiddenBackgroundBoard ? 'background-board-transparent' : ''" class="background-board" @mouseup="sliderUp($event)" @mousedown="sliderDown()">
       <div class="track-bar" />
-      <!-- <m-icon>
-      <like />
-    </m-icon> -->
 
-      <div ref="sliderRef" class="slider" :class="isDrag ? 'dragging' : ''" />
+      <div ref="sliderRef" class="slider" :class="{ 'dragging': isDrag, 'slider-default': !customizedSlider }">
+        <slot name="slider-icon">
+          <div class="inner-circle" />
+        </slot>
+      </div>
     </div>
   </div>
 </template>
@@ -157,7 +171,7 @@ console.log(attrs)
   background-color: transparent;
 }
 .track-bar {
-    position: relative;
+    /* position: relative; */
     width: 100%;
     height: 10px;
     background-color: #e4e7ed;
@@ -165,21 +179,28 @@ console.log(attrs)
 }
 .slider {
   position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  cursor: grab
+}
+.slider-default {
   width: 16px;
   height: 16px;
   border-radius: 50%;
   border: 1px solid black;
-  cursor: grab
 }
-.slider::after {
-  content: '';
-  position: absolute;
+.inner-circle {
   width: 100%;
   height: 100%;
   border-radius: 50%;
   border: 1px solid #fff;
   transform: scale(0.9);
 }
+/* .slider-rotate {
+  transform: rotate(v-bind(`${sliderRotate}deg`));
+} */
 .dragging {
   cursor: grabbing;
 }
