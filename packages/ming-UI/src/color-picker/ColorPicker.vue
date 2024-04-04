@@ -163,6 +163,7 @@ async function updateSliderPosition() {
 
   slConvertToDistance.value.traveledDistance = colorManager.value.hsl.s / 100 * colorTakingControlRef.value!.travelMax
   slConvertToDistance.value.verticalToTraveledDistance = (100 - colorManager.value.hsl.l) * colorTakingControlRef.value!.verticalMax / 100
+  console.log(slConvertToDistance.value)
 }
 
 function positionUpdateColor(colorType: string, val: distanceType) {
