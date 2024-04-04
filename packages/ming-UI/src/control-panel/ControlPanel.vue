@@ -39,15 +39,24 @@ const placeholderBoxRef = ref<HTMLDivElement>()
 
 const travelMax = ref(0)
 const verticalMax = ref(0)
+const progressFill = ref({})
+const distanceRatio = ref(0)
 watch(() => props.modelValue, (newVal) => {
   // 确保传入的移动距离在合法范围内
   const traveledDistance = Math.min(Math.max(newVal.traveledDistance, 0), travelMax.value)
   const verticalToTraveledDistance = Math.min(Math.max(newVal.verticalToTraveledDistance, 0), verticalMax.value)
+  distanceRatio.value = props.modelValue.traveledDistance / travelMax.value
+  console.log(distanceRatio.value)
 
-  if (props.dimensionalMovement)
+  if (props.displayTrack)
+    progressFill.value = { transform: `scaleX(${distanceRatio.value})` }
+
+  if (props.dimensionalMovement) {
     sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px) rotate(${props.sliderRotate + rotateOffset.value})deg`
+    console.log(`translate(${traveledDistance}px,${verticalToTraveledDistance}px) rotate(${props.sliderRotate + rotateOffset.value})deg`)
+  }
 
-  else sliderRef.value!.style.transform = `translate(${traveledDistance}px,0) rotate(${props.sliderRotate + rotateOffset.value}deg`
+  else { sliderRef.value!.style.transform = `translate(${traveledDistance}px,0) rotate(${props.sliderRotate + rotateOffset.value}deg` }
 }, { deep: true })
 
 const slots = useSlots()
@@ -57,6 +66,8 @@ onMounted(() => {
   verticalMax.value = backgroundBoardRef.value!.getBoundingClientRect().height
   if ('slider-icon' in slots)
     customizedSlider.value = true
+  if (props.displayTrack)
+    progressFill.value = { transform: `scaleX(0)` }
   initSliderPosition()
 })
 
@@ -117,6 +128,10 @@ function updateSliderPosition(e: Event) {
   else {
     if (traveledDistance <= travelMax && traveledDistance >= 0) {
       sliderRef.value!.style.transform = `translate(${traveledDistance}px,0) rotate(${props.sliderRotate + rotateOffset.value}deg`
+      distanceRatio.value = traveledDistance / travelMax
+      console.log(distanceRatio.value)
+      if (props.displayTrack)
+        progressFill.value = { transform: `scaleX(${distanceRatio.value})` }
       emit('update:modelValue', { traveledDistance, verticalToTraveledDistance })
       emit('drag', { traveledDistance, verticalToTraveledDistance })
     }
@@ -148,7 +163,9 @@ function dragSlider(e: Event) {
 <template>
   <div ref="placeholderBoxRef" class="placeholder-box">
     <div ref="backgroundBoardRef" :style="backgroundStyle" :class="hiddenBackgroundBoard ? 'background-board-transparent' : ''" class="background-board" @mouseup="sliderUp($event)" @mousedown="sliderDown()">
-      <div v-if="displayTrack" class="track-bar" />
+      <div v-if="displayTrack" class="track-bar">
+        <div class="progress-bar" :style="progressFill" />
+      </div>
 
       <div ref="sliderRef" class="slider" :class="{ 'dragging': isDrag, 'slider-default': !customizedSlider }">
         <slot name="slider-icon">
@@ -172,10 +189,19 @@ function dragSlider(e: Event) {
   background-color: transparent;
 }
 .track-bar {
+    overflow: hidden; /*避免scaleX对border-radius的影响 */
     width: 100%;
     height: v-bind(`${trackHeight}px`);
     background-color: #e4e7ed;
     border-radius: v-bind(`${trackHeight / 2}px`);
+}
+.progress-bar {
+  width: 100%;
+  height: 100%;
+  background-color: #4caf50;
+  transform-origin: left center;
+  border-radius: inherit;
+  /* transition: transform 0.1s ease; 使用transform属性平滑过渡 */
 }
 .slider {
   position: absolute;
