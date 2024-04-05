@@ -100,7 +100,9 @@ function initSliderPosition() {
     placeholderBoxRef.value!.style.height = `${backgroundBoardRect.height}px`
     placeholderBoxRef.value!.style.width = `${backgroundBoardRect.width}px`
   }
-  sliderRef.value!.style.transform = `translate(${props.modelValue.traveledDistance}px,${props.modelValue.verticalToTraveledDistance}px) rotate(${props.sliderRotate + rotateOffset.value}deg)`
+  const traveledDistance = Math.min(Math.max(props.modelValue.traveledDistance, 0), travelMax.value)
+  const verticalToTraveledDistance = Math.min(Math.max(props.modelValue.verticalToTraveledDistance, 0), verticalMax.value)
+  sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px) rotate(${props.sliderRotate + rotateOffset.value}deg)`
 }
 
 function updateSliderPosition(e: Event) {
