@@ -59,7 +59,6 @@ watch(() => props.modelValue, async (newVal) => {
     sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px) rotate(${props.sliderRotate + rotateOffset.value}deg)`
 
   else sliderRef.value!.style.transform = `translate(${traveledDistance}px,0) rotate(${props.sliderRotate + rotateOffset.value}deg)`
-  console.log(111)
 }, { deep: true })
 
 const slots = useSlots()
@@ -80,8 +79,6 @@ defineExpose({
 })
 
 function initSliderPosition() {
-  console.log(222)
-
   const backgroundBoardRect = backgroundBoardRef.value!.getBoundingClientRect()
   const sliderRect = sliderRef.value!.getBoundingClientRect()
   let top = (backgroundBoardRect.height - sliderRect.height) / 2
