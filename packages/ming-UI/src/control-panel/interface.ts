@@ -15,7 +15,6 @@ export interface ControlPanelProps {
   }
   displayTrack?: boolean
   trackBackgroundColor?: string
-  hiddenBackgroundBoard?: boolean
   sliderRotate?: number
   trackHeight?: number
 }
