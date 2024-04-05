@@ -11,9 +11,7 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
   distanceRatio: 0,
   dimensionalMovement: false,
   displayTrack: true,
-  trackBackground: () => ({
-    backgroundColor: 'var(--ming-color-primary)',
-  }),
+  trackBackgroundColor: 'var(--ming-color-primary)',
   hiddenBackgroundBoard: true,
   sliderRotate: 0,
   trackHeight: 10,
@@ -168,7 +166,7 @@ function dragSlider(e: Event) {
   <div ref="placeholderBoxRef" class="placeholder-box">
     <div ref="backgroundBoardRef" :style="backgroundStyle" :class="hiddenBackgroundBoard ? 'background-board-transparent' : ''" class="background-board" @mouseup="sliderUp($event)" @mousedown="sliderDown()">
       <div v-if="displayTrack" class="track-bar">
-        <div class="progress-bar" :style="[progressFill, trackBackground]" />
+        <div class="progress-bar" :style="[progressFill, trackBackgroundColor]" />
       </div>
 
       <div ref="sliderRef" class="slider" :class="{ 'dragging': isDrag, 'slider-default': !customizedSlider }">

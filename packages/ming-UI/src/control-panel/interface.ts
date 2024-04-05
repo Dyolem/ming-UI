@@ -14,7 +14,7 @@ export interface ControlPanelProps {
     traveledDistance: number
   }
   displayTrack?: boolean
-  trackBackground?: { backgroundColor: string }
+  trackBackgroundColor?: string
   hiddenBackgroundBoard?: boolean
   sliderRotate?: number
   trackHeight?: number
