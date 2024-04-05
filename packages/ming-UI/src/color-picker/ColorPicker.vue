@@ -163,7 +163,6 @@ async function updateSliderPosition() {
 
   slConvertToDistance.value.traveledDistance = colorManager.value.hsl.s / 100 * colorTakingControlRef.value!.travelMax
   slConvertToDistance.value.verticalToTraveledDistance = (100 - colorManager.value.hsl.l) * colorTakingControlRef.value!.verticalMax / 100
-  console.log(slConvertToDistance.value)
 }
 
 function positionUpdateColor(colorType: string, val: distanceType) {
@@ -233,9 +232,9 @@ function copyColorValue(content: string) {
 <template>
   <div v-if="display" class="container" :class="isFullFunction ? 'full' : 'partial'">
     <div class="color-gradient-wheel">
-      <MControlPanel v-if="isFullFunction" ref="colorTakingControlRef" v-model:model-value="slConvertToDistance" :dimensional-movement="true" :background-style="saturationSquareStyle" @drag="value => positionUpdateColor('sl', value)" />
+      <MControlPanel v-if="isFullFunction" ref="colorTakingControlRef" v-model:model-value="slConvertToDistance" :dimensional-movement="true" :background-style="saturationSquareStyle" :display-track="false" @drag="value => positionUpdateColor('sl', value)" />
       <div class="hue-box">
-        <MControlPanel v-if="isFullFunction" ref="hueControlRef" v-model:model-value="hConvertToDistance" :vertical="true" :background-style="hueBandStyle" @drag="value => positionUpdateColor('h', value)" />
+        <MControlPanel v-if="isFullFunction" ref="hueControlRef" v-model:model-value="hConvertToDistance" :vertical="true" :background-style="hueBandStyle" :display-track="false" @drag="value => positionUpdateColor('h', value)" />
         <div class="eye-dropper-box" :class="pressAnimation ? 'loading' : ''" @mousedown="openColorBoard" @mouseup="cancelOpenBehavior">
           <EyeDropper :interrupt="interruptOpenEyeDropper" @update:color="value => eyedropperResolve('hex', value)">
             <slot />
