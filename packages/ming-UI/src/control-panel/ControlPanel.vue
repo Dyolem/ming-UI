@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, useSlots, watch } from 'vue'
+import { computed, onMounted, ref, useSlots, watch } from 'vue'
 import type { ControlPanelProps } from './interface'
 
 defineOptions({
@@ -28,7 +28,7 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
 const emit = defineEmits(['update:modelValue', 'drag'])
 const rotateOffset = computed<number>(() => {
   if (props.vertical)
-    return -90
+    return 90
   else
     return 0
 })
@@ -40,12 +40,14 @@ const placeholderBoxRef = ref<HTMLDivElement>()
 const travelMax = ref(0)
 const verticalMax = ref(0)
 const progressFill = ref({})
-const distanceRatio = ref(0)
-watch(() => props.modelValue, (newVal) => {
+const distanceRatio = computed(() => {
+  return props.modelValue.traveledDistance / travelMax.value
+})
+watch(() => props.modelValue, async (newVal) => {
   // 确保传入的移动距离在合法范围内
   const traveledDistance = Math.min(Math.max(newVal.traveledDistance, 0), travelMax.value)
   const verticalToTraveledDistance = Math.min(Math.max(newVal.verticalToTraveledDistance, 0), verticalMax.value)
-  distanceRatio.value = props.modelValue.traveledDistance / travelMax.value
+  // distanceRatio.value = props.modelValue.traveledDistance / travelMax.value
 
   if (props.displayTrack)
     progressFill.value = { transform: `scaleX(${distanceRatio.value})` }
@@ -53,8 +55,7 @@ watch(() => props.modelValue, (newVal) => {
   if (props.dimensionalMovement)
     sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px) rotate(${props.sliderRotate + rotateOffset.value}deg)`
 
-  else
-    sliderRef.value!.style.transform = `translate(${traveledDistance}px,0) rotate(${props.sliderRotate + rotateOffset.value}deg)`
+  else sliderRef.value!.style.transform = `translate(${traveledDistance}px,0) rotate(${props.sliderRotate + rotateOffset.value}deg)`
 }, { deep: true })
 
 const slots = useSlots()
@@ -74,8 +75,7 @@ defineExpose({
   verticalMax,
 })
 
-async function initSliderPosition() {
-  await nextTick()
+function initSliderPosition() {
   const backgroundBoardRect = backgroundBoardRef.value!.getBoundingClientRect()
   const sliderRect = sliderRef.value!.getBoundingClientRect()
   let top = (backgroundBoardRect.height - sliderRect.height) / 2
@@ -86,16 +86,18 @@ async function initSliderPosition() {
   backgroundBoardRef.value!.style.transformOrigin = `${backgroundBoardRect.height / 2}px ${backgroundBoardRect.height / 2}px`
   sliderRef.value!.style.top = `${top}px`
   sliderRef.value!.style.left = `${left}px`
+  if (props.displayTrack)
+    progressFill.value = { transform: `scaleX(${distanceRatio.value})` }
   if (props.vertical) {
-    backgroundBoardRef.value!.style.transform = `rotate(90deg)`
+    backgroundBoardRef.value!.style.transform = `translateY(${backgroundBoardRect.width - backgroundBoardRect.height}px) rotate(-90deg)`
     placeholderBoxRef.value!.style.height = `${backgroundBoardRect.width}px`
     placeholderBoxRef.value!.style.width = `${backgroundBoardRect.height}px`
-    sliderRef.value!.style.transform = `rotate(${props.sliderRotate + rotateOffset.value}deg)`
   }
   else {
     placeholderBoxRef.value!.style.height = `${backgroundBoardRect.height}px`
     placeholderBoxRef.value!.style.width = `${backgroundBoardRect.width}px`
   }
+  sliderRef.value!.style.transform = `translate(${props.modelValue.traveledDistance}px,${props.modelValue.verticalToTraveledDistance}px) rotate(${props.sliderRotate + rotateOffset.value}deg)`
 }
 
 function updateSliderPosition(e: Event) {
@@ -115,6 +117,7 @@ function updateSliderPosition(e: Event) {
     = [traveledDistance, verticalToTraveledDistance];
 
     [travelMax, verticalMax] = [verticalMax, travelMax]
+    traveledDistance = travelMax - traveledDistance
   }
   if (props.dimensionalMovement) {
     if (traveledDistance <= travelMax && traveledDistance >= 0 && verticalToTraveledDistance <= verticalMax && verticalToTraveledDistance >= 0) {
@@ -126,9 +129,8 @@ function updateSliderPosition(e: Event) {
   else {
     if (traveledDistance <= travelMax && traveledDistance >= 0) {
       sliderRef.value!.style.transform = `translate(${traveledDistance}px,0) rotate(${props.sliderRotate + rotateOffset.value}deg)`
-      distanceRatio.value = traveledDistance / travelMax
       if (props.displayTrack)
-        progressFill.value = { transform: `scaleX(${distanceRatio.value})` }
+        progressFill.value = { transform: `scaleX(${traveledDistance / travelMax})` }
       emit('update:modelValue', { traveledDistance, verticalToTraveledDistance })
       emit('drag', { traveledDistance, verticalToTraveledDistance })
     }
