@@ -10,9 +10,12 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
   vertical: false,
   distanceRatio: 0,
   dimensionalMovement: false,
-  displayTrack: true,
+  displayTrack: (prop) => {
+    if (prop.dimensionalMovement)
+      return false
+    else return true
+  },
   trackBackgroundColor: 'var(--ming-color-primary)',
-  hiddenBackgroundBoard: true,
   sliderRotate: 0,
   trackHeight: 10,
   backgroundStyle: () => ({
@@ -100,7 +103,10 @@ function initSliderPosition() {
   }
   const traveledDistance = Math.min(Math.max(props.modelValue.traveledDistance, 0), travelMax.value)
   const verticalToTraveledDistance = Math.min(Math.max(props.modelValue.verticalToTraveledDistance, 0), verticalMax.value)
+  console.log(traveledDistance, verticalToTraveledDistance)
+
   sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px) rotate(${props.sliderRotate + rotateOffset.value}deg)`
+  emit('drag', { traveledDistance, verticalToTraveledDistance })
 }
 
 function updateSliderPosition(e: Event) {
@@ -125,6 +131,9 @@ function updateSliderPosition(e: Event) {
   if (props.dimensionalMovement) {
     if (traveledDistance <= travelMax && traveledDistance >= 0 && verticalToTraveledDistance <= verticalMax && verticalToTraveledDistance >= 0) {
       sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px) rotate(${props.sliderRotate + rotateOffset.value}deg)`
+      if (props.displayTrack)
+        progressFill.value = { transform: `scaleX(${traveledDistance / travelMax})` }
+
       emit('update:modelValue', { traveledDistance, verticalToTraveledDistance })
       emit('drag', { traveledDistance, verticalToTraveledDistance })
     }
@@ -132,10 +141,14 @@ function updateSliderPosition(e: Event) {
   else {
     if (traveledDistance <= travelMax && traveledDistance >= 0) {
       sliderRef.value!.style.transform = `translate(${traveledDistance}px,0) rotate(${props.sliderRotate + rotateOffset.value}deg)`
+
       if (props.displayTrack)
         progressFill.value = { transform: `scaleX(${traveledDistance / travelMax})` }
-      emit('update:modelValue', { traveledDistance, verticalToTraveledDistance })
-      emit('drag', { traveledDistance, verticalToTraveledDistance })
+
+      emit('update:modelValue', { traveledDistance, verticalToTraveledDistance: 0 })
+      console.log({ traveledDistance, verticalToTraveledDistance })
+
+      emit('drag', { traveledDistance, verticalToTraveledDistance: 0 })
     }
   }
 }
@@ -164,7 +177,7 @@ function dragSlider(e: Event) {
 
 <template>
   <div ref="placeholderBoxRef" class="placeholder-box">
-    <div ref="backgroundBoardRef" :style="backgroundStyle" :class="hiddenBackgroundBoard ? 'background-board-transparent' : ''" class="background-board" @mouseup="sliderUp($event)" @mousedown="sliderDown()">
+    <div ref="backgroundBoardRef" :style="backgroundStyle" class="background-board" @mouseup="sliderUp($event)" @mousedown="sliderDown()">
       <div v-if="displayTrack" class="track-bar">
         <div class="progress-bar" :style="[progressFill, trackBackgroundColor]" />
       </div>
@@ -186,11 +199,9 @@ function dragSlider(e: Event) {
     position: relative;
     width: 100px;
     height: 30px;
-    background-color: antiquewhite;
+
 }
-.background-board-transparent {
-  background-color: transparent;
-}
+
 .track-bar {
     overflow: hidden; /*避免scaleX对border-radius的影响 */
     width: 100%;
