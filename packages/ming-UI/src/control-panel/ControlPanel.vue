@@ -169,9 +169,10 @@ function dragSlider(e: Event) {
         <div class="progress-bar" :style="[progressFill, trackBackgroundColor]" />
       </div>
 
-      <div ref="sliderRef" class="slider" :class="{ 'dragging': isDrag, 'slider-default': !customizedSlider }">
+      <div ref="sliderRef" class="slider" :class="{ dragging: isDrag }">
         <slot name="slider-icon">
-          <div class="inner-circle" />
+          <div class="default-slider" :class="{ 'default-slider': !customizedSlider }" />
+          <!-- <div class="inner-circle" /> -->
         </slot>
       </div>
     </div>
@@ -200,7 +201,7 @@ function dragSlider(e: Event) {
 .progress-bar {
   width: 100%;
   height: 100%;
-  background-color: #4caf50;
+  background-color: v-bind(`${trackBackgroundColor}`);
   transform-origin: left center;
   border-radius: inherit;
   /* transition: transform 0.1s ease; 使用transform属性平滑过渡 */
@@ -212,22 +213,15 @@ function dragSlider(e: Event) {
   align-items: center;
   cursor: grab
 }
-.slider-default {
-  width: 16px;
-  height: 16px;
+
+.default-slider {
+  width: v-bind(`${1.6 * trackHeight}px`);
+  height: v-bind(`${1.6 * trackHeight}px`);
   border-radius: 50%;
-  border: 1px solid black;
+  border: 1px solid var(--ming-color-primary);
+  background-color: #fff
 }
-.inner-circle {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  border: 1px solid #fff;
-  transform: scale(0.9);
-}
-/* .slider-rotate {
-  transform: rotate(v-bind(`${sliderRotate}deg`));
-} */
+
 .dragging {
   cursor: grabbing;
 }
