@@ -11,6 +11,9 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
   distanceRatio: 0,
   dimensionalMovement: false,
   displayTrack: true,
+  trackBackground: () => ({
+    backgroundColor: 'var(--ming-color-primary)',
+  }),
   hiddenBackgroundBoard: true,
   sliderRotate: 0,
   trackHeight: 10,
@@ -56,6 +59,7 @@ watch(() => props.modelValue, async (newVal) => {
     sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px) rotate(${props.sliderRotate + rotateOffset.value}deg)`
 
   else sliderRef.value!.style.transform = `translate(${traveledDistance}px,0) rotate(${props.sliderRotate + rotateOffset.value}deg)`
+  console.log(111)
 }, { deep: true })
 
 const slots = useSlots()
@@ -76,6 +80,8 @@ defineExpose({
 })
 
 function initSliderPosition() {
+  console.log(222)
+
   const backgroundBoardRect = backgroundBoardRef.value!.getBoundingClientRect()
   const sliderRect = sliderRef.value!.getBoundingClientRect()
   let top = (backgroundBoardRect.height - sliderRect.height) / 2
@@ -163,7 +169,7 @@ function dragSlider(e: Event) {
   <div ref="placeholderBoxRef" class="placeholder-box">
     <div ref="backgroundBoardRef" :style="backgroundStyle" :class="hiddenBackgroundBoard ? 'background-board-transparent' : ''" class="background-board" @mouseup="sliderUp($event)" @mousedown="sliderDown()">
       <div v-if="displayTrack" class="track-bar">
-        <div class="progress-bar" :style="progressFill" />
+        <div class="progress-bar" :style="[progressFill, trackBackground]" />
       </div>
 
       <div ref="sliderRef" class="slider" :class="{ 'dragging': isDrag, 'slider-default': !customizedSlider }">
