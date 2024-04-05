@@ -232,9 +232,17 @@ function copyColorValue(content: string) {
 <template>
   <div v-if="display" class="container" :class="isFullFunction ? 'full' : 'partial'">
     <div class="color-gradient-wheel">
-      <MControlPanel v-if="isFullFunction" ref="colorTakingControlRef" v-model:model-value="slConvertToDistance" :dimensional-movement="true" :background-style="saturationSquareStyle" :display-track="false" @drag="value => positionUpdateColor('sl', value)" />
+      <MControlPanel v-if="isFullFunction" ref="colorTakingControlRef" v-model:model-value="slConvertToDistance" :dimensional-movement="true" :background-style="saturationSquareStyle" @drag="value => positionUpdateColor('sl', value)">
+        <template #slider-icon>
+          <div class="picker" />
+        </template>
+      </MControlPanel>
       <div class="hue-box">
-        <MControlPanel v-if="isFullFunction" ref="hueControlRef" v-model:model-value="hConvertToDistance" :vertical="true" :background-style="hueBandStyle" :display-track="false" @drag="value => positionUpdateColor('h', value)" />
+        <MControlPanel v-if="isFullFunction" ref="hueControlRef" v-model:model-value="hConvertToDistance" :vertical="true" :background-style="hueBandStyle" :display-track="false" @drag="value => positionUpdateColor('h', value)">
+          <template #slider-icon>
+            <div class="picker" />
+          </template>
+        </MControlPanel>
         <div class="eye-dropper-box" :class="pressAnimation ? 'loading' : ''" @mousedown="openColorBoard" @mouseup="cancelOpenBehavior">
           <EyeDropper :interrupt="interruptOpenEyeDropper" @update:color="value => eyedropperResolve('hex', value)">
             <slot />
@@ -361,5 +369,21 @@ function copyColorValue(content: string) {
   border-radius: 4px;
   background-color: antiquewhite;
   border: 1px solid #E5D9F7;
+}
+.picker {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid black;
+}
+.picker::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1px solid #fff;
+  transform: scale(0.9);
 }
 </style>
