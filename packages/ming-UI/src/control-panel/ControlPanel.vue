@@ -46,17 +46,15 @@ watch(() => props.modelValue, (newVal) => {
   const traveledDistance = Math.min(Math.max(newVal.traveledDistance, 0), travelMax.value)
   const verticalToTraveledDistance = Math.min(Math.max(newVal.verticalToTraveledDistance, 0), verticalMax.value)
   distanceRatio.value = props.modelValue.traveledDistance / travelMax.value
-  console.log(distanceRatio.value)
 
   if (props.displayTrack)
     progressFill.value = { transform: `scaleX(${distanceRatio.value})` }
 
-  if (props.dimensionalMovement) {
-    sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px) rotate(${props.sliderRotate + rotateOffset.value})deg`
-    console.log(`translate(${traveledDistance}px,${verticalToTraveledDistance}px) rotate(${props.sliderRotate + rotateOffset.value})deg`)
-  }
+  if (props.dimensionalMovement)
+    sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px) rotate(${props.sliderRotate + rotateOffset.value}deg)`
 
-  else { sliderRef.value!.style.transform = `translate(${traveledDistance}px,0) rotate(${props.sliderRotate + rotateOffset.value}deg` }
+  else
+    sliderRef.value!.style.transform = `translate(${traveledDistance}px,0) rotate(${props.sliderRotate + rotateOffset.value}deg)`
 }, { deep: true })
 
 const slots = useSlots()
@@ -120,16 +118,15 @@ function updateSliderPosition(e: Event) {
   }
   if (props.dimensionalMovement) {
     if (traveledDistance <= travelMax && traveledDistance >= 0 && verticalToTraveledDistance <= verticalMax && verticalToTraveledDistance >= 0) {
-      sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px) rotate(${props.sliderRotate + rotateOffset.value}deg`
+      sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px) rotate(${props.sliderRotate + rotateOffset.value}deg)`
       emit('update:modelValue', { traveledDistance, verticalToTraveledDistance })
       emit('drag', { traveledDistance, verticalToTraveledDistance })
     }
   }
   else {
     if (traveledDistance <= travelMax && traveledDistance >= 0) {
-      sliderRef.value!.style.transform = `translate(${traveledDistance}px,0) rotate(${props.sliderRotate + rotateOffset.value}deg`
+      sliderRef.value!.style.transform = `translate(${traveledDistance}px,0) rotate(${props.sliderRotate + rotateOffset.value}deg)`
       distanceRatio.value = traveledDistance / travelMax
-      console.log(distanceRatio.value)
       if (props.displayTrack)
         progressFill.value = { transform: `scaleX(${distanceRatio.value})` }
       emit('update:modelValue', { traveledDistance, verticalToTraveledDistance })
