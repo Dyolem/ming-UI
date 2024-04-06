@@ -27,6 +27,10 @@ export default defineComponent({
       type: String as PropType<'light' | 'dark' | 'customized' | 'fullCustomized'>,
       default: 'dark',
     },
+    display: {
+      type: Boolean as PropType<true | false>,
+      default: true,
+    },
   },
   setup(props, { slots, attrs }) {
     const reference = ref(null)
@@ -81,7 +85,8 @@ export default defineComponent({
           },
 
         }
-
+        if (!props.display)
+          return
         return (
           <div {...events} class={customized()} ref={floating} style={floatingStyles.value}>
             {slots.content ? slots.content?.() : props.content}
@@ -115,7 +120,6 @@ export default defineComponent({
           {tipNode}
           {renderTooltip()}
         </>
-
       )
     }
   },
