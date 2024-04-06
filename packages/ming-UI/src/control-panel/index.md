@@ -12,7 +12,7 @@
 
 ### 背景板
 
-配置 `backgroundStyle`对象可以自由控制滑块下层的背景板样式，背景板的宽度即是滑块在滑动轴线上的最大移动距离。
+配置 `backgroundStyle`对象可以自由控制滑块下层的背景板样式，背景板的宽度即是滑块在滑动轴线上的最大移动距离。背景板的范围即是滑块可移动的范围。
 有了背景，你可以自由将移动距离和背景产生关联，比如色板可以根据移动距离计算色值。
 <demo src="./demos/backgroundBoardStyle.vue"></demo>
 
@@ -40,7 +40,7 @@
 
 ## 垂直模式
 
-设置`vertical`属性为`true`可竖直放置控制板组件
+设置`vertical`属性为`true`可竖直放置控制板组件。
 <demo src="./demos/vertical.vue"></demo>
 
 ::: warning
@@ -65,18 +65,23 @@
 
 | 属性     | 说明               | 类型                             | 默认值  |
 | -------- | ------------------ | -------------------------------- | ------- |
-| enableClose | 是否启用销毁组件功能     | Boolean | false |
-| fullFunction     | 首次渲染是否以完整功能展示 | Boolean | true |
-| effect | tooltip的背景颜色 | `dark`   \| `light`   | dark |
+| model-value / v-model |  绑定滑块移动距离  | object | `traveledDistance:0`,`verticalToTraveledDistance:0` |
+| dimensional-movement | 二维平面移动模式 |  Boolean  | false |
+| background-style  | 背景板样式 | number | 10 |
+| display-track  | 显示滑块轨道，二维移动模式下默认为`false` | Boolean | true |
+| track-height  | 控制轨道高度 | number | 10 |
+| track-background-color  | 轨道的背景颜色样式 | string | `var(--ming-color-primary)` |
+| vertical  | 垂直模式 | Boolean | false |
+| slider-rotate  | 自定义滑块的旋转度数 | number | 0 |
 
 ### Events
 
 | 事件名     | 说明               | 类型                             |
 | -------- | ------------------ | -------------------------------- |
-| update:color |  任一颜色参数变化时，向外传递的所有形式的颜色值  | emit |
+| drag |  拖动滑块触发  | `(value:object) => void` |
 
 ### Slots
 
 | 名称     | 说明               |
 | -------- | ------------------ |
-| default  | 替换画笔图标   |
+| slider-icon  | 自定义滑块组件   |
