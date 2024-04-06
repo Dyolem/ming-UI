@@ -102,11 +102,9 @@ function initSliderPosition() {
     placeholderBoxRef.value!.style.width = `${backgroundBoardRect.width}px`
   }
   const traveledDistance = Math.min(Math.max(props.modelValue.traveledDistance, 0), travelMax.value)
-  const verticalToTraveledDistance = Math.min(Math.max(props.modelValue.verticalToTraveledDistance, 0), verticalMax.value)
-  console.log(traveledDistance, verticalToTraveledDistance)
+  const verticalToTraveledDistance = props.dimensionalMovement ? Math.min(Math.max(props.modelValue.verticalToTraveledDistance, 0), verticalMax.value) : 0
 
   sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px) rotate(${props.sliderRotate + rotateOffset.value}deg)`
-  emit('drag', { traveledDistance, verticalToTraveledDistance })
 }
 
 function updateSliderPosition(e: Event) {
@@ -146,8 +144,6 @@ function updateSliderPosition(e: Event) {
         progressFill.value = { transform: `scaleX(${traveledDistance / travelMax})` }
 
       emit('update:modelValue', { traveledDistance, verticalToTraveledDistance: 0 })
-      console.log({ traveledDistance, verticalToTraveledDistance })
-
       emit('drag', { traveledDistance, verticalToTraveledDistance: 0 })
     }
   }
