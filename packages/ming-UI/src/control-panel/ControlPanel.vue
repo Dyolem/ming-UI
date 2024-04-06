@@ -229,7 +229,7 @@ function passPositionToTooltip(axis: number, vertical: number) {
       <div v-if="displayTrack" class="track-bar">
         <div class="progress-bar" :style="[progressFill, trackBackgroundColor]" />
       </div>
-      <MTooltip :content="positionTooltip">
+      <MTooltip :content="positionTooltip" :display="displayTooltip">
         <div ref="sliderRef" class="slider" :class="{ dragging: isDrag }">
           <slot name="slider-icon">
             <div class="default-slider" :class="{ 'default-slider': !customizedSlider }" />
