@@ -17,5 +17,6 @@ export interface ControlPanelProps {
   trackBackgroundColor?: string
   sliderRotate?: number
   trackHeight?: number
+  displayTooltip?: boolean
   formatterTooltip?: (...args: number[]) => ({ traveledDistance: number;verticalToTraveledDistance: number } | string)
 }

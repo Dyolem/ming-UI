@@ -27,6 +27,7 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
     traveledDistance: 0,
     verticalToTraveledDistance: 0,
   }),
+  displayTooltip: false,
 })
 
 const emit = defineEmits(['update:modelValue', 'drag'])
@@ -208,6 +209,8 @@ function formatter({ axis, vertical }: { axis: number;vertical: number }, format
 }
 
 function passPositionToTooltip(axis: number, vertical: number) {
+  if (!props.displayTooltip)
+    return
   if (props.formatterTooltip !== undefined) {
     positionTooltip.value = formatter({ axis, vertical }, props.formatterTooltip)
   }
