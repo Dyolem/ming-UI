@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, useSlots, watch } from 'vue'
+import { MTooltip } from 'ming-UI'
 import type { ControlPanelProps } from './interface'
 
 defineOptions({
@@ -26,7 +27,6 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
     traveledDistance: 0,
     verticalToTraveledDistance: 0,
   }),
-
 })
 
 const emit = defineEmits(['update:modelValue', 'drag'])
@@ -60,6 +60,7 @@ watch(() => props.modelValue, async (newVal) => {
     sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px) rotate(${props.sliderRotate + rotateOffset.value}deg)`
 
   else sliderRef.value!.style.transform = `translate(${traveledDistance}px,0) rotate(${props.sliderRotate + rotateOffset.value}deg)`
+  passPositionToTooltip(props.modelValue.traveledDistance, props.modelValue.verticalToTraveledDistance)
 }, { deep: true })
 
 const slots = useSlots()
@@ -105,6 +106,7 @@ function initSliderPosition() {
   const verticalToTraveledDistance = props.dimensionalMovement ? Math.min(Math.max(props.modelValue.verticalToTraveledDistance, 0), verticalMax.value) : 0
 
   sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px) rotate(${props.sliderRotate + rotateOffset.value}deg)`
+  passPositionToTooltip(traveledDistance, verticalToTraveledDistance)
 }
 
 function updateSliderPosition(e: Event) {
@@ -134,6 +136,7 @@ function updateSliderPosition(e: Event) {
 
       emit('update:modelValue', { traveledDistance, verticalToTraveledDistance })
       emit('drag', { traveledDistance, verticalToTraveledDistance })
+      passPositionToTooltip(traveledDistance, verticalToTraveledDistance)
     }
   }
   else {
@@ -145,6 +148,7 @@ function updateSliderPosition(e: Event) {
 
       emit('update:modelValue', { traveledDistance, verticalToTraveledDistance: 0 })
       emit('drag', { traveledDistance, verticalToTraveledDistance: 0 })
+      passPositionToTooltip(traveledDistance, verticalToTraveledDistance)
     }
   }
 }
@@ -169,6 +173,51 @@ function dragSlider(e: Event) {
     })
   }
 }
+
+const positionTooltip = ref<string>('')
+function formatter({ axis, vertical }: { axis: number;vertical: number }, formatFunc: (...args: number[]) => { traveledDistance: number;verticalToTraveledDistance: number } | string): string {
+  let tooltip = ''
+  if (props.dimensionalMovement) {
+    const res = formatFunc(axis, vertical)
+
+    // 检查res是否为对象且包含traveledDistance属性
+    if (typeof res === 'object' && res !== null && 'traveledDistance' in res) {
+      tooltip = `X:${res.traveledDistance},Y:${res.verticalToTraveledDistance}`
+    }
+    else {
+      // 处理错误或不符合预期的返回值
+      tooltip = res
+      console.warn('The return value should be an object')
+    }
+  }
+  else {
+    const res = formatFunc(axis)
+
+    // 一维情况
+    if (typeof res === 'string') {
+      tooltip = `${res}`
+    }
+    else {
+      // 处理错误或不符合预期的返回值
+      tooltip = `${res}`
+      console.warn('The return value should be a string')
+    }
+  }
+
+  return tooltip
+}
+
+function passPositionToTooltip(axis: number, vertical: number) {
+  if (props.formatterTooltip !== undefined) {
+    positionTooltip.value = formatter({ axis, vertical }, props.formatterTooltip)
+  }
+  else {
+    if (props.dimensionalMovement)
+      positionTooltip.value = `${axis.toString()},${vertical.toString()}`
+
+    else positionTooltip.value = axis.toString()
+  }
+}
 </script>
 
 <template>
@@ -177,13 +226,14 @@ function dragSlider(e: Event) {
       <div v-if="displayTrack" class="track-bar">
         <div class="progress-bar" :style="[progressFill, trackBackgroundColor]" />
       </div>
-
-      <div ref="sliderRef" class="slider" :class="{ dragging: isDrag }">
-        <slot name="slider-icon">
-          <div class="default-slider" :class="{ 'default-slider': !customizedSlider }" />
+      <MTooltip :content="positionTooltip">
+        <div ref="sliderRef" class="slider" :class="{ dragging: isDrag }">
+          <slot name="slider-icon">
+            <div class="default-slider" :class="{ 'default-slider': !customizedSlider }" />
           <!-- <div class="inner-circle" /> -->
-        </slot>
-      </div>
+          </slot>
+        </div>
+      </MTooltip>
     </div>
   </div>
 </template>
