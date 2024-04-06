@@ -66,6 +66,7 @@ const colorManager = ref<colorManagerType>({
   rgb: { r: 229, g: 217, b: 247 },
   hex: 'E5D9F7',
 })
+
 onMounted(() => {
   if (display.value)
     updateColor('h', colorManager.value.hsl.h)
@@ -110,7 +111,6 @@ function checkColorValue<T extends number | string>(type: string, value: T): T {
     return value.replace(/[^a-fA-F0-9]/g, '').substring(0, 6) as T
   }
   // 在不满足任何条件时，返回原始值，处理逻辑和类型T兼容
-  console.log(value)
 
   return value
 }
@@ -138,7 +138,6 @@ function updateColor(component: string, value: number | string) {
       const { h, s, l } = useRgbToHsl(rgbUpdate.r, rgbUpdate.g, rgbUpdate.b)
       colorManager.value.hsl = { h, s, l }
       colorManager.value.hex = useRgbToHex(rgbUpdate.r, rgbUpdate.g, rgbUpdate.b)
-      console.log(colorManager.value.hex)
     }
   }
   else if (typeof value === 'string') {
@@ -150,6 +149,7 @@ function updateColor(component: string, value: number | string) {
     const { h, s, l } = useRgbToHsl(r, g, b)
     colorManager.value.hsl = { h, s, l }
   }
+
   if (isFullFunction.value)
     updateSliderPosition()
   updateColorSelectBox()
@@ -158,6 +158,7 @@ function updateColor(component: string, value: number | string) {
 async function updateSliderPosition() {
   if (isFullFunction.value)
     await nextTick()
+
   hConvertToDistance.value.traveledDistance = (colorManager.value.hsl.h / 360) * (hueControlRef.value!.travelMax)
   hConvertToDistance.value.verticalToTraveledDistance = 0
 
@@ -218,8 +219,6 @@ function cancelOpenBehavior() {
 }
 
 function closeColorBoard() {
-  console.log(props.enableClose)
-
   if (props.enableClose)
     display.value = false
 }
