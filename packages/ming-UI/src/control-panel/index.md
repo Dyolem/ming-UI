@@ -55,6 +55,9 @@
 单向传递数据时，外部组件可接收响应式的位置数据。双向绑定时，可在外部通过更改位置数据来控制滑块移动。
 
 <demo src="./demos/data.vue"></demo>
+::: tip
+`model-value`属性和`v-model`如果同时设置，在组件初始化时，前者会覆盖后者的值。而当后者明确设置为`v-model:modelValue`时，后者会覆盖前者的值。因此不建议`model-value`属性和`v-model`同时设置。
+:::
 
 ## API
 

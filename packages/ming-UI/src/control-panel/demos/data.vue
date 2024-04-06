@@ -1,11 +1,6 @@
 <script setup>
 import { ref } from 'vue'
 
-const initSliderPosition = ref({
-  traveledDistance: 44,
-  verticalToTraveledDistance: 0,
-})
-
 const backgroundStyle = {
   width: '200px',
   height: '200px',
@@ -14,38 +9,68 @@ const backgroundStyle = {
 }
 
 const distance = ref({
-  traveledDistance: 0,
-  verticalToTraveledDistance: 0,
+  traveledDistance: 44,
+  verticalToTraveledDistance: 9,
+})
+const dimensionalDistance = ref({
+  traveledDistance: 66,
+  verticalToTraveledDistance: 25,
 })
 </script>
 
 <template>
-  <div class="normal">
-    <div class="data-one">
-      <MControlPanel v-model:model-value="distance" :model-value="initSliderPosition" />
+  <div class="grid">
+    <div class="show-box">
+      <MControlPanel v-model="distance" />
       <div class="position">
-        X:<span>{{ distance.traveledDistance }}</span>Y:<span>{{ distance.verticalToTraveledDistance }}</span>
+        X:<span>{{ distance.traveledDistance }}</span>
+        Y:<span>{{ distance.verticalToTraveledDistance }}</span>
       </div>
     </div>
-    <div class="data-one">
-      <MControlPanel v-model:model-value="distance" :model-value="initSliderPosition" :vertical="true" />
+    <div class="show-box">
+      <MControlPanel v-model="distance" :vertical="true" />
       <div class="position">
-        X:<span>{{ distance.traveledDistance }}</span>Y:<span>{{ distance.verticalToTraveledDistance }}</span>
+        X:<span>{{ distance.traveledDistance }}</span>
+        Y:<span>{{ distance.verticalToTraveledDistance }}</span>
       </div>
     </div>
-  </div>
-  <div class="vertical">
-    <div class="data-two">
-      <MControlPanel :background-style="backgroundStyle" :model-value="initSliderPosition" :dimensional-movement="true" />
+    <div class="show-box">
+      <MControlPanel v-model="dimensionalDistance" :background-style="backgroundStyle" :dimensional-movement="true" />
       <div class="position">
-        X:<span>{{ distance.traveledDistance }}</span>Y:<span>{{ distance.verticalToTraveledDistance }}</span>
+        X:<span>{{ dimensionalDistance.traveledDistance }}</span>
+        Y:<span>{{ dimensionalDistance.verticalToTraveledDistance }}</span>
       </div>
     </div>
-    <div class="data-two">
-      <MControlPanel :background-style="backgroundStyle" :model-value="initSliderPosition" :dimensional-movement="true" :vertical="true" />
+    <div class="show-box">
+      <MControlPanel v-model="dimensionalDistance" :background-style="backgroundStyle" :dimensional-movement="true" :vertical="true" />
       <div class="position">
-        X:<span>{{ distance.traveledDistance }}</span>Y:<span>{{ distance.verticalToTraveledDistance }}</span>
+        X:<span>{{ dimensionalDistance.traveledDistance }}</span>
+        Y:<span>{{ dimensionalDistance.verticalToTraveledDistance }}</span>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+  .grid {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+
+  .public {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .show-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    height: 300px;
+  }
+</style>
