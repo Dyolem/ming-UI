@@ -38,9 +38,9 @@ function dimensionalFormatter(axis, vertical) {
 
 <template>
   <div class="container">
-    <MControlPanel :model-value="initSliderPosition" :formatter-tooltip="formatter" />
+    <MControlPanel :model-value="initSliderPosition" :formatter-tooltip="formatter" :display-tooltip="true" />
     <div>
-      <MControlPanel v-model="dimensionalDistance" :background-style="backgroundStyle" :dimensional-movement="true" :formatter-tooltip="dimensionalFormatter" />
+      <MControlPanel v-model="dimensionalDistance" :background-style="backgroundStyle" :dimensional-movement="true" :formatter-tooltip="dimensionalFormatter" :display-tooltip="true" />
       <div class="position">
         X:<span>{{ dimensionalDistance.traveledDistance }}</span>
         Y:<span>{{ dimensionalDistance.verticalToTraveledDistance }}</span>

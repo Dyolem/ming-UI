@@ -59,6 +59,11 @@
 `model-value`属性和`v-model`如果同时设置，在组件初始化时，前者会覆盖后者的值。而当后者明确设置为`v-model:modelValue`时，后者会覆盖前者的值。因此不建议`model-value`属性和`v-model`同时设置。
 :::
 
+## 文字提示
+
+开启tooltip可以显示当前滑块位置
+<demo src="./demos/tooltip.vue"></demo>
+
 ## API
 
 ### Attributes
