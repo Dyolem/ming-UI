@@ -28,6 +28,7 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
     verticalToTraveledDistance: 0,
   }),
   displayTooltip: false,
+  placement: 'bottom',
 })
 
 const emit = defineEmits(['update:modelValue', 'drag'])
@@ -229,7 +230,7 @@ function passPositionToTooltip(axis: number, vertical: number) {
       <div v-if="displayTrack" class="track-bar">
         <div class="progress-bar" :style="[progressFill, trackBackgroundColor]" />
       </div>
-      <MTooltip :content="positionTooltip" :display="displayTooltip">
+      <MTooltip :content="positionTooltip" :display="displayTooltip" :placement="placement">
         <div ref="sliderRef" class="slider" :class="{ dragging: isDrag }">
           <slot name="slider-icon">
             <div class="default-slider" :class="{ 'default-slider': !customizedSlider }" />
