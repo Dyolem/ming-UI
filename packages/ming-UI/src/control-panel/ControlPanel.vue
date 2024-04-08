@@ -177,7 +177,7 @@ function updateSliderAndTrack(traveledDistance: number, verticalToTraveledDistan
         progressFill.value = { transform: `scaleY(${progressRatio})` }
         console.log(_verticalToTraveledDistance)
 
-        sliderRef.value!.style.transform = `translate(${_traveledDistance}px,${_verticalToTraveledDistance}px rotate(${props.sliderRotate}deg)`
+        sliderRef.value!.style.transform = `translate(${_traveledDistance}px,${_verticalToTraveledDistance}px) rotate(${props.sliderRotate}deg) `
         passPositionToTooltip(_traveledDistance, userVerticalDistance)
         console.log(_traveledDistance, _verticalToTraveledDistance)
         return {
@@ -189,7 +189,7 @@ function updateSliderAndTrack(traveledDistance: number, verticalToTraveledDistan
 
     else {
       _verticalToTraveledDistance = 0
-      sliderRef.value!.style.transform = `translate(${_traveledDistance}px,${_verticalToTraveledDistance}px) rotate(${props.sliderRotate}deg`
+      sliderRef.value!.style.transform = `translate(${_traveledDistance}px,${_verticalToTraveledDistance}px) rotate(${props.sliderRotate}deg)`
       passPositionToTooltip(_traveledDistance, _verticalToTraveledDistance)
       progressRatio = _traveledDistance / travelMax.value
       progressFill.value = { transform: `scaleX(${progressRatio})` }
@@ -200,7 +200,7 @@ function updateSliderAndTrack(traveledDistance: number, verticalToTraveledDistan
     }
   }
 
-  sliderRef.value!.style.transform = `translate(${_traveledDistance}px,${_verticalToTraveledDistance}px) rotate(${props.sliderRotate}deg`
+  sliderRef.value!.style.transform = `translate(${_traveledDistance}px,${_verticalToTraveledDistance}px) rotate(${props.sliderRotate}deg)`
   passPositionToTooltip(_traveledDistance, _verticalToTraveledDistance)
   return {
     traveledDistance: _traveledDistance,
