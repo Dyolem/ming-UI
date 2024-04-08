@@ -9,7 +9,7 @@ defineOptions({
 })
 const props = withDefaults(defineProps<ControlPanelProps>(), {
   vertical: false,
-  distanceRatio: 0,
+  progressRatio: 0,
   dimensionalMovement: false,
   displayTrack: (prop) => {
     if (prop.dimensionalMovement)
@@ -19,10 +19,20 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
   trackBackgroundColor: 'var(--ming-color-primary)',
   sliderRotate: 0,
   trackHeight: 10,
-  backgroundStyle: () => ({
-    width: '200px',
-    height: '30px',
-  }),
+  backgroundStyle: (prop) => {
+    if (prop.vertical) {
+      return {
+        width: '30px',
+        height: '200px',
+      }
+    }
+    else {
+      return {
+        width: '200px',
+        height: '30px',
+      }
+    }
+  },
   modelValue: () => ({
     traveledDistance: 0,
     verticalToTraveledDistance: 0,
@@ -32,37 +42,25 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
 })
 
 const emit = defineEmits(['update:modelValue', 'drag'])
-const rotateOffset = computed<number>(() => {
-  if (props.vertical)
-    return 90
-  else
-    return 0
-})
+// const rotateOffset = computed<number>(() => {
+//   if (props.vertical)
+//     return 90
+//   else
+//     return 0
+// })
 
 const backgroundBoardRef = ref<HTMLDivElement>()
 const sliderRef = ref<HTMLDivElement>()
+const trackRef = ref<HTMLDivElement | null>(null)
+const progressRef = ref<HTMLDivElement | null>(null)
 const placeholderBoxRef = ref<HTMLDivElement>()
 
 const travelMax = ref(0)
 const verticalMax = ref(0)
 const progressFill = ref({})
-const distanceRatio = computed(() => {
-  return props.modelValue.traveledDistance / travelMax.value
-})
-watch(() => props.modelValue, async (newVal) => {
-  // 确保传入的移动距离在合法范围内
-  const traveledDistance = Math.min(Math.max(newVal.traveledDistance, 0), travelMax.value)
-  const verticalToTraveledDistance = Math.min(Math.max(newVal.verticalToTraveledDistance, 0), verticalMax.value)
-  // distanceRatio.value = props.modelValue.traveledDistance / travelMax.value
-
-  if (props.displayTrack)
-    progressFill.value = { transform: `scaleX(${distanceRatio.value})` }
-
-  if (props.dimensionalMovement)
-    sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px) rotate(${props.sliderRotate + rotateOffset.value}deg)`
-
-  else sliderRef.value!.style.transform = `translate(${traveledDistance}px,0) rotate(${props.sliderRotate + rotateOffset.value}deg)`
-  passPositionToTooltip(props.modelValue.traveledDistance, props.modelValue.verticalToTraveledDistance)
+// const progressRatio = ref(0)
+watch(() => props.modelValue, (newVal) => {
+  updateSliderAndTrack(newVal.traveledDistance, newVal.verticalToTraveledDistance, true)
 }, { deep: true })
 
 const slots = useSlots()
@@ -72,87 +70,153 @@ onMounted(() => {
   verticalMax.value = backgroundBoardRef.value!.getBoundingClientRect().height
   if ('slider-icon' in slots)
     customizedSlider.value = true
-  if (props.displayTrack)
-    progressFill.value = { transform: `scaleX(0)` }
-  initSliderPosition()
+
+  initSliderAndTrack()
 })
 
 defineExpose({
   travelMax,
   verticalMax,
 })
-
-function initSliderPosition() {
-  const backgroundBoardRect = backgroundBoardRef.value!.getBoundingClientRect()
-  const sliderRect = sliderRef.value!.getBoundingClientRect()
-  let top = (backgroundBoardRect.height - sliderRect.height) / 2
-
-  const left = -sliderRect.width / 2
-  if (props.dimensionalMovement)
-    top = -sliderRect.height / 2
-  backgroundBoardRef.value!.style.transformOrigin = `${backgroundBoardRect.height / 2}px ${backgroundBoardRect.height / 2}px`
-  sliderRef.value!.style.top = `${top}px`
-  sliderRef.value!.style.left = `${left}px`
-  if (props.displayTrack)
-    progressFill.value = { transform: `scaleX(${distanceRatio.value})` }
-  if (props.vertical) {
-    backgroundBoardRef.value!.style.transform = `translateY(${backgroundBoardRect.width - backgroundBoardRect.height}px) rotate(-90deg)`
-    placeholderBoxRef.value!.style.height = `${backgroundBoardRect.width}px`
-    placeholderBoxRef.value!.style.width = `${backgroundBoardRect.height}px`
-  }
-  else {
-    placeholderBoxRef.value!.style.height = `${backgroundBoardRect.height}px`
-    placeholderBoxRef.value!.style.width = `${backgroundBoardRect.width}px`
-  }
-  const traveledDistance = Math.min(Math.max(props.modelValue.traveledDistance, 0), travelMax.value)
-  const verticalToTraveledDistance = props.dimensionalMovement ? Math.min(Math.max(props.modelValue.verticalToTraveledDistance, 0), verticalMax.value) : 0
-
-  sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px) rotate(${props.sliderRotate + rotateOffset.value}deg)`
-  passPositionToTooltip(traveledDistance, verticalToTraveledDistance)
+function clamp(value: number, max: number): number {
+  return Math.min(Math.max(value, 0), max)
 }
 
-function updateSliderPosition(e: Event) {
-  let traveledDistance = 0
-  let verticalToTraveledDistance = 0
+function initSliderAndTrack() {
   const backgroundBoardRect = backgroundBoardRef.value!.getBoundingClientRect()
-  let travelMax = backgroundBoardRect.width
-  let verticalMax = backgroundBoardRect.height
-  const left = backgroundBoardRect.left
-  const top = backgroundBoardRect.top
+  const sliderRect = sliderRef.value!.getBoundingClientRect()
+  let top = 0
+  let left = 0
 
-  traveledDistance = Number.parseInt(e.clientX - left)
-  verticalToTraveledDistance = Number.parseInt(e.clientY - top)
-
-  if (props.vertical) {
-    [verticalToTraveledDistance, traveledDistance]
-    = [traveledDistance, verticalToTraveledDistance];
-
-    [travelMax, verticalMax] = [verticalMax, travelMax]
-    traveledDistance = travelMax - traveledDistance
-  }
-  if (props.dimensionalMovement) {
-    if (traveledDistance <= travelMax && traveledDistance >= 0 && verticalToTraveledDistance <= verticalMax && verticalToTraveledDistance >= 0) {
-      sliderRef.value!.style.transform = `translate(${traveledDistance}px,${verticalToTraveledDistance}px) rotate(${props.sliderRotate + rotateOffset.value}deg)`
-      if (props.displayTrack)
-        progressFill.value = { transform: `scaleX(${traveledDistance / travelMax})` }
-
-      emit('update:modelValue', { traveledDistance, verticalToTraveledDistance })
-      emit('drag', { traveledDistance, verticalToTraveledDistance })
-      passPositionToTooltip(traveledDistance, verticalToTraveledDistance)
+  let traveledDistance = clamp(props.modelValue.traveledDistance, travelMax.value)
+  let verticalToTraveledDistance = clamp(props.modelValue.verticalToTraveledDistance, verticalMax.value)
+  if (trackRef.value !== null)
+    trackRef.value!.style.width = `${props.trackHeight}px`
+  if (!props.dimensionalMovement) {
+    if (props.vertical) {
+      traveledDistance = 0
+      top = -sliderRect.height / 2
+      left = (backgroundBoardRect.width - sliderRect.width) / 2
+      trackRef.value!.style.width = `${props.trackHeight}px`
+      trackRef.value!.style.height = `${backgroundBoardRect.height}px`
+      progressRef.value!.style.transformOrigin = `bottom center`
+    }
+    else {
+      verticalToTraveledDistance = 0
+      top = (backgroundBoardRect.height - sliderRect.height) / 2
+      left = -sliderRect.width / 2
+      trackRef.value!.style.width = `${backgroundBoardRect.width}px`
+      trackRef.value!.style.height = `${props.trackHeight}px`
+      progressRef.value!.style.transformOrigin = `left center`
     }
   }
   else {
-    if (traveledDistance <= travelMax && traveledDistance >= 0) {
-      sliderRef.value!.style.transform = `translate(${traveledDistance}px,0) rotate(${props.sliderRotate + rotateOffset.value}deg)`
+    top = -sliderRect.height / 2
+    left = -sliderRect.width / 2
+  }
 
-      if (props.displayTrack)
-        progressFill.value = { transform: `scaleX(${traveledDistance / travelMax})` }
+  sliderRef.value!.style.top = `${top}px`
+  sliderRef.value!.style.left = `${left}px`
 
-      emit('update:modelValue', { traveledDistance, verticalToTraveledDistance: 0 })
-      emit('drag', { traveledDistance, verticalToTraveledDistance: 0 })
-      passPositionToTooltip(traveledDistance, verticalToTraveledDistance)
+  updateSliderAndTrack(traveledDistance, verticalToTraveledDistance, true)
+}
+
+function getMouseCoordinate(e: Event) {
+  if (!backgroundBoardRef.value) {
+    return {
+      traveledDistance: 0,
+      verticalToTraveledDistance: 0,
     }
   }
+  const backgroundBoardRect = backgroundBoardRef.value.getBoundingClientRect()
+  const left = backgroundBoardRect.left
+  const top = backgroundBoardRect.top
+  const naturalTraveledDistance = Number.parseInt(e.clientX - left)
+  const naturalVerticalToTraveledDistance = Number.parseInt(e.clientY - top)
+  const traveledDistance = clamp(naturalTraveledDistance, travelMax.value)
+  const verticalToTraveledDistance = clamp(naturalVerticalToTraveledDistance, verticalMax.value)
+
+  return {
+    traveledDistance,
+    verticalToTraveledDistance,
+  }
+}
+
+function updateSliderAndTrack(traveledDistance: number, verticalToTraveledDistance: number, externalSource: boolean) {
+  const transformToUser = (transformVerticalDistance: number) => {
+    return verticalMax.value - transformVerticalDistance
+  }
+  const userToTransform = (userVerticalDistance: number) => {
+    return verticalMax.value - userVerticalDistance
+  }
+
+  let progressRatio = 0
+
+  let _traveledDistance = clamp(traveledDistance, travelMax.value)
+  let _verticalToTraveledDistance = clamp(verticalToTraveledDistance, verticalMax.value)
+
+  if (!props.dimensionalMovement) {
+    if (props.vertical) {
+      _traveledDistance = 0
+
+      if (externalSource) {
+        progressRatio = _verticalToTraveledDistance / verticalMax.value
+        progressFill.value = { transform: `scaleY(${progressRatio})` }
+        const transformVerticalToTraveledDistance = userToTransform(_verticalToTraveledDistance)
+        sliderRef.value!.style.transform = `translate(${_traveledDistance}px,${transformVerticalToTraveledDistance}px) rotate(${props.sliderRotate}deg)`
+        passPositionToTooltip(_traveledDistance, _verticalToTraveledDistance)
+
+        return {
+          traveledDistance: _traveledDistance,
+          verticalToTraveledDistance: _verticalToTraveledDistance,
+        }
+      }
+      else {
+        const userVerticalDistance = transformToUser(_verticalToTraveledDistance)
+        progressRatio = userVerticalDistance / verticalMax.value
+        progressFill.value = { transform: `scaleY(${progressRatio})` }
+        console.log(_verticalToTraveledDistance)
+
+        sliderRef.value!.style.transform = `translate(${_traveledDistance}px,${_verticalToTraveledDistance}px rotate(${props.sliderRotate}deg)`
+        passPositionToTooltip(_traveledDistance, userVerticalDistance)
+        console.log(_traveledDistance, _verticalToTraveledDistance)
+        return {
+          traveledDistance: _traveledDistance,
+          verticalToTraveledDistance: userVerticalDistance,
+        }
+      }
+    }
+
+    else {
+      _verticalToTraveledDistance = 0
+      sliderRef.value!.style.transform = `translate(${_traveledDistance}px,${_verticalToTraveledDistance}px) rotate(${props.sliderRotate}deg`
+      passPositionToTooltip(_traveledDistance, _verticalToTraveledDistance)
+      progressRatio = _traveledDistance / travelMax.value
+      progressFill.value = { transform: `scaleX(${progressRatio})` }
+      return {
+        traveledDistance: _traveledDistance,
+        verticalToTraveledDistance: _verticalToTraveledDistance,
+      }
+    }
+  }
+
+  sliderRef.value!.style.transform = `translate(${_traveledDistance}px,${_verticalToTraveledDistance}px) rotate(${props.sliderRotate}deg`
+  passPositionToTooltip(_traveledDistance, _verticalToTraveledDistance)
+  return {
+    traveledDistance: _traveledDistance,
+    verticalToTraveledDistance: _verticalToTraveledDistance,
+  }
+}
+
+function transferPositionData(traveledDistance: number, verticalToTraveledDistance: number) {
+  emit('update:modelValue', { traveledDistance, verticalToTraveledDistance })
+  emit('drag', { traveledDistance, verticalToTraveledDistance })
+}
+
+function updateSliderPositionByMouse(e: Event) {
+  const { traveledDistance, verticalToTraveledDistance } = getMouseCoordinate(e)
+  const distance = updateSliderAndTrack(traveledDistance, verticalToTraveledDistance, false)
+  transferPositionData(distance.traveledDistance, distance.verticalToTraveledDistance)
 }
 
 const isDrag = ref(false)
@@ -165,13 +229,13 @@ function sliderUp(e: Event) {
   document.removeEventListener('mousemove', dragSlider)
   document.removeEventListener('mouseup', sliderUp)
   if (isDrag.value)
-    updateSliderPosition(e)
+    updateSliderPositionByMouse(e)
   isDrag.value = false
 }
 function dragSlider(e: Event) {
   if (isDrag.value) {
     requestAnimationFrame(() => {
-      updateSliderPosition(e)
+      updateSliderPositionByMouse(e)
     })
   }
 }
@@ -193,7 +257,7 @@ function formatter({ axis, vertical }: { axis: number;vertical: number }, format
     }
   }
   else {
-    const res = formatFunc(axis)
+    const res = formatFunc(axis, vertical)
 
     // 一维情况
     if (typeof res === 'string') {
@@ -216,10 +280,15 @@ function passPositionToTooltip(axis: number, vertical: number) {
     positionTooltip.value = formatter({ axis, vertical }, props.formatterTooltip)
   }
   else {
-    if (props.dimensionalMovement)
+    if (props.dimensionalMovement) {
       positionTooltip.value = `${axis.toString()},${vertical.toString()}`
+    }
 
-    else positionTooltip.value = axis.toString()
+    else {
+      if (props.vertical)
+        positionTooltip.value = vertical.toString()
+      else positionTooltip.value = axis.toString()
+    }
   }
 }
 </script>
@@ -227,8 +296,8 @@ function passPositionToTooltip(axis: number, vertical: number) {
 <template>
   <div ref="placeholderBoxRef" class="placeholder-box">
     <div ref="backgroundBoardRef" :style="backgroundStyle" class="background-board" @mouseup="sliderUp($event)" @mousedown="sliderDown()">
-      <div v-if="displayTrack" class="track-bar">
-        <div class="progress-bar" :style="[progressFill, trackBackgroundColor]" />
+      <div v-if="displayTrack" ref="trackRef" class="track-bar">
+        <div ref="progressRef" class="progress-bar" :style="[progressFill, trackBackgroundColor]" />
       </div>
       <MTooltip :content="positionTooltip" :display="displayTooltip" :placement="placement">
         <div ref="sliderRef" class="slider" :class="{ dragging: isDrag }">
@@ -245,6 +314,7 @@ function passPositionToTooltip(axis: number, vertical: number) {
 <style scoped>
 .background-board {
     display: flex;
+    justify-content: center;
     align-items: center;
     position: relative;
     width: 100px;
@@ -254,8 +324,6 @@ function passPositionToTooltip(axis: number, vertical: number) {
 
 .track-bar {
     overflow: hidden; /*避免scaleX对border-radius的影响 */
-    width: 100%;
-    height: v-bind(`${trackHeight}px`);
     background-color: #e4e7ed;
     border-radius: v-bind(`${trackHeight / 2}px`);
 }
@@ -263,7 +331,7 @@ function passPositionToTooltip(axis: number, vertical: number) {
   width: 100%;
   height: 100%;
   background-color: v-bind(`${trackBackgroundColor}`);
-  transform-origin: left center;
+  /* transform-origin: center bottom; */
   border-radius: inherit;
   /* transition: transform 0.1s ease; 使用transform属性平滑过渡 */
 }
