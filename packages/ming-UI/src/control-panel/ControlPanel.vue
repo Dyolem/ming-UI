@@ -47,12 +47,11 @@ const backgroundBoardRef = ref<HTMLDivElement>()
 const sliderRef = ref<HTMLDivElement>()
 const trackRef = ref<HTMLDivElement | null>(null)
 const progressRef = ref<HTMLDivElement | null>(null)
-const placeholderBoxRef = ref<HTMLDivElement>()
 
 const travelMax = ref(0)
 const verticalMax = ref(0)
 const progressFill = ref({})
-// const progressRatio = ref(0)
+
 watch(() => props.modelValue, (newVal) => {
   updateSliderAndTrack(newVal.traveledDistance, newVal.verticalToTraveledDistance, true)
 }, { deep: true })
@@ -72,10 +71,21 @@ defineExpose({
   travelMax,
   verticalMax,
 })
+
+/**
+ * @description Clamp a number within a certain range
+ * @param value
+ * @param max
+ */
 function clamp(value: number, max: number): number {
   return Math.min(Math.max(value, 0), max)
 }
 
+/**
+ * @description Check that the type and range of the coordinate data are valid
+ * @param traveledDistance
+ * @param verticalToTraveledDistance
+ */
 function checkDistanceIsLegal(traveledDistance: number, verticalToTraveledDistance: number) {
   let _traveledDistance = traveledDistance
   let _verticalToTraveledDistance = verticalToTraveledDistance
@@ -91,6 +101,9 @@ function checkDistanceIsLegal(traveledDistance: number, verticalToTraveledDistan
   }
 }
 
+/**
+ * @description Initialize the style and state of slider and track based on external parameters
+ */
 function initSliderAndTrack() {
   const setStyles = (trackWidth: number, trackHeight: number, progressTransformOrigin: string) => {
     if (props.displayTrack && progressRef.value !== null && trackRef.value !== null) {
@@ -134,6 +147,10 @@ function initSliderAndTrack() {
   updateSliderAndTrack(traveledDistance, verticalToTraveledDistance, true)
 }
 
+/**
+ * @description Computes and returns a valid coordinate value that is within the range
+ * @param e
+ */
 function getMouseCoordinate(e: MouseEvent) {
   if (!backgroundBoardRef.value) {
     return {
@@ -155,6 +172,12 @@ function getMouseCoordinate(e: MouseEvent) {
   }
 }
 
+/**
+ * @description Core function for updating slider and track status
+ * @param traveledDistance
+ * @param verticalToTraveledDistance
+ * @param externalSource
+ */
 function updateSliderAndTrack(traveledDistance: number = 0, verticalToTraveledDistance: number = 0, externalSource: boolean) {
   const transformToUser = (transformVerticalDistance: number) => {
     return verticalMax.value - transformVerticalDistance
@@ -220,11 +243,20 @@ function updateSliderAndTrack(traveledDistance: number = 0, verticalToTraveledDi
   }
 }
 
+/**
+ * @description Provide coordinate data to external components via custom events
+ * @param traveledDistance
+ * @param verticalToTraveledDistance
+ */
 function transferPositionData(traveledDistance: number, verticalToTraveledDistance: number) {
   emit('update:modelValue', { traveledDistance, verticalToTraveledDistance })
   emit('drag', { traveledDistance, verticalToTraveledDistance })
 }
 
+/**
+ * @description Call the intermediate function that calculates the coordinate function and the update function
+ * @param e
+ */
 function updateSliderPositionByMouse(e: MouseEvent) {
   const { traveledDistance, verticalToTraveledDistance } = getMouseCoordinate(e)
   const distance = updateSliderAndTrack(traveledDistance, verticalToTraveledDistance, false)
@@ -253,6 +285,9 @@ function dragSlider(e: MouseEvent) {
 }
 
 const positionTooltip = ref<string>('')
+/**
+ * @description Customize the formatting content based on the supplied parameters
+ */
 function formatter({ travel, vertical }: { travel: number;vertical: number }, formatFunc: (...args: number[]) => string): string {
   let tooltip = ''
 
@@ -271,6 +306,11 @@ function formatter({ travel, vertical }: { travel: number;vertical: number }, fo
   return tooltip
 }
 
+/**
+ * @description Pass native or custom content to the tooltip
+ * @param travel
+ * @param vertical
+ */
 function passPositionToTooltip(travel: number, vertical: number) {
   if (!props.displayTooltip)
     return
@@ -292,20 +332,18 @@ function passPositionToTooltip(travel: number, vertical: number) {
 </script>
 
 <template>
-  <div ref="placeholderBoxRef" class="placeholder-box">
-    <div ref="backgroundBoardRef" :style="backgroundStyle" class="background-board" @mouseup="sliderUp($event)" @mousedown="sliderDown()">
-      <div v-if="displayTrack" ref="trackRef" class="track-bar">
-        <div ref="progressRef" class="progress-bar" :style="[progressFill, trackBackgroundColor]" />
-      </div>
-      <MTooltip :content="positionTooltip" :display="displayTooltip" :placement="placement">
-        <div ref="sliderRef" class="slider" :class="{ dragging: isDrag }">
-          <slot name="slider-icon">
-            <div class="default-slider" :class="{ 'default-slider': !customizedSlider }" />
-          <!-- <div class="inner-circle" /> -->
-          </slot>
-        </div>
-      </MTooltip>
+  <div ref="backgroundBoardRef" :style="backgroundStyle" class="background-board" @mouseup="sliderUp($event)" @mousedown="sliderDown()">
+    <div v-if="displayTrack" ref="trackRef" class="track-bar">
+      <div ref="progressRef" class="progress-bar" :style="[progressFill, trackBackgroundColor]" />
     </div>
+    <MTooltip :content="positionTooltip" :display="displayTooltip" :placement="placement">
+      <div ref="sliderRef" class="slider" :class="{ dragging: isDrag }">
+        <slot name="slider-icon">
+          <div class="default-slider" :class="{ 'default-slider': !customizedSlider }" />
+          <!-- <div class="inner-circle" /> -->
+        </slot>
+      </div>
+    </MTooltip>
   </div>
 </template>
 
