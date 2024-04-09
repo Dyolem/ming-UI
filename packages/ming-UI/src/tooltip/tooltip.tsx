@@ -2,7 +2,7 @@ import type { PropType, VNode } from 'vue'
 import { computed, createVNode, defineComponent, ref } from 'vue'
 
 import type { Placement } from '@floating-ui/vue'
-import { flip, offset, shift, useFloating } from '@floating-ui/vue'
+import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/vue'
 
 import { filterEmpty, isBaseType } from '@v-c/utils'
 import { useClassnames } from '@ming-UI/utils'
@@ -41,6 +41,7 @@ export default defineComponent({
     const { floatingStyles } = useFloating(reference, floating, {
       placement,
       middleware: [offset(4), flip(), shift({ padding: 5 })],
+      whileElementsMounted: autoUpdate,
     })
     let timer: ReturnType<typeof setTimeout> | undefined
     const handleMouseEnter = () => {
