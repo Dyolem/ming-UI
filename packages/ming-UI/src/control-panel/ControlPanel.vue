@@ -42,12 +42,6 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
 })
 
 const emit = defineEmits(['update:modelValue', 'drag'])
-// const rotateOffset = computed<number>(() => {
-//   if (props.vertical)
-//     return 90
-//   else
-//     return 0
-// })
 
 const backgroundBoardRef = ref<HTMLDivElement>()
 const sliderRef = ref<HTMLDivElement>()
@@ -102,33 +96,41 @@ function initSliderAndTrack() {
   const sliderRect = sliderRef.value!.getBoundingClientRect()
   let top = 0
   let left = 0
-  console.log(props.modelValue)
+
   const { _traveledDistance, _verticalToTraveledDistance } = checkDistanceIsLegal(props.modelValue.traveledDistance, props.modelValue.verticalToTraveledDistance)
   let traveledDistance = _traveledDistance
   let verticalToTraveledDistance = _verticalToTraveledDistance
-  if (trackRef.value !== null)
-    trackRef.value!.style.width = `${props.trackThickness}px`
+
   if (!props.dimensionalMovement) {
     if (props.vertical) {
       traveledDistance = 0
       top = -sliderRect.height / 2
       left = (backgroundBoardRect.width - sliderRect.width) / 2
-      trackRef.value!.style.width = `${props.trackThickness}px`
-      trackRef.value!.style.height = `${backgroundBoardRect.height}px`
-      progressRef.value!.style.transformOrigin = `bottom center`
+      if (props.displayTrack) {
+        trackRef.value!.style.width = `${props.trackThickness}px`
+        trackRef.value!.style.height = `${backgroundBoardRect.height}px`
+        progressRef.value!.style.transformOrigin = `bottom center`
+      }
     }
     else {
       verticalToTraveledDistance = 0
       top = (backgroundBoardRect.height - sliderRect.height) / 2
       left = -sliderRect.width / 2
-      trackRef.value!.style.width = `${backgroundBoardRect.width}px`
-      trackRef.value!.style.height = `${props.trackThickness}px`
-      progressRef.value!.style.transformOrigin = `left center`
+      if (props.displayTrack) {
+        trackRef.value!.style.width = `${backgroundBoardRect.width}px`
+        trackRef.value!.style.height = `${props.trackThickness}px`
+        progressRef.value!.style.transformOrigin = `left center`
+      }
     }
   }
   else {
     top = -sliderRect.height / 2
     left = -sliderRect.width / 2
+    if (props.displayTrack) {
+      trackRef.value!.style.width = `${backgroundBoardRect.width}px`
+      trackRef.value!.style.height = `${props.trackThickness}px`
+      progressRef.value!.style.transformOrigin = `left center`
+    }
   }
 
   sliderRef.value!.style.top = `${top}px`
@@ -137,7 +139,7 @@ function initSliderAndTrack() {
   updateSliderAndTrack(traveledDistance, verticalToTraveledDistance, true)
 }
 
-function getMouseCoordinate(e: Event) {
+function getMouseCoordinate(e: MouseEvent) {
   if (!backgroundBoardRef.value) {
     return {
       traveledDistance: 0,
@@ -147,8 +149,8 @@ function getMouseCoordinate(e: Event) {
   const backgroundBoardRect = backgroundBoardRef.value.getBoundingClientRect()
   const left = backgroundBoardRect.left
   const top = backgroundBoardRect.top
-  const naturalTraveledDistance = Number.parseInt(e.clientX - left)
-  const naturalVerticalToTraveledDistance = Number.parseInt(e.clientY - top)
+  const naturalTraveledDistance = Math.round(e.clientX - left)
+  const naturalVerticalToTraveledDistance = Math.round(e.clientY - top)
   const traveledDistance = clamp(naturalTraveledDistance, travelMax.value)
   const verticalToTraveledDistance = clamp(naturalVerticalToTraveledDistance, verticalMax.value)
 
@@ -168,15 +170,6 @@ function updateSliderAndTrack(traveledDistance: number = 0, verticalToTraveledDi
 
   let progressRatio = 0
 
-  // let _traveledDistance = traveledDistance
-  // let _verticalToTraveledDistance = verticalToTraveledDistance
-  // if (typeof _traveledDistance !== 'number')
-  //   _traveledDistance = 0
-  // if (typeof _verticalToTraveledDistance !== 'number')
-  //   _verticalToTraveledDistance = 0
-
-  // _traveledDistance = clamp(_traveledDistance, travelMax.value)
-  // _verticalToTraveledDistance = clamp(_verticalToTraveledDistance, verticalMax.value)
   let { _traveledDistance, _verticalToTraveledDistance } = checkDistanceIsLegal(traveledDistance, verticalToTraveledDistance)
 
   if (!props.dimensionalMovement) {
@@ -222,7 +215,8 @@ function updateSliderAndTrack(traveledDistance: number = 0, verticalToTraveledDi
       }
     }
   }
-
+  progressRatio = _traveledDistance / travelMax.value
+  progressFill.value = { transform: `scaleX(${progressRatio})` }
   sliderRef.value!.style.transform = `translate(${_traveledDistance}px,${_verticalToTraveledDistance}px) rotate(${props.sliderRotate}deg)`
   passPositionToTooltip(_traveledDistance, _verticalToTraveledDistance)
   return {
@@ -236,7 +230,7 @@ function transferPositionData(traveledDistance: number, verticalToTraveledDistan
   emit('drag', { traveledDistance, verticalToTraveledDistance })
 }
 
-function updateSliderPositionByMouse(e: Event) {
+function updateSliderPositionByMouse(e: MouseEvent) {
   const { traveledDistance, verticalToTraveledDistance } = getMouseCoordinate(e)
   const distance = updateSliderAndTrack(traveledDistance, verticalToTraveledDistance, false)
   transferPositionData(distance.traveledDistance, distance.verticalToTraveledDistance)
@@ -248,14 +242,14 @@ function sliderDown() {
   document.addEventListener('mouseup', sliderUp)
   isDrag.value = true
 }
-function sliderUp(e: Event) {
+function sliderUp(e: MouseEvent) {
   document.removeEventListener('mousemove', dragSlider)
   document.removeEventListener('mouseup', sliderUp)
   if (isDrag.value)
     updateSliderPositionByMouse(e)
   isDrag.value = false
 }
-function dragSlider(e: Event) {
+function dragSlider(e: MouseEvent) {
   if (isDrag.value) {
     requestAnimationFrame(() => {
       updateSliderPositionByMouse(e)
@@ -264,53 +258,39 @@ function dragSlider(e: Event) {
 }
 
 const positionTooltip = ref<string>('')
-function formatter({ axis, vertical }: { axis: number;vertical: number }, formatFunc: (...args: number[]) => { traveledDistance: number;verticalToTraveledDistance: number } | string): string {
+function formatter({ travel, vertical }: { travel: number;vertical: number }, formatFunc: (...args: number[]) => string): string {
   let tooltip = ''
-  if (props.dimensionalMovement) {
-    const res = formatFunc(axis, vertical)
 
-    // 检查res是否为对象且包含traveledDistance属性
-    if (typeof res === 'object' && res !== null && 'traveledDistance' in res) {
-      tooltip = `X:${res.traveledDistance},Y:${res.verticalToTraveledDistance}`
-    }
-    else {
-      // 处理错误或不符合预期的返回值
-      tooltip = res
-      console.warn('The return value should be an object')
-    }
+  if (props.dimensionalMovement) {
+    tooltip = formatFunc(travel, vertical)
   }
   else {
-    const res = formatFunc(axis, vertical)
-
-    // 一维情况
-    if (typeof res === 'string') {
-      tooltip = `${res}`
-    }
-    else {
-      // 处理错误或不符合预期的返回值
-      tooltip = `${res}`
-      console.warn('The return value should be a string')
-    }
+    if (props.vertical)
+      tooltip = formatFunc(vertical)
+    else tooltip = formatFunc(travel)
   }
-
+  if (typeof tooltip !== 'string') {
+    tooltip = ''
+    console.warn('The return value should be a string')
+  }
   return tooltip
 }
 
-function passPositionToTooltip(axis: number, vertical: number) {
+function passPositionToTooltip(travel: number, vertical: number) {
   if (!props.displayTooltip)
     return
   if (props.formatterTooltip !== undefined) {
-    positionTooltip.value = formatter({ axis, vertical }, props.formatterTooltip)
+    positionTooltip.value = formatter({ travel, vertical }, props.formatterTooltip)
   }
   else {
     if (props.dimensionalMovement) {
-      positionTooltip.value = `${axis.toString()},${vertical.toString()}`
+      positionTooltip.value = `${travel.toString()},${vertical.toString()}`
     }
 
     else {
       if (props.vertical)
         positionTooltip.value = vertical.toString()
-      else positionTooltip.value = axis.toString()
+      else positionTooltip.value = travel.toString()
     }
   }
 }
@@ -346,7 +326,7 @@ function passPositionToTooltip(axis: number, vertical: number) {
 }
 
 .track-bar {
-    overflow: hidden; /*避免scaleX对border-radius的影响 */
+    overflow: hidden; /*隐藏scale对border-radius的影响 */
     background-color: #e4e7ed;
     border-radius: v-bind(`${trackThickness / 2}px`);
 }
@@ -354,9 +334,8 @@ function passPositionToTooltip(axis: number, vertical: number) {
   width: 100%;
   height: 100%;
   background-color: v-bind(`${trackBackgroundColor}`);
-  /* transform-origin: center bottom; */
   border-radius: inherit;
-  /* transition: transform 0.1s ease; 使用transform属性平滑过渡 */
+  /* transition: transform 0.3s ease; */
 }
 .slider {
   position: absolute;
