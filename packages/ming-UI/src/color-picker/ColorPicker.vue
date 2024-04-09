@@ -72,7 +72,7 @@ onMounted(() => {
     updateColor('h', colorManager.value.hsl.h)
 })
 const hueBandStyle = ref({
-  background: `linear-gradient(to bottom,
+  background: `linear-gradient(to top,
     #ff0000 0%, #ffff00 17%, #00ff00 33%,
     #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%)`, // 背景颜色
   borderRadius: '5px',
@@ -237,7 +237,7 @@ function copyColorValue(content: string) {
         </template>
       </MControlPanel>
       <div class="hue-box">
-        <MControlPanel v-if="isFullFunction" ref="hueControlRef" v-model:model-value="hConvertToDistance" :vertical="true" :background-style="hueBandStyle" :display-track="true" @drag="value => positionUpdateColor('h', value)">
+        <MControlPanel v-if="isFullFunction" ref="hueControlRef" v-model:model-value="hConvertToDistance" :vertical="true" :background-style="hueBandStyle" :display-track="false" @drag="value => positionUpdateColor('h', value)">
           <template #slider-icon>
             <div class="picker" />
           </template>
