@@ -18,6 +18,6 @@ export interface ControlPanelProps {
   sliderRotate?: number
   trackThickness?: number
   displayTooltip?: boolean
-  formatterTooltip?: (...args: number[]) => ({ traveledDistance: number;verticalToTraveledDistance: number } | string)
+  formatterTooltip?: (...args: number[]) => string
   placement?: placementType
 }
