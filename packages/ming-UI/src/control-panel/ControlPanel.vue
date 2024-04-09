@@ -92,6 +92,13 @@ function checkDistanceIsLegal(traveledDistance: number, verticalToTraveledDistan
 }
 
 function initSliderAndTrack() {
+  const setStyles = (trackWidth: number, trackHeight: number, progressTransformOrigin: string) => {
+    if (props.displayTrack && progressRef.value !== null && trackRef.value !== null) {
+      trackRef.value.style.width = `${trackWidth}px`
+      trackRef.value.style.height = `${trackHeight}px`
+      progressRef.value.style.transformOrigin = `${progressTransformOrigin}`
+    }
+  }
   const backgroundBoardRect = backgroundBoardRef.value!.getBoundingClientRect()
   const sliderRect = sliderRef.value!.getBoundingClientRect()
   let top = 0
@@ -106,31 +113,19 @@ function initSliderAndTrack() {
       traveledDistance = 0
       top = -sliderRect.height / 2
       left = (backgroundBoardRect.width - sliderRect.width) / 2
-      if (props.displayTrack) {
-        trackRef.value!.style.width = `${props.trackThickness}px`
-        trackRef.value!.style.height = `${backgroundBoardRect.height}px`
-        progressRef.value!.style.transformOrigin = `bottom center`
-      }
+      setStyles(props.trackThickness, backgroundBoardRect.height, `bottom center`)
     }
     else {
       verticalToTraveledDistance = 0
       top = (backgroundBoardRect.height - sliderRect.height) / 2
       left = -sliderRect.width / 2
-      if (props.displayTrack) {
-        trackRef.value!.style.width = `${backgroundBoardRect.width}px`
-        trackRef.value!.style.height = `${props.trackThickness}px`
-        progressRef.value!.style.transformOrigin = `left center`
-      }
+      setStyles(backgroundBoardRect.width, props.trackThickness, `left center`)
     }
   }
   else {
     top = -sliderRect.height / 2
     left = -sliderRect.width / 2
-    if (props.displayTrack) {
-      trackRef.value!.style.width = `${backgroundBoardRect.width}px`
-      trackRef.value!.style.height = `${props.trackThickness}px`
-      progressRef.value!.style.transformOrigin = `left center`
-    }
+    setStyles(backgroundBoardRect.width, props.trackThickness, `left center`)
   }
 
   sliderRef.value!.style.top = `${top}px`
