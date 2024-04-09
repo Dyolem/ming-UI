@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, useSlots, watch } from 'vue'
+import { onMounted, ref, useSlots, watch } from 'vue'
 import { MTooltip } from 'ming-UI'
 import type { ControlPanelProps } from './interface'
 
@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
   },
   trackBackgroundColor: 'var(--ming-color-primary)',
   sliderRotate: 0,
-  trackHeight: 10,
+  trackThickness: 10,
   backgroundStyle: (prop) => {
     if (prop.vertical) {
       return {
@@ -91,13 +91,13 @@ function initSliderAndTrack() {
   let traveledDistance = clamp(props.modelValue.traveledDistance, travelMax.value)
   let verticalToTraveledDistance = clamp(props.modelValue.verticalToTraveledDistance, verticalMax.value)
   if (trackRef.value !== null)
-    trackRef.value!.style.width = `${props.trackHeight}px`
+    trackRef.value!.style.width = `${props.trackThickness}px`
   if (!props.dimensionalMovement) {
     if (props.vertical) {
       traveledDistance = 0
       top = -sliderRect.height / 2
       left = (backgroundBoardRect.width - sliderRect.width) / 2
-      trackRef.value!.style.width = `${props.trackHeight}px`
+      trackRef.value!.style.width = `${props.trackThickness}px`
       trackRef.value!.style.height = `${backgroundBoardRect.height}px`
       progressRef.value!.style.transformOrigin = `bottom center`
     }
@@ -106,7 +106,7 @@ function initSliderAndTrack() {
       top = (backgroundBoardRect.height - sliderRect.height) / 2
       left = -sliderRect.width / 2
       trackRef.value!.style.width = `${backgroundBoardRect.width}px`
-      trackRef.value!.style.height = `${props.trackHeight}px`
+      trackRef.value!.style.height = `${props.trackThickness}px`
       progressRef.value!.style.transformOrigin = `left center`
     }
   }
@@ -142,7 +142,7 @@ function getMouseCoordinate(e: Event) {
   }
 }
 
-function updateSliderAndTrack(traveledDistance: number, verticalToTraveledDistance: number, externalSource: boolean) {
+function updateSliderAndTrack(traveledDistance: number = 0, verticalToTraveledDistance: number = 0, externalSource: boolean) {
   const transformToUser = (transformVerticalDistance: number) => {
     return verticalMax.value - transformVerticalDistance
   }
@@ -175,11 +175,10 @@ function updateSliderAndTrack(traveledDistance: number, verticalToTraveledDistan
         const userVerticalDistance = transformToUser(_verticalToTraveledDistance)
         progressRatio = userVerticalDistance / verticalMax.value
         progressFill.value = { transform: `scaleY(${progressRatio})` }
-        console.log(_verticalToTraveledDistance)
 
         sliderRef.value!.style.transform = `translate(${_traveledDistance}px,${_verticalToTraveledDistance}px) rotate(${props.sliderRotate}deg) `
         passPositionToTooltip(_traveledDistance, userVerticalDistance)
-        console.log(_traveledDistance, _verticalToTraveledDistance)
+
         return {
           traveledDistance: _traveledDistance,
           verticalToTraveledDistance: userVerticalDistance,
@@ -325,7 +324,7 @@ function passPositionToTooltip(axis: number, vertical: number) {
 .track-bar {
     overflow: hidden; /*避免scaleX对border-radius的影响 */
     background-color: #e4e7ed;
-    border-radius: v-bind(`${trackHeight / 2}px`);
+    border-radius: v-bind(`${trackThickness / 2}px`);
 }
 .progress-bar {
   width: 100%;
@@ -344,8 +343,8 @@ function passPositionToTooltip(axis: number, vertical: number) {
 }
 
 .default-slider {
-  width: v-bind(`${1.6 * trackHeight}px`);
-  height: v-bind(`${1.6 * trackHeight}px`);
+  width: v-bind(`${1.6 * trackThickness}px`);
+  height: v-bind(`${1.6 * trackThickness}px`);
   border-radius: 50%;
   border: 1px solid var(--ming-color-primary);
   background-color: #fff
