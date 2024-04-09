@@ -355,7 +355,7 @@ function passPositionToTooltip(travel: number, vertical: number) {
     position: relative;
     width: 100px;
     height: 30px;
-
+    z-index: 1000;
 }
 
 .track-bar {
