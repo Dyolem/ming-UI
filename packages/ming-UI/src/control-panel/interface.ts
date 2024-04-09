@@ -16,7 +16,7 @@ export interface ControlPanelProps {
   displayTrack?: boolean
   trackBackgroundColor?: string
   sliderRotate?: number
-  trackHeight?: number
+  trackThickness?: number
   displayTooltip?: boolean
   formatterTooltip?: (...args: number[]) => ({ traveledDistance: number;verticalToTraveledDistance: number } | string)
   placement?: placementType
