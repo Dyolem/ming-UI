@@ -37,7 +37,7 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
     traveledDistance: 0,
     verticalToTraveledDistance: 0,
   }),
-  displayTooltip: false,
+  displayTooltip: true,
   placement: 'bottom',
 })
 
@@ -82,14 +82,30 @@ function clamp(value: number, max: number): number {
   return Math.min(Math.max(value, 0), max)
 }
 
+function checkDistanceIsLegal(traveledDistance: number, verticalToTraveledDistance: number) {
+  let _traveledDistance = traveledDistance
+  let _verticalToTraveledDistance = verticalToTraveledDistance
+  if (typeof _traveledDistance !== 'number')
+    _traveledDistance = 0
+  if (typeof _verticalToTraveledDistance !== 'number')
+    _verticalToTraveledDistance = 0
+  _traveledDistance = clamp(_traveledDistance, travelMax.value)
+  _verticalToTraveledDistance = clamp(_verticalToTraveledDistance, verticalMax.value)
+  return {
+    _traveledDistance,
+    _verticalToTraveledDistance,
+  }
+}
+
 function initSliderAndTrack() {
   const backgroundBoardRect = backgroundBoardRef.value!.getBoundingClientRect()
   const sliderRect = sliderRef.value!.getBoundingClientRect()
   let top = 0
   let left = 0
-
-  let traveledDistance = clamp(props.modelValue.traveledDistance, travelMax.value)
-  let verticalToTraveledDistance = clamp(props.modelValue.verticalToTraveledDistance, verticalMax.value)
+  console.log(props.modelValue)
+  const { _traveledDistance, _verticalToTraveledDistance } = checkDistanceIsLegal(props.modelValue.traveledDistance, props.modelValue.verticalToTraveledDistance)
+  let traveledDistance = _traveledDistance
+  let verticalToTraveledDistance = _verticalToTraveledDistance
   if (trackRef.value !== null)
     trackRef.value!.style.width = `${props.trackThickness}px`
   if (!props.dimensionalMovement) {
@@ -152,8 +168,16 @@ function updateSliderAndTrack(traveledDistance: number = 0, verticalToTraveledDi
 
   let progressRatio = 0
 
-  let _traveledDistance = clamp(traveledDistance, travelMax.value)
-  let _verticalToTraveledDistance = clamp(verticalToTraveledDistance, verticalMax.value)
+  // let _traveledDistance = traveledDistance
+  // let _verticalToTraveledDistance = verticalToTraveledDistance
+  // if (typeof _traveledDistance !== 'number')
+  //   _traveledDistance = 0
+  // if (typeof _verticalToTraveledDistance !== 'number')
+  //   _verticalToTraveledDistance = 0
+
+  // _traveledDistance = clamp(_traveledDistance, travelMax.value)
+  // _verticalToTraveledDistance = clamp(_verticalToTraveledDistance, verticalMax.value)
+  let { _traveledDistance, _verticalToTraveledDistance } = checkDistanceIsLegal(traveledDistance, verticalToTraveledDistance)
 
   if (!props.dimensionalMovement) {
     if (props.vertical) {
