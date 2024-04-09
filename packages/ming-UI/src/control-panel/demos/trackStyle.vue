@@ -1,11 +1,16 @@
 <script setup>
+import { ref } from 'vue'
+
 const trackBackgroundColor = 'lightgreen'
-const trackHeight = 20
+const trackThickness = 20
+const initDistance = ref({
+  traveledDistance: 40,
+})
 </script>
 
 <template>
   <div class="container">
-    <MControlPanel :track-background-color="trackBackgroundColor" :track-height="trackHeight" />
+    <MControlPanel :model-value="initDistance" :track-background-color="trackBackgroundColor" :track-thickness="trackThickness" />
   </div>
 </template>
 

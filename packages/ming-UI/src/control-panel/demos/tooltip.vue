@@ -2,13 +2,12 @@
 import { ref } from 'vue'
 
 const initSliderPosition = ref({
-  traveledDistance: 50,
-  verticalToTraveledDistance: 0,
+  verticalToTraveledDistance: 30,
 })
-function formatter(axis) {
-  console.log(axis)
-  const traveledDistance = `this ${axis}`
-  return traveledDistance
+const mControlPanelRef = ref(null)
+function formatter(distance) {
+  const percentage = `${Math.ceil(distance / mControlPanelRef.value.verticalMax * 100)}%`
+  return percentage
 }
 const backgroundStyle = {
   width: '200px',
@@ -17,30 +16,22 @@ const backgroundStyle = {
   borderRadius: '10px',
 }
 
-// const distance = ref({
-//   traveledDistance: 44,
-//   verticalToTraveledDistance: 9,
-// })
 const dimensionalDistance = ref({
   traveledDistance: 66,
   verticalToTraveledDistance: 25,
 })
-function dimensionalFormatter(axis, vertical) {
-  console.log(axis, vertical)
-  const traveledDistance = `this ${axis}`
-  const verticalToTraveledDistance = `this ${vertical}`
-  return {
-    traveledDistance,
-    verticalToTraveledDistance,
-  }
+function dimensionalFormatter(travel, vertical) {
+  const traveledDistance = `X:${travel}`
+  const verticalToTraveledDistance = `Y:${vertical}`
+  return `${traveledDistance},${verticalToTraveledDistance}`
 }
 </script>
 
 <template>
   <div class="container">
-    <MControlPanel :model-value="initSliderPosition" :formatter-tooltip="formatter" :display-tooltip="true" />
+    <MControlPanel ref="mControlPanelRef" :model-value="initSliderPosition" :formatter-tooltip="formatter" :display-tooltip="true" :vertical="true" placement="top" />
     <div>
-      <MControlPanel v-model="dimensionalDistance" :background-style="backgroundStyle" :dimensional-movement="true" :formatter-tooltip="dimensionalFormatter" :display-tooltip="true" />
+      <MControlPanel v-model="dimensionalDistance" :background-style="backgroundStyle" :dimensional-movement="true" :formatter-tooltip="dimensionalFormatter" :display-tooltip="true" placement="left" />
       <div class="position">
         X:<span>{{ dimensionalDistance.traveledDistance }}</span>
         Y:<span>{{ dimensionalDistance.verticalToTraveledDistance }}</span>

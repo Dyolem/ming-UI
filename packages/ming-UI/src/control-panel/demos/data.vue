@@ -8,9 +8,13 @@ const backgroundStyle = {
   borderRadius: '10px',
 }
 
-const distance = ref({
-  traveledDistance: 44,
-  verticalToTraveledDistance: 9,
+const distanceOne = ref({
+  traveledDistance: 60,
+  verticalToTraveledDistance: 20,
+})
+
+const distanceTwo = ref({
+  verticalToTraveledDistance: 50,
 })
 const dimensionalDistance = ref({
   traveledDistance: 66,
@@ -21,17 +25,16 @@ const dimensionalDistance = ref({
 <template>
   <div class="grid">
     <div class="show-box">
-      <MControlPanel v-model="distance" />
+      <MControlPanel v-model="distanceOne" />
       <div class="position">
-        X:<span>{{ distance.traveledDistance }}</span>
-        Y:<span>{{ distance.verticalToTraveledDistance }}</span>
+        X:<span>{{ distanceOne.traveledDistance }}</span>
+        Y:<span>{{ distanceOne.verticalToTraveledDistance }}</span>
       </div>
     </div>
     <div class="show-box">
-      <MControlPanel v-model="distance" :vertical="true" />
+      <MControlPanel v-model="distanceTwo" :vertical="true" />
       <div class="position">
-        X:<span>{{ distance.traveledDistance }}</span>
-        Y:<span>{{ distance.verticalToTraveledDistance }}</span>
+        Y:<span>{{ distanceTwo.verticalToTraveledDistance }}</span>
       </div>
     </div>
     <div class="show-box">
@@ -42,7 +45,7 @@ const dimensionalDistance = ref({
       </div>
     </div>
     <div class="show-box">
-      <MControlPanel v-model="dimensionalDistance" :background-style="backgroundStyle" :dimensional-movement="true" :vertical="true" />
+      <MControlPanel v-model="dimensionalDistance" :background-style="backgroundStyle" :dimensional-movement="true" />
       <div class="position">
         X:<span>{{ dimensionalDistance.traveledDistance }}</span>
         Y:<span>{{ dimensionalDistance.verticalToTraveledDistance }}</span>
