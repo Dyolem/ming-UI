@@ -64,7 +64,7 @@
 
 ## 文字提示
 
-当鼠标覆于滑块上方时，会默认显示tooltip，可设置`display-tooltip`为`false`来关闭。
+当鼠标覆于滑块上方时，会默认显示tooltip，可设置`placement`控制其显示位置。设置`display-tooltip`为`false`可关闭tooltip。
 
 默认的tooltip内容为当前滑块的坐标，可向`formatter-tooltip`属性传递一个自定义格式函数控制显示内容：一维模式下，函数会提供一个参数，该参数对应于当前维度的坐标，比如在垂直模式下，这个参数的值为`verticalToTraveledDistance`属性值；二维模式下函数会提供两个参数，分别对应`traveledDistance`，`verticalToTraveledDistance`属性。函数返回值必须为`string`类型，否则tooltip内容将被处理为空字符串。
 <demo src="./demos/tooltip.vue"></demo>
@@ -84,6 +84,7 @@
 | vertical  | 垂直模式 | Boolean | false |
 | slider-rotate  | 自定义滑块的旋转度数 | number | 0 |
 | display-tooltip  | 滑块当前位置的文字提示 | Boolean | true |
+| display-tooltip  | 文字提示的显示位置 | `top` \| `top-start` \| `top-end` \| `bottom` \| `bottom-start` \| `bottom-end` \| `left` \| `left-start` \| `left-end` \| `right` \| `right-start` \| `right-end` | bottom |
 | formatter-tooltip  | 自定义文字提示内容 | `(...args: number[]) => string` | -- |
 
 ### Events
