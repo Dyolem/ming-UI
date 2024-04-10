@@ -34,8 +34,8 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
     }
   },
   modelValue: () => ({
-    traveledDistance: 0,
-    verticalToTraveledDistance: 0,
+    traveledDistanceRatio: 0,
+    verticalDistanceRatio: 0,
   }),
   displayTooltip: true,
   placement: 'bottom',
@@ -53,7 +53,8 @@ const verticalMax = ref(0)
 const progressFill = ref({})
 
 watch(() => props.modelValue, (newVal) => {
-  updateSliderAndTrack(newVal.traveledDistance, newVal.verticalToTraveledDistance, true)
+  const { traveledDistance, verticalToTraveledDistance } = ratioConvertToDistance(newVal.traveledDistanceRatio, newVal.verticalDistanceRatio)
+  updateSliderAndTrack(traveledDistance, verticalToTraveledDistance, true)
 }, { deep: true })
 
 const slots = useSlots()
@@ -71,6 +72,31 @@ defineExpose({
   travelMax,
   verticalMax,
 })
+
+function ratioConvertToDistance(traveledDistanceRatio: number, verticalDistanceRatio: number) {
+  let _traveledDistanceRatio = traveledDistanceRatio
+  let _verticalDistanceRatio = verticalDistanceRatio
+  if (typeof traveledDistanceRatio !== 'number' || typeof verticalDistanceRatio !== 'number') {
+    _traveledDistanceRatio = 0
+    _verticalDistanceRatio = 0
+  }
+
+  const traveledDistance = Number((_traveledDistanceRatio * travelMax.value).toFixed(1))
+  const verticalToTraveledDistance = Number((_verticalDistanceRatio * verticalMax.value).toFixed(1))
+  return {
+    traveledDistance,
+    verticalToTraveledDistance,
+  }
+}
+
+function distanceConvertToRatio(traveledDistance: number, verticalToTraveledDistance: number) {
+  const traveledDistanceRatio = traveledDistance / travelMax.value
+  const verticalDistanceRatio = verticalToTraveledDistance / verticalMax.value
+  return {
+    traveledDistanceRatio,
+    verticalDistanceRatio,
+  }
+}
 
 /**
  * @description Clamp a number within a certain range
@@ -116,20 +142,20 @@ function initSliderAndTrack() {
   const sliderRect = sliderRef.value!.getBoundingClientRect()
   let top = 0
   let left = 0
-
-  const { _traveledDistance, _verticalToTraveledDistance } = checkDistanceIsLegal(props.modelValue.traveledDistance, props.modelValue.verticalToTraveledDistance)
-  let traveledDistance = _traveledDistance
-  let verticalToTraveledDistance = _verticalToTraveledDistance
+  const { traveledDistance, verticalToTraveledDistance } = ratioConvertToDistance(props.modelValue.traveledDistanceRatio, props.modelValue.verticalDistanceRatio)
+  const { _traveledDistance, _verticalToTraveledDistance } = checkDistanceIsLegal(traveledDistance, verticalToTraveledDistance)
+  let legalTraveledDistance = _traveledDistance
+  let legalVerticalToTraveledDistance = _verticalToTraveledDistance
 
   if (!props.dimensionalMovement) {
     if (props.vertical) {
-      traveledDistance = 0
+      legalTraveledDistance = 0
       top = -sliderRect.height / 2
       left = (backgroundBoardRect.width - sliderRect.width) / 2
       setStyles(props.trackThickness, backgroundBoardRect.height, `bottom center`)
     }
     else {
-      verticalToTraveledDistance = 0
+      legalVerticalToTraveledDistance = 0
       top = (backgroundBoardRect.height - sliderRect.height) / 2
       left = -sliderRect.width / 2
       setStyles(backgroundBoardRect.width, props.trackThickness, `left center`)
@@ -144,7 +170,7 @@ function initSliderAndTrack() {
   sliderRef.value!.style.top = `${top}px`
   sliderRef.value!.style.left = `${left}px`
 
-  updateSliderAndTrack(traveledDistance, verticalToTraveledDistance, true)
+  updateSliderAndTrack(legalTraveledDistance, legalVerticalToTraveledDistance, true)
 }
 
 /**
@@ -249,8 +275,9 @@ function updateSliderAndTrack(traveledDistance: number = 0, verticalToTraveledDi
  * @param verticalToTraveledDistance
  */
 function transferPositionData(traveledDistance: number, verticalToTraveledDistance: number) {
-  emit('update:modelValue', { traveledDistance, verticalToTraveledDistance })
-  emit('drag', { traveledDistance, verticalToTraveledDistance })
+  const ratio = distanceConvertToRatio(traveledDistance, verticalToTraveledDistance)
+  emit('update:modelValue', { ...ratio })
+  emit('drag', { ...ratio })
 }
 
 /**
@@ -340,7 +367,6 @@ function passPositionToTooltip(travel: number, vertical: number) {
       <div ref="sliderRef" class="slider" :class="{ dragging: isDrag }">
         <slot name="slider-icon">
           <div class="default-slider" :class="{ 'default-slider': !customizedSlider }" />
-          <!-- <div class="inner-circle" /> -->
         </slot>
       </div>
     </MTooltip>

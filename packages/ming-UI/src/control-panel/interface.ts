@@ -7,11 +7,10 @@ type placementType = 'top' | 'top-start' | 'top-end' | 'bottom' | 'bottom-start'
 export interface ControlPanelProps {
   vertical?: boolean
   backgroundStyle?: BackgroundStyle // 使用 BackgroundStyle 类型而不是 object
-  distanceRatio?: number
   dimensionalMovement?: boolean
   modelValue?: {
-    verticalToTraveledDistance: number
-    traveledDistance: number
+    traveledDistanceRatio: number
+    verticalDistanceRatio: number
   }
   displayTrack?: boolean
   trackBackgroundColor?: string
