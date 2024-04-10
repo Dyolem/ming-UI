@@ -76,10 +76,13 @@ defineExpose({
 function ratioConvertToDistance(traveledDistanceRatio: number, verticalDistanceRatio: number) {
   let _traveledDistanceRatio = traveledDistanceRatio
   let _verticalDistanceRatio = verticalDistanceRatio
-  if (typeof traveledDistanceRatio !== 'number' || typeof verticalDistanceRatio !== 'number') {
+  if (typeof traveledDistanceRatio !== 'number')
     _traveledDistanceRatio = 0
+
+  if (typeof verticalDistanceRatio !== 'number')
     _verticalDistanceRatio = 0
-  }
+  _traveledDistanceRatio = clamp(_traveledDistanceRatio, 1)
+  _verticalDistanceRatio = clamp(_verticalDistanceRatio, 1)
 
   const traveledDistance = Number((_traveledDistanceRatio * travelMax.value).toFixed(1))
   const verticalToTraveledDistance = Number((_verticalDistanceRatio * verticalMax.value).toFixed(1))
@@ -315,16 +318,16 @@ const positionTooltip = ref<string>('')
 /**
  * @description Customize the formatting content based on the supplied parameters
  */
-function formatter({ travel, vertical }: { travel: number;vertical: number }, formatFunc: (...args: number[]) => string): string {
+function formatter({ traveledDistanceRatio, verticalDistanceRatio }: { traveledDistanceRatio: number;verticalDistanceRatio: number }, formatFunc: (...args: number[]) => string): string {
   let tooltip = ''
 
   if (props.dimensionalMovement) {
-    tooltip = formatFunc(travel, vertical)
+    tooltip = formatFunc(traveledDistanceRatio, verticalDistanceRatio)
   }
   else {
     if (props.vertical)
-      tooltip = formatFunc(vertical)
-    else tooltip = formatFunc(travel)
+      tooltip = formatFunc(verticalDistanceRatio)
+    else tooltip = formatFunc(traveledDistanceRatio)
   }
   if (typeof tooltip !== 'string') {
     tooltip = ''
@@ -341,18 +344,21 @@ function formatter({ travel, vertical }: { travel: number;vertical: number }, fo
 function passPositionToTooltip(travel: number, vertical: number) {
   if (!props.displayTooltip)
     return
+  let { traveledDistanceRatio, verticalDistanceRatio } = distanceConvertToRatio(travel, vertical)
+  traveledDistanceRatio = Number(Math.round(100 * traveledDistanceRatio))
+  verticalDistanceRatio = Number(Math.round(100 * verticalDistanceRatio))
   if (props.formatterTooltip !== undefined) {
-    positionTooltip.value = formatter({ travel, vertical }, props.formatterTooltip)
+    positionTooltip.value = formatter({ traveledDistanceRatio, verticalDistanceRatio }, props.formatterTooltip)
   }
   else {
     if (props.dimensionalMovement) {
-      positionTooltip.value = `${travel.toString()},${vertical.toString()}`
+      positionTooltip.value = `${traveledDistanceRatio.toString()},${verticalDistanceRatio.toString()}`
     }
 
     else {
       if (props.vertical)
-        positionTooltip.value = vertical.toString()
-      else positionTooltip.value = travel.toString()
+        positionTooltip.value = verticalDistanceRatio.toString()
+      else positionTooltip.value = traveledDistanceRatio.toString()
     }
   }
 }
