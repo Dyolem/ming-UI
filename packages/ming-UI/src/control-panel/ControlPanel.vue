@@ -89,11 +89,11 @@ function ratioConvertToDistance(traveledDistanceRatio: number, verticalDistanceR
 
   if (typeof verticalDistanceRatio !== 'number')
     _verticalDistanceRatio = 0
-  _traveledDistanceRatio = clamp(_traveledDistanceRatio, 1)
-  _verticalDistanceRatio = clamp(_verticalDistanceRatio, 1)
+  _traveledDistanceRatio = clamp(_traveledDistanceRatio, 100)
+  _verticalDistanceRatio = clamp(_verticalDistanceRatio, 100)
 
-  const traveledDistance = Number((_traveledDistanceRatio * travelMax.value).toFixed(1))
-  const verticalToTraveledDistance = Number((_verticalDistanceRatio * verticalMax.value).toFixed(1))
+  const traveledDistance = Number((_traveledDistanceRatio / 100 * travelMax.value).toFixed(1))
+  const verticalToTraveledDistance = Number((_verticalDistanceRatio / 100 * verticalMax.value).toFixed(1))
   return {
     legalTraveledDistance: traveledDistance,
     legalVerticalToTraveledDistance: verticalToTraveledDistance,
@@ -101,8 +101,8 @@ function ratioConvertToDistance(traveledDistanceRatio: number, verticalDistanceR
 }
 
 function distanceConvertToRatio(traveledDistance: number, verticalToTraveledDistance: number) {
-  const traveledDistanceRatio = traveledDistance / travelMax.value
-  const verticalDistanceRatio = verticalToTraveledDistance / verticalMax.value
+  const traveledDistanceRatio = traveledDistance / travelMax.value * 100
+  const verticalDistanceRatio = verticalToTraveledDistance / verticalMax.value * 100
   return {
     traveledDistanceRatio,
     verticalDistanceRatio,
@@ -324,8 +324,8 @@ function passDistanceRatioToTooltip(travelRatio: number, verticalRatio: number) 
   if (!props.displayTooltip)
     return
 
-  const traveledDistanceRatio = Math.round(100 * travelRatio)
-  const verticalDistanceRatio = Math.round(100 * verticalRatio)
+  const traveledDistanceRatio = Math.round(travelRatio)
+  const verticalDistanceRatio = Math.round(verticalRatio)
 
   if (props.formatterTooltip !== undefined) {
     positionTooltip.value = formatter({ traveledDistanceRatio, verticalDistanceRatio }, props.formatterTooltip)
