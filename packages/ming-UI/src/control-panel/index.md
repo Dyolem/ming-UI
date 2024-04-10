@@ -69,6 +69,14 @@
 默认的tooltip内容为当前滑块的坐标，可向`formatter-tooltip`属性传递一个自定义格式函数控制显示内容：一维模式下，函数会提供一个参数，该参数对应于当前维度的坐标，比如在垂直模式下，这个参数的值为`verticalToTraveledDistance`属性值；二维模式下函数会提供两个参数，分别对应`traveledDistance`，`verticalToTraveledDistance`属性。函数返回值必须为`string`类型，否则tooltip内容将被处理为空字符串。
 <demo src="./demos/tooltip.vue"></demo>
 
+## 坐标系
+
+本组件内部涉及的坐标计算以视口坐标系为参考系，如果更改了组件的参考系，比如父组件使用了`transform:rotate(90deg)`,这将导致内部计算错误。
+
+解决办法：给控制板组件套一层占位组件，设置`transform:rotate(-90deg)`，以此来保持控制板组件的参考系的正确性。
+
+<demo src="./demos/rotate.vue"></demo>
+
 ## API
 
 ### Attributes
