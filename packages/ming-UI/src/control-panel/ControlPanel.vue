@@ -50,11 +50,11 @@ const progressRef = ref<HTMLDivElement | null>(null)
 
 const travelMax = ref(0)
 const verticalMax = ref(0)
+
 const progressFill = ref({})
 
-watch(() => props.modelValue, (newVal) => {
-  const { traveledDistance, verticalToTraveledDistance } = ratioConvertToDistance(newVal.traveledDistanceRatio, newVal.verticalDistanceRatio)
-  updateSliderAndTrack(traveledDistance, verticalToTraveledDistance, true)
+watch(() => props.modelValue, ({ traveledDistanceRatio, verticalDistanceRatio }) => {
+  main(traveledDistanceRatio, verticalDistanceRatio)
 }, { deep: true })
 
 const slots = useSlots()
@@ -66,12 +66,20 @@ onMounted(() => {
     customizedSlider.value = true
 
   initSliderAndTrack()
+  main(props.modelValue.traveledDistanceRatio, props.modelValue.verticalDistanceRatio)
 })
 
 defineExpose({
   travelMax,
   verticalMax,
 })
+
+function main(traveledDistanceRatio: number, verticalDistanceRatio: number) {
+  passDistanceRatioToTooltip(traveledDistanceRatio, verticalDistanceRatio)
+  const { legalTraveledDistance, legalVerticalToTraveledDistance } = ratioConvertToDistance(traveledDistanceRatio, verticalDistanceRatio)
+  const { traveledDistance, verticalToTraveledDistance, progressFill } = prepareStyleData(legalTraveledDistance, legalVerticalToTraveledDistance)
+  updateSliderAndTrack(traveledDistance, verticalToTraveledDistance, progressFill)
+}
 
 function ratioConvertToDistance(traveledDistanceRatio: number, verticalDistanceRatio: number) {
   let _traveledDistanceRatio = traveledDistanceRatio
@@ -87,8 +95,8 @@ function ratioConvertToDistance(traveledDistanceRatio: number, verticalDistanceR
   const traveledDistance = Number((_traveledDistanceRatio * travelMax.value).toFixed(1))
   const verticalToTraveledDistance = Number((_verticalDistanceRatio * verticalMax.value).toFixed(1))
   return {
-    traveledDistance,
-    verticalToTraveledDistance,
+    legalTraveledDistance: traveledDistance,
+    legalVerticalToTraveledDistance: verticalToTraveledDistance,
   }
 }
 
@@ -145,20 +153,14 @@ function initSliderAndTrack() {
   const sliderRect = sliderRef.value!.getBoundingClientRect()
   let top = 0
   let left = 0
-  const { traveledDistance, verticalToTraveledDistance } = ratioConvertToDistance(props.modelValue.traveledDistanceRatio, props.modelValue.verticalDistanceRatio)
-  const { _traveledDistance, _verticalToTraveledDistance } = checkDistanceIsLegal(traveledDistance, verticalToTraveledDistance)
-  let legalTraveledDistance = _traveledDistance
-  let legalVerticalToTraveledDistance = _verticalToTraveledDistance
 
   if (!props.dimensionalMovement) {
     if (props.vertical) {
-      legalTraveledDistance = 0
       top = -sliderRect.height / 2
       left = (backgroundBoardRect.width - sliderRect.width) / 2
       setStyles(props.trackThickness, backgroundBoardRect.height, `bottom center`)
     }
     else {
-      legalVerticalToTraveledDistance = 0
       top = (backgroundBoardRect.height - sliderRect.height) / 2
       left = -sliderRect.width / 2
       setStyles(backgroundBoardRect.width, props.trackThickness, `left center`)
@@ -172,8 +174,6 @@ function initSliderAndTrack() {
 
   sliderRef.value!.style.top = `${top}px`
   sliderRef.value!.style.left = `${left}px`
-
-  updateSliderAndTrack(legalTraveledDistance, legalVerticalToTraveledDistance, true)
 }
 
 /**
@@ -201,75 +201,52 @@ function getMouseCoordinate(e: MouseEvent) {
   }
 }
 
-/**
- * @description Core function for updating slider and track status
- * @param traveledDistance
- * @param verticalToTraveledDistance
- * @param externalSource
- */
-function updateSliderAndTrack(traveledDistance: number = 0, verticalToTraveledDistance: number = 0, externalSource: boolean) {
-  const transformToUser = (transformVerticalDistance: number) => {
-    return verticalMax.value - transformVerticalDistance
-  }
-  const userToTransform = (userVerticalDistance: number) => {
-    return verticalMax.value - userVerticalDistance
-  }
-
+function prepareStyleData(traveledDistance: number, verticalToTraveledDistance: number) {
   let progressRatio = 0
-
+  let progressFill: { transform: string } = { transform: `` }
   let { _traveledDistance, _verticalToTraveledDistance } = checkDistanceIsLegal(traveledDistance, verticalToTraveledDistance)
 
   if (!props.dimensionalMovement) {
     if (props.vertical) {
+      progressRatio = _verticalToTraveledDistance / verticalMax.value
+      progressFill = { transform: `scaleY(${progressRatio})` }
       _traveledDistance = 0
+      _verticalToTraveledDistance = verticalMax.value - _verticalToTraveledDistance
 
-      if (externalSource) {
-        progressRatio = _verticalToTraveledDistance / verticalMax.value
-        progressFill.value = { transform: `scaleY(${progressRatio})` }
-        const transformVerticalToTraveledDistance = userToTransform(_verticalToTraveledDistance)
-        sliderRef.value!.style.transform = `translate(${_traveledDistance}px,${transformVerticalToTraveledDistance}px) rotate(${props.sliderRotate}deg)`
-        passPositionToTooltip(_traveledDistance, _verticalToTraveledDistance)
-
-        return {
-          traveledDistance: _traveledDistance,
-          verticalToTraveledDistance: _verticalToTraveledDistance,
-        }
-      }
-      else {
-        const userVerticalDistance = transformToUser(_verticalToTraveledDistance)
-        progressRatio = userVerticalDistance / verticalMax.value
-        progressFill.value = { transform: `scaleY(${progressRatio})` }
-
-        sliderRef.value!.style.transform = `translate(${_traveledDistance}px,${_verticalToTraveledDistance}px) rotate(${props.sliderRotate}deg) `
-        passPositionToTooltip(_traveledDistance, userVerticalDistance)
-
-        return {
-          traveledDistance: _traveledDistance,
-          verticalToTraveledDistance: userVerticalDistance,
-        }
+      return {
+        traveledDistance: _traveledDistance,
+        verticalToTraveledDistance: _verticalToTraveledDistance,
+        progressFill,
       }
     }
 
     else {
-      _verticalToTraveledDistance = 0
-      sliderRef.value!.style.transform = `translate(${_traveledDistance}px,${_verticalToTraveledDistance}px) rotate(${props.sliderRotate}deg)`
-      passPositionToTooltip(_traveledDistance, _verticalToTraveledDistance)
       progressRatio = _traveledDistance / travelMax.value
-      progressFill.value = { transform: `scaleX(${progressRatio})` }
+      progressFill = { transform: `scaleX(${progressRatio})` }
+      _verticalToTraveledDistance = 0
+
       return {
         traveledDistance: _traveledDistance,
         verticalToTraveledDistance: _verticalToTraveledDistance,
+        progressFill,
       }
     }
   }
-  progressRatio = _traveledDistance / travelMax.value
-  progressFill.value = { transform: `scaleX(${progressRatio})` }
-  sliderRef.value!.style.transform = `translate(${_traveledDistance}px,${_verticalToTraveledDistance}px) rotate(${props.sliderRotate}deg)`
-  passPositionToTooltip(_traveledDistance, _verticalToTraveledDistance)
-  return {
-    traveledDistance: _traveledDistance,
-    verticalToTraveledDistance: _verticalToTraveledDistance,
+  else {
+    progressRatio = _traveledDistance / travelMax.value
+    progressFill = { transform: `scaleX(${progressRatio})` }
+    return {
+      traveledDistance: _traveledDistance,
+      verticalToTraveledDistance: _verticalToTraveledDistance,
+      progressFill,
+    }
   }
+}
+
+function updateSliderAndTrack(traveledDistance: number = 0, verticalToTraveledDistance: number = 0, progress: { transform: string }) {
+  const { _traveledDistance, _verticalToTraveledDistance } = checkDistanceIsLegal(traveledDistance, verticalToTraveledDistance)
+  progressFill.value = progress
+  sliderRef.value!.style.transform = `translate(${_traveledDistance}px,${_verticalToTraveledDistance}px) rotate(${props.sliderRotate}deg)`
 }
 
 /**
@@ -277,7 +254,7 @@ function updateSliderAndTrack(traveledDistance: number = 0, verticalToTraveledDi
  * @param traveledDistance
  * @param verticalToTraveledDistance
  */
-function transferPositionData(traveledDistance: number, verticalToTraveledDistance: number) {
+function transferRatioData(traveledDistance: number, verticalToTraveledDistance: number) {
   const ratio = distanceConvertToRatio(traveledDistance, verticalToTraveledDistance)
   emit('update:modelValue', { ...ratio })
   emit('drag', { ...ratio })
@@ -288,9 +265,11 @@ function transferPositionData(traveledDistance: number, verticalToTraveledDistan
  * @param e
  */
 function updateSliderPositionByMouse(e: MouseEvent) {
-  const { traveledDistance, verticalToTraveledDistance } = getMouseCoordinate(e)
-  const distance = updateSliderAndTrack(traveledDistance, verticalToTraveledDistance, false)
-  transferPositionData(distance.traveledDistance, distance.verticalToTraveledDistance)
+  let { traveledDistance, verticalToTraveledDistance } = getMouseCoordinate(e)
+  if (!props.dimensionalMovement && props.vertical)
+    verticalToTraveledDistance = verticalMax.value - verticalToTraveledDistance
+
+  transferRatioData(traveledDistance, verticalToTraveledDistance)
 }
 
 const isDrag = ref(false)
@@ -341,12 +320,13 @@ function formatter({ traveledDistanceRatio, verticalDistanceRatio }: { traveledD
  * @param travel
  * @param vertical
  */
-function passPositionToTooltip(travel: number, vertical: number) {
+function passDistanceRatioToTooltip(travelRatio: number, verticalRatio: number) {
   if (!props.displayTooltip)
     return
-  let { traveledDistanceRatio, verticalDistanceRatio } = distanceConvertToRatio(travel, vertical)
-  traveledDistanceRatio = Number(Math.round(100 * traveledDistanceRatio))
-  verticalDistanceRatio = Number(Math.round(100 * verticalDistanceRatio))
+
+  const traveledDistanceRatio = Math.round(100 * travelRatio)
+  const verticalDistanceRatio = Math.round(100 * verticalRatio)
+
   if (props.formatterTooltip !== undefined) {
     positionTooltip.value = formatter({ traveledDistanceRatio, verticalDistanceRatio }, props.formatterTooltip)
   }
