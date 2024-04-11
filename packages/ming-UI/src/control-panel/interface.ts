@@ -19,4 +19,5 @@ export interface ControlPanelProps {
   displayTooltip?: boolean
   formatterTooltip?: (...args: number[]) => string
   placement?: placementType
+  ratioAccuracy?: 0 | 1 | 2
 }

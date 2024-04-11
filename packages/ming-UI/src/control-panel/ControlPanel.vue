@@ -37,6 +37,7 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
     horizontalDistanceRatio: 0,
     verticalDistanceRatio: 0,
   }),
+  ratioAccuracy: 0,
   displayTooltip: true,
   placement: 'bottom',
 })
@@ -80,8 +81,9 @@ function main(horizontalDistanceRatio: number, verticalDistanceRatio: number) {
 }
 
 function ratioConvertToDistance(horizontalDistanceRatio: number, verticalDistanceRatio: number) {
-  const horizontalDistance = Number((checkParameterTypeAndClamp(horizontalDistanceRatio, 100) / 100 * horizontalMax.value).toFixed(1))
-  const verticalDistance = Number((checkParameterTypeAndClamp(verticalDistanceRatio, 100) / 100 * verticalMax.value).toFixed(1))
+  const distanceAccuracy = props.ratioAccuracy + 2
+  const horizontalDistance = Number((checkParameterTypeAndClamp(horizontalDistanceRatio, 100) / 100 * horizontalMax.value).toFixed(distanceAccuracy))
+  const verticalDistance = Number((checkParameterTypeAndClamp(verticalDistanceRatio, 100) / 100 * verticalMax.value).toFixed(distanceAccuracy))
   return {
     legalHorizontalDistance: horizontalDistance,
     legalVerticalDistance: verticalDistance,
@@ -89,8 +91,9 @@ function ratioConvertToDistance(horizontalDistanceRatio: number, verticalDistanc
 }
 
 function distanceConvertToRatio(horizontalDistance: number, verticalDistance: number) {
-  const horizontalDistanceRatio = horizontalDistance / horizontalMax.value * 100
-  const verticalDistanceRatio = verticalDistance / verticalMax.value * 100
+  const ratioAccuracy = props.ratioAccuracy
+  const horizontalDistanceRatio = Number((horizontalDistance / horizontalMax.value * 100).toFixed(ratioAccuracy))
+  const verticalDistanceRatio = Number((verticalDistance / verticalMax.value * 100).toFixed(ratioAccuracy))
   return {
     horizontalDistanceRatio,
     verticalDistanceRatio,
@@ -174,11 +177,13 @@ function getMouseCoordinate(e: MouseEvent) {
       verticalDistance: 0,
     }
   }
+  const distanceAccuracy = props.ratioAccuracy + 2
   const backgroundBoardRect = backgroundBoardRef.value.getBoundingClientRect()
   const left = backgroundBoardRect.left
   const top = backgroundBoardRect.top
-  const naturalHorizontalDistance = Math.round(e.clientX - left)
-  const naturalVerticalDistance = Math.round(e.clientY - top)
+
+  const naturalHorizontalDistance = Number((e.clientX - left).toFixed(distanceAccuracy))
+  const naturalVerticalDistance = Number((e.clientY - top).toFixed(distanceAccuracy))
   const horizontalDistance = clamp(naturalHorizontalDistance, horizontalMax.value)
   const verticalDistance = clamp(naturalVerticalDistance, verticalMax.value)
 
@@ -310,9 +315,9 @@ function formatter({ horizontalDistanceRatio, verticalDistanceRatio }: { horizon
 function passDistanceRatioToTooltip(horizontalRatio: number, verticalRatio: number) {
   if (!props.displayTooltip)
     return
-
-  const horizontalDistanceRatio = Math.round(horizontalRatio)
-  const verticalDistanceRatio = Math.round(verticalRatio)
+  const ratioAccuracy = props.ratioAccuracy
+  const horizontalDistanceRatio = Number((horizontalRatio).toFixed(ratioAccuracy))
+  const verticalDistanceRatio = Number((verticalRatio).toFixed(ratioAccuracy))
 
   if (props.formatterTooltip !== undefined) {
     positionTooltip.value = formatter({ horizontalDistanceRatio, verticalDistanceRatio }, props.formatterTooltip)
