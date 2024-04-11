@@ -2,11 +2,11 @@
 import { ref } from 'vue'
 
 const initSliderPosition = ref({
-  verticalToTraveledDistance: 30,
+  verticalDistanceRatio: 30,
 })
 const mControlPanelRef = ref(null)
-function formatter(distance) {
-  const percentage = `${Math.ceil(distance / mControlPanelRef.value.verticalMax * 100)}%`
+function formatter(ratio) {
+  const percentage = `${ratio}%`
   return percentage
 }
 const backgroundStyle = {
@@ -16,26 +16,22 @@ const backgroundStyle = {
   borderRadius: '10px',
 }
 
-const dimensionalDistance = ref({
-  traveledDistance: 66,
-  verticalToTraveledDistance: 25,
+const dimensionalDistanceRatio = ref({
+  horizontalDistanceRatio: 66,
+  verticalDistanceRatio: 25,
 })
-function dimensionalFormatter(travel, vertical) {
-  const traveledDistance = `X:${travel}`
-  const verticalToTraveledDistance = `Y:${vertical}`
-  return `${traveledDistance},${verticalToTraveledDistance}`
+function dimensionalFormatter(horizontalRatio, verticalRatio) {
+  const horizontalDistance = Math.round(horizontalRatio / 100 * mControlPanelRef.value.horizontalMax)
+  const verticalDistance = Math.round(verticalRatio / 100 * mControlPanelRef.value.verticalMax)
+  return `X:${horizontalDistance},Y:${verticalDistance}`
 }
 </script>
 
 <template>
   <div class="container">
-    <MControlPanel ref="mControlPanelRef" :model-value="initSliderPosition" :formatter-tooltip="formatter" :display-tooltip="true" :vertical="true" placement="top" />
+    <MControlPanel v-model="initSliderPosition" :formatter-tooltip="formatter" :display-tooltip="true" :vertical="true" placement="top" />
     <div>
-      <MControlPanel v-model="dimensionalDistance" :background-style="backgroundStyle" :dimensional-movement="true" :formatter-tooltip="dimensionalFormatter" :display-tooltip="true" placement="left" />
-      <div class="position">
-        X:<span>{{ dimensionalDistance.traveledDistance }}</span>
-        Y:<span>{{ dimensionalDistance.verticalToTraveledDistance }}</span>
-      </div>
+      <MControlPanel ref="mControlPanelRef" v-model="dimensionalDistanceRatio" :background-style="backgroundStyle" :dimensional-movement="true" :formatter-tooltip="dimensionalFormatter" :display-tooltip="true" placement="left" />
     </div>
   </div>
 </template>

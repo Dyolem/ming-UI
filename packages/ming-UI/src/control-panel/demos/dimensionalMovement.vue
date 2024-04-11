@@ -2,8 +2,8 @@
 import { ref } from 'vue'
 
 const initSliderPosition = ref({
-  traveledDistance: 50,
-  verticalToTraveledDistance: 20,
+  horizontalDistanceRatio: 50,
+  verticalDistanceRatio: 20,
 })
 const backgroundStyle = {
   width: '200px',
@@ -15,8 +15,8 @@ const backgroundStyle = {
 
 <template>
   <div class="container">
-    <MControlPanel :model-value="initSliderPosition" :dimensional-movement="true" :background-style="backgroundStyle" />
-    <MControlPanel :model-value="initSliderPosition" :dimensional-movement="true" :background-style="backgroundStyle" :display-track="true" />
+    <MControlPanel v-model="initSliderPosition" :dimensional-movement="true" :background-style="backgroundStyle" />
+    <MControlPanel v-model="initSliderPosition" :dimensional-movement="true" :background-style="backgroundStyle" :display-track="true" />
   </div>
 </template>
 

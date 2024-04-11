@@ -8,47 +8,47 @@ const backgroundStyle = {
   borderRadius: '10px',
 }
 
-const distanceOne = ref({
-  traveledDistance: 60,
-  verticalToTraveledDistance: 20,
+const positionOne = ref({
+  horizontalDistanceRatio: 60,
+  verticalDistanceRatio: 20,
 })
 
-const distanceTwo = ref({
-  verticalToTraveledDistance: 50,
+const positionTwo = ref({
+  verticalDistanceRatio: 50,
 })
-const dimensionalDistance = ref({
-  traveledDistance: 66,
-  verticalToTraveledDistance: 25,
+const dimensionalPosition = ref({
+  horizontalDistanceRatio: 66,
+  verticalDistanceRatio: 25,
 })
 </script>
 
 <template>
   <div class="grid">
     <div class="show-box">
-      <MControlPanel v-model="distanceOne" />
+      <MControlPanel v-model="positionOne" />
       <div class="position">
-        X:<span>{{ distanceOne.traveledDistance }}</span>
-        Y:<span>{{ distanceOne.verticalToTraveledDistance }}</span>
+        X:<span>{{ positionOne.horizontalDistanceRatio }}</span>
+        Y:<span>{{ positionOne.verticalDistanceRatio }}</span>
       </div>
     </div>
     <div class="show-box">
-      <MControlPanel v-model="distanceTwo" :vertical="true" />
+      <MControlPanel v-model="positionTwo" :vertical="true" />
       <div class="position">
-        Y:<span>{{ distanceTwo.verticalToTraveledDistance }}</span>
+        Y:<span>{{ positionTwo.verticalDistanceRatio }}</span>
       </div>
     </div>
     <div class="show-box">
-      <MControlPanel v-model="dimensionalDistance" :background-style="backgroundStyle" :dimensional-movement="true" />
+      <MControlPanel v-model="dimensionalPosition" :background-style="backgroundStyle" :dimensional-movement="true" />
       <div class="position">
-        X:<span>{{ dimensionalDistance.traveledDistance }}</span>
-        Y:<span>{{ dimensionalDistance.verticalToTraveledDistance }}</span>
+        X:<span>{{ dimensionalPosition.horizontalDistanceRatio }}</span>
+        Y:<span>{{ dimensionalPosition.verticalDistanceRatio }}</span>
       </div>
     </div>
     <div class="show-box">
-      <MControlPanel v-model="dimensionalDistance" :background-style="backgroundStyle" :dimensional-movement="true" />
+      <MControlPanel v-model="dimensionalPosition" :background-style="backgroundStyle" :dimensional-movement="true" />
       <div class="position">
-        X:<span>{{ dimensionalDistance.traveledDistance }}</span>
-        Y:<span>{{ dimensionalDistance.verticalToTraveledDistance }}</span>
+        X:<span>{{ dimensionalPosition.horizontalDistanceRatio }}</span>
+        Y:<span>{{ dimensionalPosition.verticalDistanceRatio }}</span>
       </div>
     </div>
   </div>

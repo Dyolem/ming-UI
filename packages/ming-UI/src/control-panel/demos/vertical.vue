@@ -2,10 +2,10 @@
 import { ref } from 'vue'
 
 const initSliderPosition = ref({
-  verticalToTraveledDistance: 20,
+  verticalDistanceRatio: 20,
 })
 </script>
 
 <template>
-  <MControlPanel :model-value="initSliderPosition" :vertical="true" />
+  <MControlPanel v-model="initSliderPosition" :vertical="true" />
 </template>

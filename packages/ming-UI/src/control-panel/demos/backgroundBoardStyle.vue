@@ -1,4 +1,6 @@
 <script setup>
+import { ref } from 'vue'
+
 const backgroundStyleF = {
   width: '200px',
   height: '50px',
@@ -19,13 +21,16 @@ const backgroundStyleT = {
   width: '180px', // 内边距
   height: '30px',
 }
+const initRatio = ref({
+  horizontalDistanceRatio: 20,
+})
 </script>
 
 <template>
   <div class="container">
-    <MControlPanel :background-style="backgroundStyleF" />
-    <MControlPanel :background-style="backgroundStyleS" />
-    <MControlPanel :background-style="backgroundStyleT" />
+    <MControlPanel v-model="initRatio" :background-style="backgroundStyleF" />
+    <MControlPanel v-model="initRatio" :background-style="backgroundStyleS" />
+    <MControlPanel v-model="initRatio" :background-style="backgroundStyleT" />
   </div>
 </template>
 

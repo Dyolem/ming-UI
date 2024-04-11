@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 
 const initSliderPosition = ref({
-  traveledDistance: 20,
+  horizontalDistanceRatio: 20,
 })
 </script>
 

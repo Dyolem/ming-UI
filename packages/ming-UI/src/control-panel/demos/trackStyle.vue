@@ -3,14 +3,14 @@ import { ref } from 'vue'
 
 const trackBackgroundColor = 'lightgreen'
 const trackThickness = 20
-const initDistance = ref({
-  traveledDistance: 40,
+const initDistanceRatio = ref({
+  horizontalDistanceRatio: 20,
 })
 </script>
 
 <template>
   <div class="container">
-    <MControlPanel :model-value="initDistance" :track-background-color="trackBackgroundColor" :track-thickness="trackThickness" />
+    <MControlPanel :model-value="initDistanceRatio" :track-background-color="trackBackgroundColor" :track-thickness="trackThickness" />
   </div>
 </template>
 
