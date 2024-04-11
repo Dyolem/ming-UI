@@ -73,8 +73,10 @@ defineExpose({
   verticalMax,
 })
 
-function main(horizontalDistanceRatio: number, verticalDistanceRatio: number) {
-  passDistanceRatioToTooltip(horizontalDistanceRatio, verticalDistanceRatio)
+function main(horizontalDistanceRatio: number = 0, verticalDistanceRatio: number = 0) {
+  const _horizontalDistanceRatio = Number(horizontalDistanceRatio.toFixed(props.ratioAccuracy))
+  const _verticalDistanceRatio = Number(verticalDistanceRatio.toFixed(props.ratioAccuracy))
+  passDistanceRatioToTooltip(_horizontalDistanceRatio, _verticalDistanceRatio)
   const { legalHorizontalDistance, legalVerticalDistance } = ratioConvertToDistance(horizontalDistanceRatio, verticalDistanceRatio)
   const { horizontalDistance, verticalDistance, progressFill } = prepareStyleData(legalHorizontalDistance, legalVerticalDistance)
   updateSliderAndTrack(horizontalDistance, verticalDistance, progressFill)
@@ -109,10 +111,9 @@ function clamp(value: number, max: number): number {
   return Math.min(Math.max(value, 0), max)
 }
 
-function checkParameterTypeAndClamp(clampMax: number, toBeCheckedParameter: number) {
+function checkParameterTypeAndClamp(toBeCheckedParameter: number, clampMax: number) {
   let checkedParameter = (typeof toBeCheckedParameter !== 'number') ? 0 : toBeCheckedParameter
   checkedParameter = clamp(checkedParameter, clampMax)
-
   return checkedParameter
 }
 
@@ -236,9 +237,8 @@ function prepareStyleData(horizontalDistance: number, verticalDistance: number) 
 }
 
 function updateSliderAndTrack(horizontalDistance: number = 0, verticalDistance: number = 0, progress: { transform: string }) {
-  const { _horizontalDistance, _verticalDistance } = checkDistanceIsLegal(horizontalDistance, verticalDistance)
   progressFill.value = progress
-  sliderRef.value!.style.transform = `translate(${_horizontalDistance}px,${_verticalDistance}px) rotate(${props.sliderRotate}deg)`
+  sliderRef.value!.style.transform = `translate(${horizontalDistance}px,${verticalDistance}px) rotate(${props.sliderRotate}deg)`
 }
 
 /**
@@ -257,11 +257,15 @@ function transferRatioData(horizontalDistance: number, verticalDistance: number)
  * @param e
  */
 function updateSliderPositionByMouse(e: MouseEvent) {
-  let { horizontalDistance, verticalDistance } = getMouseCoordinate(e)
-  if (!props.dimensionalMovement && props.vertical)
-    verticalDistance = verticalMax.value - verticalDistance
-
-  transferRatioData(horizontalDistance, verticalDistance)
+  const { horizontalDistance, verticalDistance } = getMouseCoordinate(e)
+  // 这里再次调用prepareStyleData目的是：如果组件是一维模式，用户却传递了垂直方向的数据，那么更新返回数据时，应该设置为0，
+  // 由于这个逻辑在prepareStyleData已经实现，所以这里调用即可。
+  // 如果后续需求变更，不设置为0，那么只需替换为如下代码：
+  // if (!props.dimensionalMovement && props.vertical)
+  //   verticalDistance = verticalMax.value - verticalDistance
+  // 这是由于不再调用prepareStyleData，所以含有垂直距离转换的代码需要写出来
+  const { horizontalDistance: _horizontalDistance, verticalDistance: _verticalDistance } = prepareStyleData(horizontalDistance, verticalDistance)
+  transferRatioData(_horizontalDistance, _verticalDistance)
 }
 
 const isDrag = ref(false)
@@ -312,10 +316,11 @@ function formatter({ horizontalDistanceRatio, verticalDistanceRatio }: { horizon
  * @param horizontalRatio
  * @param verticalRatio
  */
-function passDistanceRatioToTooltip(horizontalRatio: number, verticalRatio: number) {
+function passDistanceRatioToTooltip(horizontalRatio: number = 0, verticalRatio: number = 0) {
   if (!props.displayTooltip)
     return
   const ratioAccuracy = props.ratioAccuracy
+
   const horizontalDistanceRatio = Number((horizontalRatio).toFixed(ratioAccuracy))
   const verticalDistanceRatio = Number((verticalRatio).toFixed(ratioAccuracy))
 
