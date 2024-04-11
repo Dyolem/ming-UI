@@ -5,9 +5,9 @@ import { MControlPanel, MInput, MTooltip } from 'ming-UI'
 import EyeDropper from './components/EyeDropper.vue'
 import type { ColorPickerProps } from './interface'
 
-interface distanceType {
-  traveledDistance: number
-  verticalToTraveledDistance: number
+interface ratioType {
+  traveledDistanceRatio: number
+  verticalDistanceRatio: number
 }
 defineOptions({
   name: 'MColorPicker',
@@ -37,15 +37,15 @@ const display = ref<boolean>(true)
 const isFullFunction = ref<boolean>(props.fullFunction)
 
 const hueControlRef = ref<InstanceType<typeof MControlPanel> | null>(null)
-const hConvertToDistance = ref<distanceType>({
-  traveledDistance: 0,
-  verticalToTraveledDistance: 0,
+const hConvertToRatio = ref<ratioType>({
+  traveledDistanceRatio: 0,
+  verticalDistanceRatio: 0,
 })
 
 const colorTakingControlRef = ref<InstanceType<typeof MControlPanel> | null>(null)
-const slConvertToDistance = ref<distanceType>({
-  traveledDistance: 0,
-  verticalToTraveledDistance: 0,
+const slConvertToRatio = ref<ratioType>({
+  traveledDistanceRatio: 0,
+  verticalDistanceRatio: 0,
 })
 
 interface colorManagerType {
@@ -159,18 +159,18 @@ async function updateSliderPosition() {
   if (isFullFunction.value)
     await nextTick()
 
-  hConvertToDistance.value.traveledDistance = 0
-  hConvertToDistance.value.verticalToTraveledDistance = (colorManager.value.hsl.h / 360) * (hueControlRef.value!.verticalMax)
+  hConvertToRatio.value.traveledDistanceRatio = 0
+  hConvertToRatio.value.verticalDistanceRatio = colorManager.value.hsl.h / 360 * 100
 
-  slConvertToDistance.value.traveledDistance = colorManager.value.hsl.s / 100 * colorTakingControlRef.value!.travelMax
-  slConvertToDistance.value.verticalToTraveledDistance = (100 - colorManager.value.hsl.l) * colorTakingControlRef.value!.verticalMax / 100
+  slConvertToRatio.value.traveledDistanceRatio = colorManager.value.hsl.s / 100 * 100
+  slConvertToRatio.value.verticalDistanceRatio = (100 - colorManager.value.hsl.l) / 100 * 100
 }
 
-function positionUpdateColor(colorType: string, val: distanceType) {
+function positionUpdateColor(colorType: string, val: ratioType) {
   if (hueControlRef.value === null || colorTakingControlRef.value === null)
     return
   if (colorType === 'h') {
-    const newH = Math.round(360 / (hueControlRef.value.verticalMax) * val.verticalToTraveledDistance)
+    const newH = Math.round(360 * val.verticalDistanceRatio / 100)
     const checkedH = checkColorValue('h', newH)
     colorManager.value.hsl.h = checkedH
 
@@ -180,8 +180,8 @@ function positionUpdateColor(colorType: string, val: distanceType) {
     colorManager.value.hex = useRgbToHex(r, g, b)
   }
   else {
-    const newS = Math.round(100 / colorTakingControlRef.value.travelMax * val.traveledDistance)
-    const newL = Math.round(100 - (100 / colorTakingControlRef.value.verticalMax * val.verticalToTraveledDistance))
+    const newS = Math.round(100 * val.traveledDistanceRatio / 100)
+    const newL = Math.round(100 - (100 * val.verticalDistanceRatio / 100))
 
     const checkedS = checkColorValue('h', newS)
     colorManager.value.hsl.s = checkedS
@@ -231,13 +231,13 @@ function copyColorValue(content: string) {
 <template>
   <div v-if="display" class="container" :class="isFullFunction ? 'full' : 'partial'">
     <div class="color-gradient-wheel">
-      <MControlPanel v-if="isFullFunction" ref="colorTakingControlRef" v-model:model-value="slConvertToDistance" :dimensional-movement="true" :background-style="saturationSquareStyle" @drag="value => positionUpdateColor('sl', value)">
+      <MControlPanel v-if="isFullFunction" ref="colorTakingControlRef" v-model:model-value="slConvertToRatio" :dimensional-movement="true" :background-style="saturationSquareStyle" @drag="value => positionUpdateColor('sl', value)">
         <template #slider-icon>
           <div class="picker" />
         </template>
       </MControlPanel>
       <div class="hue-box">
-        <MControlPanel v-if="isFullFunction" ref="hueControlRef" v-model:model-value="hConvertToDistance" :vertical="true" :background-style="hueBandStyle" :display-track="false" @drag="value => positionUpdateColor('h', value)">
+        <MControlPanel v-if="isFullFunction" ref="hueControlRef" v-model:model-value="hConvertToRatio" :vertical="true" :background-style="hueBandStyle" :display-track="false" @drag="value => positionUpdateColor('h', value)">
           <template #slider-icon>
             <div class="picker" />
           </template>
