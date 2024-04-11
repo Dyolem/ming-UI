@@ -6,7 +6,7 @@ import EyeDropper from './components/EyeDropper.vue'
 import type { ColorPickerProps } from './interface'
 
 interface ratioType {
-  traveledDistanceRatio: number
+  horizontalDistanceRatio: number
   verticalDistanceRatio: number
 }
 defineOptions({
@@ -38,13 +38,13 @@ const isFullFunction = ref<boolean>(props.fullFunction)
 
 const hueControlRef = ref<InstanceType<typeof MControlPanel> | null>(null)
 const hConvertToRatio = ref<ratioType>({
-  traveledDistanceRatio: 0,
+  horizontalDistanceRatio: 0,
   verticalDistanceRatio: 0,
 })
 
 const colorTakingControlRef = ref<InstanceType<typeof MControlPanel> | null>(null)
 const slConvertToRatio = ref<ratioType>({
-  traveledDistanceRatio: 0,
+  horizontalDistanceRatio: 0,
   verticalDistanceRatio: 0,
 })
 
@@ -159,10 +159,10 @@ async function updateSliderPosition() {
   if (isFullFunction.value)
     await nextTick()
 
-  hConvertToRatio.value.traveledDistanceRatio = 0
+  hConvertToRatio.value.horizontalDistanceRatio = 0
   hConvertToRatio.value.verticalDistanceRatio = colorManager.value.hsl.h / 360 * 100
 
-  slConvertToRatio.value.traveledDistanceRatio = colorManager.value.hsl.s / 100 * 100
+  slConvertToRatio.value.horizontalDistanceRatio = colorManager.value.hsl.s / 100 * 100
   slConvertToRatio.value.verticalDistanceRatio = (100 - colorManager.value.hsl.l) / 100 * 100
 }
 
@@ -180,7 +180,7 @@ function positionUpdateColor(colorType: string, val: ratioType) {
     colorManager.value.hex = useRgbToHex(r, g, b)
   }
   else {
-    const newS = Math.round(100 * val.traveledDistanceRatio / 100)
+    const newS = Math.round(100 * val.horizontalDistanceRatio / 100)
     const newL = Math.round(100 - (100 * val.verticalDistanceRatio / 100))
 
     const checkedS = checkColorValue('h', newS)
