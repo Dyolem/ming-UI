@@ -9,7 +9,7 @@ export interface ControlPanelProps {
   backgroundStyle?: BackgroundStyle // 使用 BackgroundStyle 类型而不是 object
   dimensionalMovement?: boolean
   modelValue?: {
-    traveledDistanceRatio: number
+    horizontalDistanceRatio: number
     verticalDistanceRatio: number
   }
   displayTrack?: boolean
