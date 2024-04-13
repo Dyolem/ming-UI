@@ -1,14 +1,26 @@
 # Control Panel 控制板
 
-该组件类似于滑块组件，但是可以在二维平面上移动，拥有更强的功能。滑块移动时将向外传递滑块相对于整个组件的横纵坐标。
+该组件类似于滑块组件，但是增加了在二维平面上移动的功能。滑块移动时将向外传递滑块当前在水平和垂直方向上的进度值。
+
+## 数据传递
+
+组件将以对象形式暴露出滑块的当前进度数据，包含两个属性：`horizontalDistanceRatio`和`verticalDistanceRatio`。`horizontalDistanceRatio`表示水平方向上的进度，`verticalDistanceRatio`表示垂直方向上的进度。
+你可以使用`v-model`绑定该对象以此控制滑块移动，或者直接更改`modelValue`对象的值也可控制滑块移动。
+
+另外在一维移动的模式下，另一维度的属性值在逻辑上是无效的，它也不应该有效，所以在组件内部它将被处理为0后传递到外部。注意在组件首次渲染时，它是无法被处理为0的，只有移动滑块后才会置为0，因此这里强烈建议不要传递无用维度的属性值。
+
+如果传递的属性名称不符合组件要求，或者属性值不是`number`类型，组件将把该属性的值置为0。
+
+<demo src="./demos/data.vue"></demo>
+::: tip
+`model-value`属性和`v-model`如果同时设置，在组件初始化时，前者会覆盖后者的值。而当后者明确设置为`v-model:modelValue`时，后者会覆盖前者的值。因此不建议`model-value`属性和`v-model`同时设置。
+:::
 
 ## 基础使用
 
-通过设置绑定值自定义滑块的初始值,传递的初始值必须是包含`traveledDistance`和`verticalToTraveledDistance` 属性的对象，`traveledDistance`表示沿水平方向移动的距离，`verticalToTraveledDistance`表示沿垂直方向移动的距离。
-
 ### 一维滑动
 
-滑块默认在一个维度滑动，这里为水平正方向滑动。若传递初始值，必须是包含`traveledDistance`的对象，`verticalToTraveledDistance` 属性可以选择不传递,传递了也会处理为0。(垂直模式下必须是包含`verticalToTraveledDistance`属性的对象)
+滑块默认在一个维度，即水平方向上滑动。若传递初始值，必须是包含`horizontalDistanceRatio`的对象，`verticalDistanceRatio` 属性可以选择不传递,传递了也会处理为0。(垂直模式下必须是包含`verticalDistanceRatio`属性的对象，因为垂直方向的数值才是有意义的)
 <demo src="./demos/basic.vue"></demo>
 
 ### 二维滑动
@@ -50,30 +62,18 @@
 在垂直模式下，滑块移动方向为从下往上滑动，坐标将会不断递增。二维滑动模式下不存在垂直模式。
 :::
 
-## 数据传递
-
-组件将以对象形式暴露出滑块的当前位置数据，`traveledDistance`表示沿水平方向移动的距离，`verticalToTraveledDistance`表示垂直方向移动的距离。如果是一维移动模式，另一维度的坐标将永远为0.
-单向传递数据时，外部组件可接收响应式的位置数据。双向绑定时，可在外部通过更改位置数据来控制滑块移动。
-
-<demo src="./demos/data.vue"></demo>
-::: tip
-`model-value`属性和`v-model`如果同时设置，在组件初始化时，前者会覆盖后者的值。而当后者明确设置为`v-model:modelValue`时，后者会覆盖前者的值。因此不建议`model-value`属性和`v-model`同时设置。
-
-另外在一维模式下，建议绑定只有一个属性的对象，虽然组件会自动处理多余维度对应的属性，使其值永远为0，但是在组件初始化时是无法避免的。比如在上面一维演示例子中，有一个维度的坐标在初始化时不会为0，只有滑动之后才会为0.因此强烈建议只传递需要的属性。
-:::
-
 ## 文字提示
 
 当鼠标覆于滑块上方时，会默认显示tooltip，可设置`placement`控制其显示位置。设置`display-tooltip`为`false`可关闭tooltip。
 
-默认的tooltip内容为当前滑块的坐标，可向`formatter-tooltip`属性传递一个自定义格式函数控制显示内容：一维模式下，函数会提供一个参数，该参数对应于当前维度的坐标，比如在垂直模式下，这个参数的值为`verticalToTraveledDistance`属性值；二维模式下函数会提供两个参数，分别对应`traveledDistance`，`verticalToTraveledDistance`属性。函数返回值必须为`string`类型，否则tooltip内容将被处理为空字符串。
+默认的tooltip内容为当前滑块对应维度的进度值。可设置`formatter-tooltip`属性，传递一个自定义格式函数控制显示内容：一维模式下，函数会提供一个参数，该参数对应于当前维度的进度值，比如在垂直模式下，这个参数的值为`verticalDistanceRatio`属性值；二维模式下函数会提供两个参数，分别对应`horizontalDistanceRatio`，`verticalDistanceRatio`属性。函数返回值必须为`string`类型，否则tooltip内容将被处理为空字符串。
 <demo src="./demos/tooltip.vue"></demo>
 
 ## 坐标系
 
 本组件内部涉及的坐标计算以视口坐标系为参考系，如果更改了组件的参考系，比如父组件使用了`transform:rotate(90deg)`,这将导致内部计算错误。
 
-解决办法：给控制板组件套一层占位组件，设置`transform:rotate(-90deg)`，以此来保持控制板组件的参考系的正确性。
+解决办法：给控制板组件套一层占位组件，设置`transform:rotate(-90deg)`，抵消外部组件的影响，以此来保持控制板组件的参考系的正确性。
 
 <demo src="./demos/rotate.vue"></demo>
 
