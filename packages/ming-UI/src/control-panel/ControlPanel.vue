@@ -37,7 +37,6 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
     horizontalDistanceRatio: 0,
     verticalDistanceRatio: 0,
   }),
-  ratioAccuracy: 0,
   displayTooltip: true,
   placement: 'bottom',
 })
@@ -74,18 +73,15 @@ defineExpose({
 })
 
 function main(horizontalDistanceRatio: number = 0, verticalDistanceRatio: number = 0) {
-  const _horizontalDistanceRatio = Number(horizontalDistanceRatio.toFixed(props.ratioAccuracy))
-  const _verticalDistanceRatio = Number(verticalDistanceRatio.toFixed(props.ratioAccuracy))
-  passDistanceRatioToTooltip(_horizontalDistanceRatio, _verticalDistanceRatio)
+  passDistanceRatioToTooltip(horizontalDistanceRatio, verticalDistanceRatio)
   const { legalHorizontalDistance, legalVerticalDistance } = ratioConvertToDistance(horizontalDistanceRatio, verticalDistanceRatio)
   const { horizontalDistance, verticalDistance, progressFill } = prepareStyleData(legalHorizontalDistance, legalVerticalDistance)
   updateSliderAndTrack(horizontalDistance, verticalDistance, progressFill)
 }
 
 function ratioConvertToDistance(horizontalDistanceRatio: number, verticalDistanceRatio: number) {
-  const distanceAccuracy = props.ratioAccuracy + 2
-  const horizontalDistance = Number((checkParameterTypeAndClamp(horizontalDistanceRatio, 100) / 100 * horizontalMax.value).toFixed(distanceAccuracy))
-  const verticalDistance = Number((checkParameterTypeAndClamp(verticalDistanceRatio, 100) / 100 * verticalMax.value).toFixed(distanceAccuracy))
+  const horizontalDistance = Number((checkParameterTypeAndClamp(horizontalDistanceRatio, 100) / 100 * horizontalMax.value).toFixed(2))
+  const verticalDistance = Number((checkParameterTypeAndClamp(verticalDistanceRatio, 100) / 100 * verticalMax.value).toFixed(2))
   return {
     legalHorizontalDistance: horizontalDistance,
     legalVerticalDistance: verticalDistance,
@@ -93,9 +89,8 @@ function ratioConvertToDistance(horizontalDistanceRatio: number, verticalDistanc
 }
 
 function distanceConvertToRatio(horizontalDistance: number, verticalDistance: number) {
-  const ratioAccuracy = props.ratioAccuracy
-  const horizontalDistanceRatio = Number((horizontalDistance / horizontalMax.value * 100).toFixed(ratioAccuracy))
-  const verticalDistanceRatio = Number((verticalDistance / verticalMax.value * 100).toFixed(ratioAccuracy))
+  const horizontalDistanceRatio = Number((horizontalDistance / horizontalMax.value * 100).toFixed(0))
+  const verticalDistanceRatio = Number((verticalDistance / verticalMax.value * 100).toFixed(0))
   return {
     horizontalDistanceRatio,
     verticalDistanceRatio,
@@ -178,13 +173,13 @@ function getMouseCoordinate(e: MouseEvent) {
       verticalDistance: 0,
     }
   }
-  const distanceAccuracy = props.ratioAccuracy + 2
+
   const backgroundBoardRect = backgroundBoardRef.value.getBoundingClientRect()
   const left = backgroundBoardRect.left
   const top = backgroundBoardRect.top
 
-  const naturalHorizontalDistance = Number((e.clientX - left).toFixed(distanceAccuracy))
-  const naturalVerticalDistance = Number((e.clientY - top).toFixed(distanceAccuracy))
+  const naturalHorizontalDistance = e.clientX - left
+  const naturalVerticalDistance = e.clientY - top
   const horizontalDistance = clamp(naturalHorizontalDistance, horizontalMax.value)
   const verticalDistance = clamp(naturalVerticalDistance, verticalMax.value)
 
@@ -319,10 +314,9 @@ function formatter({ horizontalDistanceRatio, verticalDistanceRatio }: { horizon
 function passDistanceRatioToTooltip(horizontalRatio: number = 0, verticalRatio: number = 0) {
   if (!props.displayTooltip)
     return
-  const ratioAccuracy = props.ratioAccuracy
 
-  const horizontalDistanceRatio = Number((horizontalRatio).toFixed(ratioAccuracy))
-  const verticalDistanceRatio = Number((verticalRatio).toFixed(ratioAccuracy))
+  const horizontalDistanceRatio = Number((horizontalRatio).toFixed(0))
+  const verticalDistanceRatio = Number((verticalRatio).toFixed(0))
 
   if (props.formatterTooltip !== undefined) {
     positionTooltip.value = formatter({ horizontalDistanceRatio, verticalDistanceRatio }, props.formatterTooltip)
