@@ -168,6 +168,18 @@ function copyIconsName(event) {
     </m-icon>
     <span>VolumeUp</span>
   </li>
+    <li>
+    <m-icon>
+      <BookMark />
+    </m-icon>
+    <span>BookMark</span>
+  </li>
+  <li>
+    <m-icon>
+      <BookMarkOne />
+    </m-icon>
+    <span>BookMarkOne</span>
+  </li>
 </ul>
 
 <style module>
