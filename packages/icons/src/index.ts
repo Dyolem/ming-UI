@@ -10,6 +10,8 @@ import VoiceOne from './icon/VoiceOne.vue'
 import VolumeDown from './icon/VolumeDown.vue'
 import VolumeUp from './icon/VolumeUp.vue'
 import ColorExtractor from './icon/ColorExtractor.vue'
+import BookMark from './icon/BookMark.vue'
+import BookMarkOne from './icon/BookMarkOne.vue'
 
 // 导入SVG图标注册脚本
 import 'virtual:svg-icons-register'
@@ -27,6 +29,8 @@ const icons = {
   VolumeDown,
   VolumeUp,
   ColorExtractor,
+  BookMark,
+  BookMarkOne,
   // ...其他图标组件
 }
 export {
@@ -41,6 +45,8 @@ export {
   VolumeDown,
   VolumeUp,
   ColorExtractor,
+  BookMark,
+  BookMarkOne,
 }
 
 // 全局注册函数
