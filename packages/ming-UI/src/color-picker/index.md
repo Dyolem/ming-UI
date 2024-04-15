@@ -34,11 +34,11 @@
 
 <demo src="./demos/slot.vue"></demo>
 
-## 命令式调用
+<!-- ## 命令式调用
 
 除了以模板声明的方式直接使用组件，还可以以命令的方式调用组件。
 
-<demo src="./demos/command.vue"></demo>
+<demo src="./demos/command.vue"></demo> -->
 
 ## API
 

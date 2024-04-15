@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
 // import { getCurrentInstance } from 'vue'
 import { MButton, openColorPicker } from 'ming-UI'
 
@@ -14,4 +14,4 @@ function open() {
   <MButton @click="open">
     open
   </MButton>
-</template>
+</template> -->
