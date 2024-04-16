@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, useSlots, watch } from 'vue'
-import { MTooltip } from 'ming-UI'
+import MTooltip from '../tooltip/index'
 import type { ControlPanelProps } from './interface'
 
 defineOptions({

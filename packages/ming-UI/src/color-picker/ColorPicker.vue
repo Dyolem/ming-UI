@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { useClipBoard, useHexToRgb, useHslToRgb, useRgbToHex, useRgbToHsl } from '@ming-UI/utils'
-import { MControlPanel, MInput, MTooltip } from 'ming-UI'
+import MControlPanel from '../control-panel/index'
+import MInput from '../input/index'
+import MTooltip from '../tooltip/index'
 import EyeDropper from './components/EyeDropper.vue'
 import type { ColorPickerProps } from './interface'
 
