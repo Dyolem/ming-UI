@@ -19,9 +19,9 @@ export default defineConfig({
       glob: ['**/demos/*.vue'],
     }),
     tsxResolveTypes(),
-    Component({
-      resolvers: [mingUIResolver()],
-    }),
+    // Component({
+    //   resolvers: [mingUIResolver()],
+    // }),
     createSvgIconsPlugin({
       // Specify the icon folder to be cached
       iconDirs: [path.resolve(process.cwd(), 'packages/icons/src/svg')],

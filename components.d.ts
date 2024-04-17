@@ -7,8 +7,9 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    MButton: typeof import('ming-UI')['MButton']
     MColorPicker: typeof import('ming-UI')['MColorPicker']
     MControlPanel: typeof import('ming-UI')['MControlPanel']
+    MIcon: typeof import('ming-UI')['MIcon']
+    Mute: typeof import('ming-UI')['Mute']
   }
 }

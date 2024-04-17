@@ -19,7 +19,7 @@ export default {
   enhanceApp({ app }) {
     // ...
     app.component('Demo', AntdTheme)
-    // app.use(ming)
+    app.use(ming)
     app.use(icons)
   },
 } satisfies Theme
