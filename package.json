@@ -7,6 +7,7 @@
     "docs:build": "vitepress build",
     "docs:preview": "vitepress preview",
     "genColors": "esno ./scripts/gen-colors.ts",
+    "build:css": "esno ./scripts/css-bundle.ts",
     "test": "vitest",
     "coverage": "vitest --coverage"
   },
@@ -16,6 +17,8 @@
   "devDependencies": {
     "@ant-design/colors": "^7.0.2",
     "@mistjs/eslint-config": "^1.0.0",
+    "@types/fs-extra": "^11.0.4",
+    "@types/less": "^3.0.6",
     "@types/node": "^20.11.25",
     "@vitejs/plugin-vue": "^5.0.4",
     "@vitejs/plugin-vue-jsx": "^3.1.0",
@@ -25,6 +28,8 @@
     "@vue/test-utils": "^2.4.5",
     "eslint": "^8.55.0",
     "esno": "^4.7.0",
+    "fast-glob": "^3.3.2",
+    "fs-extra": "^11.2.0",
     "husky": "^8.0.3",
     "jsdom": "^24.0.0",
     "less": "^4.2.0",
