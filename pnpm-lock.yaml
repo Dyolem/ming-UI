@@ -108,17 +108,24 @@ importers:
   packages/ming-UI:
     dependencies:
       '@floating-ui/vue':
-        specifier: ^1.0.6
+        specifier: ^1.0.4
         version: 1.0.6(vue@3.4.21)
-      '@types/lodash-es':
-        specifier: ^4.17.12
-        version: 4.17.12
+      '@ming-UI/icons':
+        specifier: workspace:*
+        version: link:../icons
+      '@ming-UI/utils':
+        specifier: workspace:*
+        version: link:../utils
       '@v-c/utils':
         specifier: ^0.0.26
         version: 0.0.26(typescript@5.4.2)
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
+    devDependencies:
+      '@types/lodash-es':
+        specifier: ^4.17.12
+        version: 4.17.12
 
   packages/utils:
     dependencies:
@@ -1415,11 +1422,11 @@ packages:
     resolution: {integrity: sha512-0NgftHUcV4v34VhXm8QBSftKVXtbkBG3ViCjs6+eJ5a6y6Mi/jiFGPc1sC7QK+9BFhWrURE3EOggmWaSxL9OzQ==}
     dependencies:
       '@types/lodash': 4.17.0
-    dev: false
+    dev: true
 
   /@types/lodash@4.17.0:
     resolution: {integrity: sha512-t7dhREVv6dbNj0q17X12j7yDG4bD/DHYX7o5/DbDxobP0HnGPgpRz2Ej77aL7TZT3DSw13fqUTj8J4mMnqa7WA==}
-    dev: false
+    dev: true
 
   /@types/markdown-it@13.0.7:
     resolution: {integrity: sha512-U/CBi2YUUcTHBt5tjO2r5QV/x0Po6nsYwQU4Y04fBS6vfoImaiZ6f8bi3CjTCxBPQSO1LMyUqkByzi8AidyxfA==}
