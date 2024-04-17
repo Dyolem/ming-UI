@@ -13,9 +13,6 @@ import ColorExtractor from './icon/ColorExtractor.vue'
 import BookMark from './icon/BookMark.vue'
 import BookMarkOne from './icon/BookMarkOne.vue'
 
-// 导入SVG图标注册脚本
-import 'virtual:svg-icons-register'
-
 // 图标组件对象
 const icons = {
   MIcon,

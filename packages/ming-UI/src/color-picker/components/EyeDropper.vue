@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ColorExtractor, MIcon } from '@ming-UI/icons'
+import { ColorExtractor, MIcon } from '../../../../icons/src/index'
 
 defineOptions({
   name: 'EyeDropper',
