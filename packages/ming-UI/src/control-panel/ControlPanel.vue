@@ -45,6 +45,7 @@ const emit = defineEmits(['update:modelValue', 'drag'])
 
 const backgroundBoardRef = ref<HTMLDivElement>()
 const sliderRef = ref<HTMLDivElement | null>(null)
+const defaultSliderRef = ref<HTMLDivElement | null>(null)
 const trackRef = ref<HTMLDivElement | null>(null)
 const progressRef = ref<HTMLDivElement | null>(null)
 
@@ -129,14 +130,14 @@ function checkDistanceIsLegal(horizontalDistance: number, verticalDistance: numb
  */
 function initSliderAndTrack() {
   const setStyles = (trackWidth: number, trackHeight: number, progressTransformOrigin: string) => {
-    if (props.displayTrack && progressRef.value !== null && trackRef.value !== null && sliderRef.value !== null) {
+    if (props.displayTrack && progressRef.value !== null && trackRef.value !== null && defaultSliderRef.value !== null) {
       trackRef.value.style.width = `${trackWidth}px`
       trackRef.value.style.height = `${trackHeight}px`
       trackRef.value.style.borderRadius = `${props.trackThickness / 2}px`
       progressRef.value.style.transformOrigin = `${progressTransformOrigin}`
       progressRef.value.style.backgroundColor = `${props.trackBackgroundColor}`
-      sliderRef.value.style.width = `${1.6 * props.trackThickness}`
-      sliderRef.value.style.height = `${1.6 * props.trackThickness}`
+      defaultSliderRef.value.style.width = `${1.6 * props.trackThickness}`
+      defaultSliderRef.value.style.height = `${1.6 * props.trackThickness}`
     }
   }
   const backgroundBoardRect = backgroundBoardRef.value!.getBoundingClientRect()
@@ -347,7 +348,7 @@ function passDistanceRatioToTooltip(horizontalRatio: number = 0, verticalRatio: 
     <MTooltip :content="positionTooltip" :display="displayTooltip" :placement="placement">
       <div ref="sliderRef" class="slider" :class="{ dragging: isDrag }">
         <slot name="slider-icon">
-          <div class="default-slider" :class="{ 'default-slider': !customizedSlider }" />
+          <div ref="defaultSliderRef" class="default-slider" :class="{ 'default-slider': !customizedSlider }" />
         </slot>
       </div>
     </MTooltip>
