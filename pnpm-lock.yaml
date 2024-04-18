@@ -110,10 +110,10 @@ importers:
       '@floating-ui/vue':
         specifier: ^1.0.4
         version: 1.0.6(vue@3.4.21)
-      '@ming-UI/icons':
+      '@vue-ming-elements/icons':
         specifier: workspace:*
         version: link:../icons
-      '@ming-UI/utils':
+      '@vue-ming-elements/utils':
         specifier: workspace:*
         version: link:../utils
       '@v-c/utils':

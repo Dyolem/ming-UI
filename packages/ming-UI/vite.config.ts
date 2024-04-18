@@ -17,7 +17,7 @@ export default defineConfig({
   ],
   build: {
     rollupOptions: {
-      external: ['vue', '@floating-ui/vue', '@types/lodash-es', '@v-c/utils', '@ming-UI/utils', '@ming-UI/icons'],
+      external: ['vue', '@floating-ui/vue', '@types/lodash-es', '@v-c/utils', '@vue-ming-elements/utils', '@vue-ming-elements/icons'],
       output: [
         {
           preserveModules: true,

@@ -35,8 +35,8 @@
   },
   "dependencies": {
     "@floating-ui/vue": "^1.0.4",
-    "@ming-UI/utils": "workspace:*",
-    "@ming-UI/icons": "workspace:*",
+    "@vue-ming-elements/utils": "workspace:*",
+    "@vue-ming-elements/icons": "workspace:*",
     "@v-c/utils": "^0.0.26",
     "lodash-es": "^4.17.21"
   },
