@@ -84,14 +84,14 @@ export function useRgbToHsl(r: number, g: number, b: number): { h: number; s: nu
   // 找到最大和最小的RGB值
   const max = Math.max(r, g, b)
   const min = Math.min(r, g, b)
-  let h: number, s: number, l: number
+  let h: number = 0 // 初始化h
+  let s: number, l: number
 
   // 亮度是最大和最小RGB值的平均值
   l = (max + min) / 2
 
   if (max === min) {
     // 如果所有颜色值都相等，那么色相为0，饱和度为0
-    h = 0
     s = 0
   }
   else {
