@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
       return false
     else return true
   },
-  trackBackgroundColor: 'var(--ming-color-primary)',
+  trackBackgroundColor: '#722ed1',
   sliderRotate: 0,
   trackThickness: 10,
   backgroundStyle: (prop) => {
@@ -44,7 +44,7 @@ const props = withDefaults(defineProps<ControlPanelProps>(), {
 const emit = defineEmits(['update:modelValue', 'drag'])
 
 const backgroundBoardRef = ref<HTMLDivElement>()
-const sliderRef = ref<HTMLDivElement>()
+const sliderRef = ref<HTMLDivElement | null>(null)
 const trackRef = ref<HTMLDivElement | null>(null)
 const progressRef = ref<HTMLDivElement | null>(null)
 
@@ -129,10 +129,14 @@ function checkDistanceIsLegal(horizontalDistance: number, verticalDistance: numb
  */
 function initSliderAndTrack() {
   const setStyles = (trackWidth: number, trackHeight: number, progressTransformOrigin: string) => {
-    if (props.displayTrack && progressRef.value !== null && trackRef.value !== null) {
+    if (props.displayTrack && progressRef.value !== null && trackRef.value !== null && sliderRef.value !== null) {
       trackRef.value.style.width = `${trackWidth}px`
       trackRef.value.style.height = `${trackHeight}px`
+      trackRef.value.style.borderRadius = `${props.trackThickness / 2}px`
       progressRef.value.style.transformOrigin = `${progressTransformOrigin}`
+      progressRef.value.style.backgroundColor = `${props.trackBackgroundColor}`
+      sliderRef.value.style.width = `${1.6 * props.trackThickness}`
+      sliderRef.value.style.height = `${1.6 * props.trackThickness}`
     }
   }
   const backgroundBoardRect = backgroundBoardRef.value!.getBoundingClientRect()
@@ -364,12 +368,12 @@ function passDistanceRatioToTooltip(horizontalRatio: number = 0, verticalRatio: 
 .track-bar {
     overflow: hidden; /*隐藏scale对border-radius的影响 */
     background-color: #e4e7ed;
-    border-radius: v-bind(`${trackThickness / 2}px`);
+    /* border-radius: v-bind(`${trackThickness / 2}px`); */
 }
 .progress-bar {
   width: 100%;
   height: 100%;
-  background-color: v-bind(`${trackBackgroundColor}`);
+  /* background-color: v-bind(`${trackBackgroundColor}`); */
   border-radius: inherit;
   /* transition: transform 0.3s ease; */
 }
@@ -382,8 +386,8 @@ function passDistanceRatioToTooltip(horizontalRatio: number = 0, verticalRatio: 
 }
 
 .default-slider {
-  width: v-bind(`${1.6 * trackThickness}px`);
-  height: v-bind(`${1.6 * trackThickness}px`);
+  /*width: v-bind(`${1.6 * trackThickness}px`);
+  height: v-bind(`${1.6 * trackThickness}px`);*/
   border-radius: 50%;
   /* border: 1px solid var(--ming-color-primary); */
   border: 1px solid #722ed1;
