@@ -385,7 +385,8 @@ function passDistanceRatioToTooltip(horizontalRatio: number = 0, verticalRatio: 
   width: v-bind(`${1.6 * trackThickness}px`);
   height: v-bind(`${1.6 * trackThickness}px`);
   border-radius: 50%;
-  border: 1px solid var(--ming-color-primary);
+  /* border: 1px solid var(--ming-color-primary); */
+  border: 1px solid #722ed1;
   background-color: #fff
 }
 
