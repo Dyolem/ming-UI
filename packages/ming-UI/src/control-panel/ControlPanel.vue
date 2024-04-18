@@ -136,8 +136,8 @@ function initSliderAndTrack() {
       trackRef.value.style.borderRadius = `${props.trackThickness / 2}px`
       progressRef.value.style.transformOrigin = `${progressTransformOrigin}`
       progressRef.value.style.backgroundColor = `${props.trackBackgroundColor}`
-      defaultSliderRef.value.style.width = `${1.6 * props.trackThickness}`
-      defaultSliderRef.value.style.height = `${1.6 * props.trackThickness}`
+      defaultSliderRef.value.style.width = `${1.6 * props.trackThickness}px`
+      defaultSliderRef.value.style.height = `${1.6 * props.trackThickness}px`
     }
   }
   const backgroundBoardRect = backgroundBoardRef.value!.getBoundingClientRect()
