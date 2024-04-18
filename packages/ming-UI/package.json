@@ -1,7 +1,7 @@
 {
   "name": "vue-ming-elements",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "this is a vue3 component library",
   "author": "Dyolem <dyolem9@gmail.com>",
   "license": "MIT",
@@ -10,6 +10,9 @@
     "vue",
     "components"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "exports": {
     ".": {
       "types": "./es/index.d.ts",
