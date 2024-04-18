@@ -2,6 +2,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import fs from 'fs-extra'
+import mergeStylesPlugin from '../../scripts/mergeStylesPlugin'
 
 export default defineConfig({
   build: {
@@ -21,10 +22,12 @@ export default defineConfig({
     {
       name: 'remove:ming-ui-style.js',
       closeBundle() {
-        const tovPath = fileURLToPath(new URL('./dist', import.meta.url))
-        const styleFilePath = path.resolve(tovPath, 'ming-ui-style.js')
+        const mingUIPath = fileURLToPath(new URL('./dist', import.meta.url))
+        const styleFilePath = path.resolve(mingUIPath, 'ming-ui-style.js')
         fs.removeSync(styleFilePath)
+        mergeStylesPlugin()
       },
     },
+
   ],
 })
