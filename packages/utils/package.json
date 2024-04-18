@@ -1,15 +1,37 @@
 {
   "name": "@ming-UI/utils",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "type": "module",
+  "description": "this is a vue3 utils library",
+
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "unbuild"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "vue3",
+    "vue",
+    "components"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "author": "Dyolem <dyolem9@gmail.com>",
+  "license": "MIT",
   "dependencies": {
     "classnames": "^2.5.1"
+  },
+  "peerDependencies": {
+    "vue": ">=3.0.0"
   }
 }
