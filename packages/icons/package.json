@@ -1,11 +1,29 @@
 {
-  "name": "@ming-UI/icons",
+  "name": "vue-ming-elements/icons",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "This is a vue3 icon library",
+  "exports": {
+    ".": {
+      "types": "./es/index.d.ts",
+      "import": "./es/index.js",
+      "require": "./lib/index.js"
+    },
+    "./es/*": "./es/*",
+    "./dist/*": "./dist/*",
+    "./lib/*": "./lib/*",
+    "./package.json": "./package.json"
+  },
+  "main": "es/index.js",
+  "types": "es/index.d.ts",
+  "files": [
+    "dist",
+    "es",
+    "lib"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "vite build"
+    "build": "vite build",
+    "build:umd": "vite build --config vite.umd.config.ts"
   },
   "keywords": [],
   "author": "",
