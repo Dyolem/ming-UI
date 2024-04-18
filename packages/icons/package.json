@@ -1,5 +1,5 @@
 {
-  "name": "vue-ming-elements/icons",
+  "name": "@vue-ming-elements/icons",
   "version": "1.0.0",
   "description": "This is a vue3 icon library",
   "exports": {
@@ -20,6 +20,9 @@
     "es",
     "lib"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "vite build",
