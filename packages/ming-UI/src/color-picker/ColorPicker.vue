@@ -258,36 +258,36 @@ function copyColorValue(content: string) {
       <div class="hsl-form">
         <div class="color-input-box">
           <span>H</span>
-          <MInput v-model.number="colorManager.hsl.h" size="small" type="number" min="0" max="360" @input="value => updateColor('h', value)" />
+          <MInput v-model.number="colorManager.hsl.h" :input-style="{ width: '50px', backgroundColor: 'transparent' }" size="small" type="number" min="0" max="360" @input="value => updateColor('h', value)" />
         </div>
         <div class="color-input-box">
           <span>S</span>
-          <MInput v-model.number="colorManager.hsl.s" size="small" type="number" min="0" max="100" @input="value => updateColor('s', value)" />
+          <MInput v-model.number="colorManager.hsl.s" :input-style="{ width: '50px', backgroundColor: 'transparent' }" size="small" type="number" min="0" max="100" @input="value => updateColor('s', value)" />
         </div>
         <div class="color-input-box">
           <span>L</span>
-          <MInput v-model.number="colorManager.hsl.l" size="small" type="number" min="0" max="100" @input="value => updateColor('l', value)" />
+          <MInput v-model.number="colorManager.hsl.l" :input-style="{ width: '50px', backgroundColor: 'transparent' }" size="small" type="number" min="0" max="100" @input="value => updateColor('l', value)" />
         </div>
       </div>
 
       <div class="rgb-form">
         <div class="color-input-box">
           <span>R</span>
-          <MInput v-model.number="colorManager.rgb.r" size="small" type="number" min="0" max="255" @input="value => updateColor('r', value)" />
+          <MInput v-model.number="colorManager.rgb.r" :input-style="{ width: '50px', backgroundColor: 'transparent' }" size="small" type="number" min="0" max="255" @input="value => updateColor('r', value)" />
         </div>
         <div class="color-input-box">
           <span>G</span>
-          <MInput v-model.number="colorManager.rgb.g" size="small" type="number" min="0" max="255" @input="value => updateColor('g', value)" />
+          <MInput v-model.number="colorManager.rgb.g" :input-style="{ width: '50px', backgroundColor: 'transparent' }" size="small" type="number" min="0" max="255" @input="value => updateColor('g', value)" />
         </div>
         <div class="color-input-box">
           <span>B</span>
-          <MInput v-model.number="colorManager.rgb.b" size="small" type="number" min="0" max="255" @input="value => updateColor('b', value)" />
+          <MInput v-model.number="colorManager.rgb.b" :input-style="{ width: '50px', backgroundColor: 'transparent' }" size="small" type="number" min="0" max="255" @input="value => updateColor('b', value)" />
         </div>
       </div>
       <div class="hex-form">
         <div class="color-input-box">
           <span>#</span>
-          <MInput v-model="colorManager.hex" :input-style="{ width: '50px' }" size="small" @input="value => updateColor('hex', value)" />
+          <MInput v-model="colorManager.hex" :input-style="{ width: '50px', backgroundColor: 'transparent' }" size="small" @input="value => updateColor('hex', value)" />
         </div>
       </div>
     </div>
