@@ -4,6 +4,8 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: 'ming ',
   description: 'This is a vue  library',
+  // eslint-disable-next-line node/prefer-global/process
+  base: process.env.NODE_ENV === 'production' ? '/ming-UI/' : '/',
   rewrites: {
     'docs/(.*)': '(.*)',
     'packages/ming-UI/src/:comp/(.*)': 'components/:comp/(.*)',
