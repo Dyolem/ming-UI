@@ -37,9 +37,7 @@
   font-size: inherit;
   font-weight: inherit;
   line-height: inherit;
-  border: none;
-}
-.ming-input input:focus {
+  outline: none;
   border: none;
 }
 .ming-input:focus-within {
