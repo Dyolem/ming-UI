@@ -130,16 +130,19 @@ function checkDistanceIsLegal(horizontalDistance: number, verticalDistance: numb
  */
 function initSliderAndTrack() {
   const setStyles = (trackWidth: number, trackHeight: number, progressTransformOrigin: string) => {
-    if (props.displayTrack && progressRef.value !== null && trackRef.value !== null && defaultSliderRef.value !== null) {
+    if (props.displayTrack && progressRef.value !== null && trackRef.value !== null) {
       trackRef.value.style.width = `${trackWidth}px`
       trackRef.value.style.height = `${trackHeight}px`
       trackRef.value.style.borderRadius = `${props.trackThickness / 2}px`
       progressRef.value.style.transformOrigin = `${progressTransformOrigin}`
       progressRef.value.style.backgroundColor = `${props.trackBackgroundColor}`
-      defaultSliderRef.value.style.width = `${1.6 * props.trackThickness}px`
-      defaultSliderRef.value.style.height = `${1.6 * props.trackThickness}px`
     }
   }
+  if (defaultSliderRef.value !== null) {
+    defaultSliderRef.value.style.width = `${1.6 * props.trackThickness}px`
+    defaultSliderRef.value.style.height = `${1.6 * props.trackThickness}px`
+  }
+
   const backgroundBoardRect = backgroundBoardRef.value!.getBoundingClientRect()
   const sliderRect = sliderRef.value!.getBoundingClientRect()
   let top = 0
@@ -152,6 +155,8 @@ function initSliderAndTrack() {
       setStyles(props.trackThickness, backgroundBoardRect.height, `bottom center`)
     }
     else {
+      console.log(backgroundBoardRect.height, sliderRect.height)
+
       top = (backgroundBoardRect.height - sliderRect.height) / 2
       left = -sliderRect.width / 2
       setStyles(backgroundBoardRect.width, props.trackThickness, `left center`)
@@ -162,6 +167,7 @@ function initSliderAndTrack() {
     left = -sliderRect.width / 2
     setStyles(backgroundBoardRect.width, props.trackThickness, `left center`)
   }
+  console.log(top, left)
 
   sliderRef.value!.style.top = `${top}px`
   sliderRef.value!.style.left = `${left}px`
