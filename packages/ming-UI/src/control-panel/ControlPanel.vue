@@ -155,8 +155,6 @@ function initSliderAndTrack() {
       setStyles(props.trackThickness, backgroundBoardRect.height, `bottom center`)
     }
     else {
-      console.log(backgroundBoardRect.height, sliderRect.height)
-
       top = (backgroundBoardRect.height - sliderRect.height) / 2
       left = -sliderRect.width / 2
       setStyles(backgroundBoardRect.width, props.trackThickness, `left center`)
@@ -167,8 +165,6 @@ function initSliderAndTrack() {
     left = -sliderRect.width / 2
     setStyles(backgroundBoardRect.width, props.trackThickness, `left center`)
   }
-  console.log(top, left)
-
   sliderRef.value!.style.top = `${top}px`
   sliderRef.value!.style.left = `${left}px`
 }
