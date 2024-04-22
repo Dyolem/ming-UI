@@ -2,31 +2,31 @@
 
 ## 快速开始
 
-欢迎使用 @ming-UI/icons，一个为 Vue 应用设计的全面而优雅的图标组件库。本库旨在提供易于使用的图标组件，帮助您快速集成高质量的图标到您的 Vue 应用中。
+欢迎使用 @vue-ming-elements/icons，一个为 Vue 应用设计的全面而优雅的图标组件库。本库旨在提供易于使用的图标组件，帮助您快速集成高质量的图标到您的 Vue 应用中。
 
 ## 安装
 
-首先，您需要通过 `npm` 或 `yarn` 安装 `@ming-UI/icons`：
+首先，您需要通过 `npm` 或 `yarn` 安装 `@vue-ming-elements/icons`：
 
 ```js
-npm install @ming-UI/icons
+npm install @vue-ming-elements/icons
 # 或者使用 yarn
-yarn add @ming-UI/icons
+yarn add @vue-ming-elements/icons
 ```
 
 ## 引入并使用
 
-在您的 Vue 应用中，您可以轻松地将 `@ming-UI/icons` 集成进来。按照以下步骤操作：
-导入图标库：在您的主入口文件（通常是 `main.js` 或 `main.ts`）中导入 `@ming-UI/icons`。
+在您的 Vue 应用中，您可以轻松地将 `@vue-ming-elements/icons` 集成进来。按照以下步骤操作：
+导入图标库：在您的主入口文件（通常是 `main.js` 或 `main.ts`）中导入 `@vue-ming-elements/icons`。
 安装图标组件库：使用 `app.use()` 方法安装图标库，这将全局注册所有的图标组件，使它们在整个 Vue 应用中可用。
 示例代码如下：
 
 ```js
 import { createApp } from 'vue'
-import icons from '@ming-UI/icons'
+import icons from '@vue-ming-elements/icons'
 import App from './App.vue'
 
-// 步骤 1: 导入 @ming-UI/icons
+// 步骤 1: 导入 @vue-ming-elements/icons
 
 // 步骤 2: 安装图标组件库
 const app = createApp(App)
@@ -35,9 +35,9 @@ app.use(icons)
 app.mount('#app')
 ```
 
-完成以上步骤后，`@ming-UI/icons` 图标库即成功集成到您的 Vue 应用中。现在，您可以在任何组件内自由使用图标组件，无需进一步的导入或注册。
+完成以上步骤后，`@vue-ming-elements/icons` 图标库即成功集成到您的 Vue 应用中。现在，您可以在任何组件内自由使用图标组件，无需进一步的导入或注册。
 
-当然您也可以从`@ming-UI/icons` 图标库按需导入图标。
+当然您也可以从`@vue-ming-elements/icons` 图标库按需导入图标。
 
 ## 使用图标
 
