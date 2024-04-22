@@ -1,9 +1,14 @@
+import { URL, fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: 'ming ',
-  description: 'This is a vue  library',
+  title: 'Ming-UI',
+  titleTemplate: false,
+  head: [
+    ['link', { rel: 'icon', href: './docs/public/four-leaves.svg' }],
+  ],
+  description: '充满创意和交互性设计的组件库',
   // eslint-disable-next-line node/prefer-global/process
   base: process.env.NODE_ENV === 'production' ? '/ming-UI/' : '/',
   rewrites: {
@@ -13,8 +18,9 @@ export default defineConfig({
     'packages/icons/src/(.*)': 'components/icons/(.*)',
   },
   themeConfig: {
+    logo: './docs/public/four-leaves.svg',
     // https://vitepress.dev/reference/default-theme-config
-    siteTitle: 'My Custom Title',
+    siteTitle: 'Ming-UI',
     outline: 'deep',
     nav: [
       { text: '首页', link: '/' },
@@ -62,9 +68,27 @@ export default defineConfig({
         },
       ],
     },
-
+    lastUpdated: {
+      text: 'Updated at',
+      formatOptions: {
+        dateStyle: 'short',
+        timeStyle: 'medium',
+      },
+    },
     socialLinks: [
       { icon: 'github', link: 'https://github.com/vuejs/vitepress' },
     ],
+  },
+  vite: {
+    resolve: {
+      alias: [
+        {
+          find: /^.*\/VPButton\.vue$/,
+          replacement: fileURLToPath(
+            new URL('../components/CustomVPButton.vue', import.meta.url),
+          ),
+        },
+      ],
+    },
   },
 })
