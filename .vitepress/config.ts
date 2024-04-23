@@ -6,7 +6,7 @@ export default defineConfig({
   title: 'Ming-UI',
   titleTemplate: false,
   head: [
-    ['link', { rel: 'icon', href: './docs/public/four-leaves.svg' }],
+    ['link', { rel: 'icon', href: './four-leaves.svg' }],
   ],
   description: '充满创意和交互性设计的组件库',
   // eslint-disable-next-line node/prefer-global/process
@@ -18,7 +18,7 @@ export default defineConfig({
     'packages/icons/src/(.*)': 'components/icons/(.*)',
   },
   themeConfig: {
-    logo: './docs/public/four-leaves.svg',
+    logo: './four-leaves.svg',
     // https://vitepress.dev/reference/default-theme-config
     siteTitle: 'Ming-UI',
     outline: 'deep',
