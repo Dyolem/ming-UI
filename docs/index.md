@@ -7,12 +7,12 @@ hero:
   text: "充满创意和交互性设计的组件库"
   # tagline: My great project tagline
   actions:
-    - theme: brand
-      # text: Markdown Examples
-      # link: ./docs/markdown-examples
-    # - theme: alt
-      # text: API Examples
-      # link: /api-examples
+    - theme: alt
+      text: Get Started
+      link: /components/button/
+    - theme: alt
+      text: GitHub
+      link: https://github.com/Dyolem/ming-UI/
 
 features:
   - icon: 🎨
