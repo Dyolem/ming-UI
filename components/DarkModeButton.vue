@@ -1,6 +1,15 @@
+<script setup lang="ts">
+interface DarkMode {
+  text: string
+}
+withDefaults(defineProps<DarkMode>(), {
+  text: 'Start',
+})
+</script>
+
 <template>
   <button>
-    Get Started
+    {{ text }}
     <div class="star-1">
       <svg
         xmlns="http://www.w3.org/2000/svg"
