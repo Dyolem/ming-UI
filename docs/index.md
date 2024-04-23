@@ -27,10 +27,10 @@ features:
   
 ---
 
-<style >
+<style module>
   :root {
   --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: #722ed1;
+  --vp-home-hero-name-background: #9254de;
   /* --vp-c-text-1:blue; */
 }
 
