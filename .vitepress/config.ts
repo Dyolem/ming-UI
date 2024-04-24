@@ -59,6 +59,10 @@ export default defineConfig({
           text: 'ControlPanel 控制板',
           link: '/components/control-panel/',
         },
+        {
+          text: 'Rate 评分',
+          link: '/components/rate/',
+        },
 
       ],
       '/utils/': [
