@@ -38,12 +38,13 @@
   },
   "dependencies": {
     "@floating-ui/vue": "^1.0.4",
-    "@vue-ming-elements/utils": "workspace:*",
-    "@vue-ming-elements/icons": "workspace:*",
     "@v-c/utils": "^0.0.26",
+    "@vue-ming-elements/icons": "workspace:*",
+    "@vue-ming-elements/utils": "workspace:*",
     "lodash-es": "^4.17.21"
   },
   "devDependencies": {
-    "@types/lodash-es": "^4.17.12"
+    "@types/lodash-es": "^4.17.12",
+    "nanoid": "^5.0.7"
   }
 }
