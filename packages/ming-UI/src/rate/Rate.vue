@@ -1,28 +1,98 @@
-<script setup>
-import { computed, ref } from 'vue'
+<script setup lang="ts">
+import { computed, onMounted, ref } from 'vue'
 import { nanoid } from 'nanoid'
+import type { rateProps } from './interface.ts'
+import like from './like.vue'
 
 defineOptions({
   name: 'MRate',
 })
-const props = defineProps({
-  rating: {
-    type: Number,
-    default: 0,
+const props = withDefaults(defineProps<rateProps>(), {
+  modelValue: 10,
+  size: 20,
+  iconComponent: like,
+  fillColor: 'gold',
+  stroke: '#333',
+  bottomLayerFillColor: (props) => {
+    // 这里不知道为什么props.stroke永远为undefined，打印其他prop都是正常的，因此这里将计就计
+    if (props.stroke)
+      return 'none'
+    else return 'gray'
   },
-  maxRating: {
-    type: Number,
-    default: 5,
-  },
-  iconComponent: {
-    type: Object,
-    // default: () => 'svg', // 默认使用svg标签，使用者可以传入任何组件
-  },
+  strokeWidth: 2,
+  allowHalf: true,
+  max: 10,
+  rateIconCount: 5,
 })
-console.log(props.rating, props.maxRating)
+
+const svgContainerRef = ref<HTMLDivElement | null>(null)
+const iconRef = ref<InstanceType<typeof props.iconComponent>>(null)
 const clipId = ref(nanoid())
 // const clipWidth = computed(() => `${props.rating / props.maxRating * 100}%`)
-const clipWidth = '8'
+const clipWidth = ref<number>(0)
+const isFull = ref<boolean>(false)
+const strokeColor = computed(() => {
+  if (isFull.value)
+    return props.fillColor
+  else return props.stroke
+})
+onMounted(() => {
+  initSvgContainer()
+  generateScoreArr(props.modelValue)
+})
+function initSvgContainer() {
+  if (svgContainerRef.value === null)
+    return
+
+  svgContainerRef.value.style.width = `${props.size}px`
+  svgContainerRef.value.style.height = `${props.size}px`
+}
+function currentPosition(e: MouseEvent) {
+  if (svgContainerRef.value === null)
+    return
+  const svgContainerRect = svgContainerRef.value?.getBoundingClientRect()
+  if (props.allowHalf) {
+    const halfBoundary = props.size / 2
+    console.log(e.offsetX, halfBoundary)
+
+    if (e.offsetX <= halfBoundary) {
+      clipWidth.value = halfBoundary
+      isFull.value = false
+    }
+    else {
+      clipWidth.value = props.size
+      isFull.value = (props.stroke !== 'none')
+    }
+  }
+  else {
+    clipWidth.value = e.offsetX
+
+    if (e.offsetX >= svgContainerRect.width - 2 && props.stroke !== 'none')
+      isFull.value = true
+    else isFull.value = false
+  }
+}
+const maximumScore = computed(() => {
+  return props.max / props.rateIconCount
+})
+function generateScoreArr(scoreValue: number) {
+  console.log(scoreValue)
+
+  const scoreArr = []
+  for (let i = 0; i < props.rateIconCount; i++) {
+    let score = 0
+    if (scoreValue - maximumScore.value * i > 0)
+      score = maximumScore.value
+    else score = scoreValue - maximumScore.value * i
+    const scoreObj = {
+      id: i,
+      score,
+    }
+    scoreArr.push(scoreObj)
+    console.log(scoreObj)
+  }
+  return scoreArr
+}
 </script>
 
 <template>
@@ -30,61 +100,42 @@ const clipWidth = '8'
     <svg width="0" height="0">
       <defs>
         <clipPath :id="clipId">
-          <rect :width="clipWidth" height="16" />
+          <rect :width="clipWidth" :height="size" />
         </clipPath>
       </defs>
     </svg>
-    <svg width="0" height="0">
-      <defs>
-        <filter :id="`${clipId}-filter`">
-          <feGaussianBlur stdDeviation="5" />
-        </filter>
-      </defs>
-    </svg>
-    <div class="svg-container">
-      <component :is="iconComponent" class="init-svg fulled-stroke lower-svg" />
-      <component :is="iconComponent" class="init-svg fulled-stroke clip-color upper-svg" :style="{ 'clip-path': `url(#${clipId})` }" />
+    <div class="svg-container" @click="currentPosition">
+      <component :is="iconComponent" ref="iconRef" class="init-svg lower-svg" :class="stroke !== 'none' ? 'stroke' : ''" />
+      <component :is="iconComponent" class="init-svg  clip-color upper-svg" :class="stroke !== 'none' ? 'stroke' : ''" :style="{ 'clip-path': `url(#${clipId})` }" />
     </div>
-    <!-- <div
-      v-for="index in Math.ceil(maxRating)"
-      :key="index"
-      class="star-container"
-    >
-      <div class="star-clip">
-        <component :is="iconComponent" :style="{ 'clip-path': `url(#${clipId})` }" />
-      </div>
-      <component :is="iconComponent" class="star-background" />
-    </div> -->
   </div>
 </template>
 
 <style>
 .init-svg {
-
+  stroke-width: v-bind(strokeWidth);
   position: absolute;
-  width: 16px;
-  height: 16px;
+  width: v-bind(`${size}px`);
+  height: v-bind(`${size}px`);
   fill: gray;
-}
-.star-container {
-  display: inline-block;
-  position: relative;
 }
 .svg-container {
   position: relative;
 }
 
 .clip-color {
-  fill: gold;
+  fill: v-bind(fillColor);
 }
 
-.fulled-stroke {
-  stroke: #333;
+.stroke {
+  stroke: v-bind(strokeColor);
 }
 .lower-svg {
-    /* 未选中的图标使用灰度 */
-    fill: aquamarine;
-    filter: grayscale(50%);
 
+    fill: v-bind(bottomLayerFillColor);
+
+}
+.lower-svg-filter {
+  filter: grayscale(50%);
 }
 </style>
