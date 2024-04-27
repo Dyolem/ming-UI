@@ -34,16 +34,12 @@ const iconRef = ref<InstanceType<typeof props.iconComponent>>(null)
 // const clipWidth = computed(() => `${props.rating / props.maxRating * 100}%`)
 
 const isFull = ref<boolean>(false)
-const strokeColor = computed(() => {
-  if (isFull.value)
-    return props.fillColor
-  else return props.stroke
-})
 
 interface clipWidthArrType {
   id: number
   clipWidth: number
   score: number
+  strokeColor: string
 }
 const clipWidthArr = ref<Array<clipWidthArrType>>([])
 const maximumScore = computed(() => {
@@ -51,11 +47,9 @@ const maximumScore = computed(() => {
 })
 
 onMounted(async () => {
-  await nextTick()
-  console.log(svgContainerRef.value.length)
-
-  initSvgContainer()
   clipWidthArr.value = generateClipWidthArr(props.modelValue)
+  await nextTick()
+  initSvgContainer()
   watch(() => props.modelValue, (newVal) => {
     clipWidthArr.value = generateClipWidthArr(newVal)
   })
@@ -170,6 +164,7 @@ const scoreObj = ref<clipWidthArrType>({
   id: 0,
   clipWidth: 0,
   score: 0,
+  strokeColor: props.stroke,
 })
 function generateClipWidthArr(scoreValue: number) {
   let residualScore = scoreValue
@@ -177,11 +172,13 @@ function generateClipWidthArr(scoreValue: number) {
 
   for (let i = 0; i < props.rateIconCount; i++) {
     let score = 0
-
-    if (residualScore >= maximumScore.value)
+    let strokeColor = props.stroke
+    if (residualScore >= maximumScore.value) {
       score = maximumScore.value
-    else
-      score = residualScore
+      strokeColor = props.fillColor
+    }
+
+    else { score = residualScore }
 
     residualScore = residualScore - score
 
@@ -189,6 +186,7 @@ function generateClipWidthArr(scoreValue: number) {
       id: i,
       clipWidth: scoreConvertToClipWidth(score),
       score,
+      strokeColor,
     }
 
     clipWidthArr.push(scoreObj.value)
@@ -208,8 +206,8 @@ function generateClipWidthArr(scoreValue: number) {
           </clipPath>
         </defs>
       </svg>
-      <component :is="iconComponent" ref="iconRef" class="init-svg lower-svg" :class="stroke !== 'none' ? 'stroke' : ''" />
-      <component :is="iconComponent" class="init-svg  clip-color upper-svg" :class="stroke !== 'none' ? 'stroke' : ''" :style="{ 'clip-path': `url(#${item.id})` }" />
+      <component :is="iconComponent" ref="iconRef" :style="{ stroke: item.strokeColor }" class="init-svg lower-svg" />
+      <component :is="iconComponent" class="init-svg  clip-color upper-svg" :style="{ 'clip-path': `url(#${item.id})`, 'stroke': item.strokeColor }" />
     </div>
   </div>
 </template>
@@ -230,15 +228,19 @@ function generateClipWidthArr(scoreValue: number) {
 }
 .svg-container {
   position: relative;
+  transition: all .3s ease-in-out;
+}
+.svg-container:hover {
+  transform: scale(1.1);
 }
 
 .clip-color {
   fill: v-bind(fillColor);
 }
 
-.stroke {
+/* .stroke {
   stroke: v-bind(strokeColor);
-}
+} */
 .lower-svg {
 
     fill: v-bind(bottomLayerFillColor);
