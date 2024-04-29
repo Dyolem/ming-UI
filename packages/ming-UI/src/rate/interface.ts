@@ -3,7 +3,7 @@ import type { DefineComponent } from 'vue'
 export interface rateProps {
   modelValue: number
   size?: number
-  iconComponent: DefineComponent<any, any, any, any>
+  iconComponent?: DefineComponent<any, any, any, any>
   fillColor?: string
   bottomLayerFillColor?: string
   stroke?: string
@@ -11,4 +11,10 @@ export interface rateProps {
   allowHalf?: boolean
   max?: number
   rateIconCount?: number
+  grayscale?: number
+}
+
+export interface rateItemProps extends Omit<rateProps, 'modelValue'> {
+  id: number
+  score?: number
 }
