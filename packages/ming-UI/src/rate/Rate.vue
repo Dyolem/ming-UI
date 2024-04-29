@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch, watchEffect } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 
 // import { nanoid } from 'nanoid'
 import type { rateProps } from './interface.ts'
@@ -24,6 +24,7 @@ const props = withDefaults(defineProps<rateProps>(), {
   allowHalf: true,
   max: 10,
   rateIconCount: 5,
+  grayscale: 0,
 })
 const emit = defineEmits(['update:modelValue'])
 
@@ -31,7 +32,6 @@ type svgContainerType = HTMLDivElement | null
 const svgContainerRef = ref<svgContainerType[]>([])
 const iconRef = ref<InstanceType<typeof props.iconComponent>>(null)
 // const clipId = ref(nanoid())
-// const clipWidth = computed(() => `${props.rating / props.maxRating * 100}%`)
 
 const isFull = ref<boolean>(false)
 
@@ -55,17 +55,13 @@ onMounted(async () => {
   })
 })
 function initSvgContainer() {
-  // if (!svgContainerRef.value.length)
-  //   return
-  console.log(svgContainerRef.value, svgContainerRef.value.length)
+  if (!svgContainerRef.value.length)
+    return
 
   for (const svgContainer of (svgContainerRef.value)) {
-    console.log(svgContainer)
     if (!svgContainer)
       return
     svgContainer.style.width = `${props.size}px`
-    console.log(svgContainer.style.width)
-
     svgContainer.style.height = `${props.size}px`
   }
 }
@@ -83,44 +79,44 @@ function updateClipWidthArr(index: number) {
   clipWidthArr.value = newArr
 }
 
+function clamp(value: number, max: number): number {
+  return Math.min(Math.max(value, 0), max)
+}
 function mark(index: number, e: MouseEvent) {
   if (!svgContainerRef.value.length)
     return
   if (svgContainerRef.value[index] === null)
     return
   const svgContainerRect = svgContainerRef.value[index]!.getBoundingClientRect()
+  const currentMousePosition = clamp(e.clientX - svgContainerRect.left, svgContainerRect.width)
+
   let score = 0
   if (props.allowHalf) {
     const halfBoundary = props.size / 2
 
-    if (e.offsetX < halfBoundary) {
-      // clipWidth.value = halfBoundary
+    if (currentMousePosition < halfBoundary) {
       score = maximumScore.value / 2
-      console.log(score)
-
       clipWidthArr.value[index].score = score
-      // isFull.value = false
     }
     else {
-      // clipWidth.value = props.size
       score = maximumScore.value
       clipWidthArr.value[index].score = score
-
-      // isFull.value = (props.stroke !== 'none')
     }
   }
   else {
-    // clipWidth.value = e.offsetX
-    score = e.offsetX / svgContainerRect.width * maximumScore.value
-    console.log(e.offsetX, svgContainerRect.width)
+    let approximateValue = 0
+    const leftApproximation = 2
+    const rightApproximation = 4
 
+    if (currentMousePosition <= leftApproximation)
+      approximateValue = 0
+    else if (svgContainerRect.width - currentMousePosition <= rightApproximation)
+      approximateValue = svgContainerRect.width
+    else approximateValue = currentMousePosition
+    score = Number((approximateValue / svgContainerRect.width * maximumScore.value).toFixed(1))
     clipWidthArr.value[index].score = score
-    // if (e.offsetX >= svgContainerRect.width - 2 && props.stroke !== 'none')
-    //   isFull.value = true
-    // else isFull.value = false
   }
   updateClipWidthArr(index)
-
   emit('update:modelValue', getAllScore())
 }
 
@@ -130,11 +126,7 @@ function getAllScore() {
     totalScore += item.score
   return totalScore
 }
-// function clipWidthConvertToScore(widthArr: clipWidthArrType[]) {
-//   let totalWidth = 0
-//   for (const item of widthArr)
-//     totalWidth += item.clipWidth
-// }
+
 function scoreConvertToClipWidth(score: number) {
   let clipWidth = 0
   if (props.allowHalf) {
@@ -166,8 +158,8 @@ const scoreObj = ref<clipWidthArrType>({
   score: 0,
   strokeColor: props.stroke,
 })
-function generateClipWidthArr(scoreValue: number) {
-  let residualScore = scoreValue
+function generateClipWidthArr(totalScore: number) {
+  let residualScore = totalScore
   const clipWidthArr = []
 
   for (let i = 0; i < props.rateIconCount; i++) {
@@ -206,8 +198,8 @@ function generateClipWidthArr(scoreValue: number) {
           </clipPath>
         </defs>
       </svg>
-      <component :is="iconComponent" ref="iconRef" :style="{ stroke: item.strokeColor }" class="init-svg lower-svg" />
-      <component :is="iconComponent" class="init-svg  clip-color upper-svg" :style="{ 'clip-path': `url(#${item.id})`, 'stroke': item.strokeColor }" />
+      <component :is="iconComponent" ref="iconRef" :style="{ stroke: item.strokeColor }" class="init-svg lower-svg" :class="{ grayscale: grayscale !== 0 }" />
+      <component :is="iconComponent" class="init-svg  clip-color" :style="{ 'clip-path': `url(#${item.id})`, 'stroke': item.strokeColor }" />
     </div>
   </div>
 </template>
@@ -238,9 +230,6 @@ function generateClipWidthArr(scoreValue: number) {
   fill: v-bind(fillColor);
 }
 
-/* .stroke {
-  stroke: v-bind(strokeColor);
-} */
 .lower-svg {
 
     fill: v-bind(bottomLayerFillColor);
