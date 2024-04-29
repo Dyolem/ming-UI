@@ -12,6 +12,7 @@ import VolumeUp from './icon/VolumeUp.vue'
 import ColorExtractor from './icon/ColorExtractor.vue'
 import BookMark from './icon/BookMark.vue'
 import BookMarkOne from './icon/BookMarkOne.vue'
+import Star from './icon/Star.vue'
 
 // 图标组件对象
 const icons = {
@@ -28,6 +29,7 @@ const icons = {
   ColorExtractor,
   BookMark,
   BookMarkOne,
+  Star,
   // ...其他图标组件
 }
 export {
@@ -44,6 +46,7 @@ export {
   ColorExtractor,
   BookMark,
   BookMarkOne,
+  Star,
 }
 
 // 全局注册函数

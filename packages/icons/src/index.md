@@ -180,6 +180,12 @@ function copyIconsName(event) {
     </m-icon>
     <span>BookMarkOne</span>
   </li>
+  <li>
+    <m-icon>
+      <Star />
+    </m-icon>
+    <span>Star</span>
+  </li>
 </ul>
 
 <style module>
