@@ -15,14 +15,14 @@ const props = withDefaults(defineProps<rateProps>(), {
   lowThreshold: 2,
   highThreshold: 3,
   thresholdArr: () => [],
-
+  scoreAccuracy: 1,
 })
 const emit = defineEmits(['update:modelValue'])
 const templateScore = computed(() => {
-  return Number(props.modelValue.toFixed(2))
+  return Number(props.modelValue.toFixed(Math.abs(props.scoreAccuracy)))
 })
 const maximumScore = computed(() => {
-  return Number((props.max / props.rateIconCount).toFixed(1))
+  return props.max / props.rateIconCount
 })
 
 type scoreAndStyleArrType = Array<{ id: number;score: number;fillColor: string }>
@@ -128,11 +128,7 @@ function updateScoreArr(score: number, index: number) {
 
     lastTotalScore.value = newTotalScore
   }
-  else {
-    scoreArr.value = generateScoreArr(newTotalScore)
-  }
-
-  emit('update:modelValue', Number(newTotalScore.toFixed(2)))
+  emit('update:modelValue', newTotalScore)
 }
 </script>
 
