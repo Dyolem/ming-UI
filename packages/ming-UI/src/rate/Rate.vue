@@ -134,19 +134,26 @@ function updateScoreArr(score: number, index: number) {
 
 <template>
   <div class="rate">
-    <span>{{ templateScore }}</span>
-    <RateItem
-      v-for="(item, index) in scoreArr" :id="item.id" :key="item.id" :score="item.score" :allow-half="allowHalf" :stroke-width="strokeWidth" :stroke="stroke" :size="size" :bottom-layer-fill-color="bottomLayerFillColor" :fill-color="item.fillColor" :icon-component="iconComponent"
-      :max="max" :rate-icon-count="rateIconCount" :grayscale="grayscale" @update:score="value => updateScoreArr(value, index)"
-    />
+    <div class="rate-items">
+      <RateItem
+        v-for="(item, index) in scoreArr" :id="item.id" :key="item.id" :score="item.score" :allow-half="allowHalf" :stroke-width="strokeWidth" :stroke="stroke" :size="size" :bottom-layer-fill-color="bottomLayerFillColor" :fill-color="item.fillColor" :icon-component="iconComponent"
+        :max="max" :rate-icon-count="rateIconCount" :grayscale="grayscale" @update:score="value => updateScoreArr(value, index)"
+      />
+    </div>
+    <slot :template-score="templateScore">
+      <span>{{ templateScore }}</span>
+    </slot>
   </div>
 </template>
 
 <style>
 .rate {
   padding: 0 5px;
-  width: 200px;
   display: flex;
-  justify-content: space-between;
+}
+.rate-items {
+  display: flex;
+  gap: 10px;
+  margin-right: 20px;
 }
 </style>
