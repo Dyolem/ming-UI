@@ -12,9 +12,10 @@ export interface rateProps {
   max?: number
   rateIconCount?: number
   grayscale?: number
+  clearable?: boolean
 }
 
-export interface rateItemProps extends Omit<rateProps, 'modelValue'> {
+export interface rateItemProps extends Omit<rateProps, 'modelValue' | 'clearable'> {
   id: number
   score?: number
 }

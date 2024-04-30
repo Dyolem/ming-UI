@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch, watchEffect } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 import type { rateProps } from './interface.ts'
 import RateItem from './components/RateItem.vue'
 
@@ -53,6 +53,7 @@ function getCurrentScore(index: number, currentScore: number) {
   return totalScore
 }
 
+const lastTotalScore = ref(0)
 function generateScoreArr(totalScore: number) {
   let residualScore = totalScore
   const scoreArr = []
@@ -75,8 +76,17 @@ function generateScoreArr(totalScore: number) {
 }
 
 function updateScoreArr(score: number, index: number) {
-  const newTotalScore = getCurrentScore(index, score)
-  scoreArr.value = generateScoreArr(newTotalScore)
+  let newTotalScore = getCurrentScore(index, score)
+  if (props.clearable) {
+    if (lastTotalScore.value === newTotalScore)
+      newTotalScore = 0
+
+    lastTotalScore.value = newTotalScore
+  }
+  else {
+    scoreArr.value = generateScoreArr(newTotalScore)
+  }
+
   emit('update:modelValue', newTotalScore)
 }
 </script>
