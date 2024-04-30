@@ -17,12 +17,7 @@ const props = withDefaults(defineProps<rateItemProps>(), {
   allowHalf: false,
   max: 10,
   rateIconCount: 5,
-  grayscale: (prop) => {
-    if (prop.stroke === 'none')
-      return 0.6
-    else
-      return 0
-  },
+  grayscale: 0.6,
 })
 
 const emit = defineEmits(['update:score'])
@@ -32,8 +27,6 @@ onMounted(() => {
 })
 
 const clipWidth = computed(() => {
-  console.log(props.score)
-
   return scoreConvertToClipWidth(props.score)
 })
 
@@ -56,6 +49,7 @@ function scoreConvertToClipWidth(score: number) {
   let clipWidth = 0
   if (props.allowHalf) {
     const scoreBoundary = maximumScore.value / 2
+
     if (score > scoreBoundary) {
       isFull.value = true
       clipWidth = props.size
@@ -94,6 +88,7 @@ function mark(e: MouseEvent) {
   let score = 0
   if (props.allowHalf) {
     const halfBoundary = props.size / 2
+
     if (currentMousePosition < halfBoundary)
       score = maximumScore.value / 2
     else
@@ -109,7 +104,7 @@ function mark(e: MouseEvent) {
     else if (svgContainerRect.width - currentMousePosition <= rightApproximation)
       approximateValue = svgContainerRect.width
     else approximateValue = currentMousePosition
-    score = Number((approximateValue / svgContainerRect.width * maximumScore.value).toFixed(1))
+    score = (approximateValue / svgContainerRect.width * maximumScore.value)
   }
 
   emit('update:score', score)
