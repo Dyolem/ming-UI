@@ -4,7 +4,7 @@ export interface rateProps {
   modelValue: number
   size?: number
   iconComponent?: DefineComponent<any, any, any, any>
-  fillColor?: string
+  fillColor?: string | string[]
   bottomLayerFillColor?: string
   stroke?: string
   strokeWidth?: number
@@ -13,9 +13,13 @@ export interface rateProps {
   rateIconCount?: number
   grayscale?: number
   clearable?: boolean
+  lowThreshold?: number
+  highThreshold?: number
+  thresholdArr?: number[]
 }
 
-export interface rateItemProps extends Omit<rateProps, 'modelValue' | 'clearable'> {
+export interface rateItemProps extends Omit<rateProps, 'modelValue' | 'fillColor' | 'clearable' | 'lowThreshold' | 'highThreshold' | 'thresholdArr'> {
   id: number
+  fillColor?: string
   score?: number
 }

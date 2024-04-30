@@ -10,30 +10,53 @@ const props = withDefaults(defineProps<rateProps>(), {
   modelValue: 10,
   max: 10,
   rateIconCount: 5,
+  fillColor: '#F7BA2A',
   clearable: false,
+  lowThreshold: 2,
+  highThreshold: 3,
+  thresholdArr: () => [],
+
 })
 const emit = defineEmits(['update:modelValue'])
-
+const templateScore = computed(() => {
+  return Number(props.modelValue.toFixed(2))
+})
 const maximumScore = computed(() => {
-  return props.max / props.rateIconCount
+  return Number((props.max / props.rateIconCount).toFixed(1))
 })
 
-const scoreArr = ref([{
-  id: 0,
-  score: 2,
-}, {
-  id: 1,
-  score: 2,
-}, {
-  id: 2,
-  score: 1,
-}, {
-  id: 3,
-  score: 0,
-}, {
-  id: 4,
-  score: 0,
-}])
+type scoreAndStyleArrType = Array<{ id: number;score: number;fillColor: string }>
+const scoreArr = ref<scoreAndStyleArrType>([])
+
+const rateIconCount = computed(() => {
+  let rateIconCount = 0
+  if (typeof props.rateIconCount !== 'number') {
+    rateIconCount = 5
+  }
+  else {
+    rateIconCount = Math.ceil(props.rateIconCount)
+    if (rateIconCount <= 0)
+      rateIconCount = 5
+  }
+
+  return rateIconCount
+})
+const thresholdArr = computed(() => {
+  if (props.rateIconCount === 1)
+    return []
+  if (!props.thresholdArr.length)
+    return [0, Math.abs(props.lowThreshold), Math.abs(props.highThreshold)].sort((a, b) => a - b)
+  else return [0, ...props.thresholdArr].sort((a, b) => a - b)
+})
+const fillColor = computed(() => {
+  const colorArr = [props.fillColor].flat()
+  if (colorArr.length === 0)
+    colorArr.push('#F7BA2A')
+
+  if (colorArr.length >= thresholdArr.value.length)
+    return colorArr.slice(0, thresholdArr.value.length)
+  else return [...colorArr]
+})
 
 watchEffect(() => {
   scoreArr.value = generateScoreArr(props.modelValue)
@@ -53,12 +76,30 @@ function getCurrentScore(index: number, currentScore: number) {
   return totalScore
 }
 
-const lastTotalScore = ref(0)
+function distributeColor(scoreArr: scoreAndStyleArrType) {
+  const scoreAndStyleArr: scoreAndStyleArrType = []
+  let lastFillIndex = scoreArr.findIndex(item => item.score === 0)
+
+  if (lastFillIndex === -1)
+    lastFillIndex = scoreArr.length - 1
+  else lastFillIndex -= 1
+
+  let thresholdIndex = thresholdArr.value.findLastIndex(item => lastFillIndex >= item)
+  if (thresholdIndex === -1)
+    thresholdIndex = thresholdArr.value.length - 1
+
+  if (fillColor.value.length - 1 < thresholdIndex)
+    thresholdIndex = fillColor.value.length - 1
+  for (const scoreObj of scoreArr)
+    scoreAndStyleArr.push({ ...scoreObj, fillColor: fillColor.value[thresholdIndex] })
+
+  return scoreAndStyleArr
+}
 function generateScoreArr(totalScore: number) {
   let residualScore = totalScore
   const scoreArr = []
 
-  for (let i = 0; i < props.rateIconCount; i++) {
+  for (let i = 0; i < rateIconCount.value; i++) {
     let score = 0
     if (residualScore >= maximumScore.value)
       score = maximumScore.value
@@ -69,12 +110,16 @@ function generateScoreArr(totalScore: number) {
     const scoreObj = {
       id: i,
       score,
+      fillColor: '',
     }
     scoreArr.push(scoreObj)
   }
-  return scoreArr
+  const scoreAndStyleArr = distributeColor(scoreArr)
+
+  return scoreAndStyleArr
 }
 
+const lastTotalScore = ref(0)
 function updateScoreArr(score: number, index: number) {
   let newTotalScore = getCurrentScore(index, score)
   if (props.clearable) {
@@ -87,15 +132,15 @@ function updateScoreArr(score: number, index: number) {
     scoreArr.value = generateScoreArr(newTotalScore)
   }
 
-  emit('update:modelValue', newTotalScore)
+  emit('update:modelValue', Number(newTotalScore.toFixed(2)))
 }
 </script>
 
 <template>
   <div class="rate">
-    <span>{{ modelValue }}</span>
+    <span>{{ templateScore }}</span>
     <RateItem
-      v-for="(item, index) in scoreArr" :id="item.id" :key="item.id" :score="item.score" :allow-half="allowHalf" :stroke-width="strokeWidth" :stroke="stroke" :size="size" :bottom-layer-fill-color="bottomLayerFillColor" :fill-color="fillColor" :icon-component="iconComponent"
+      v-for="(item, index) in scoreArr" :id="item.id" :key="item.id" :score="item.score" :allow-half="allowHalf" :stroke-width="strokeWidth" :stroke="stroke" :size="size" :bottom-layer-fill-color="bottomLayerFillColor" :fill-color="item.fillColor" :icon-component="iconComponent"
       :max="max" :rate-icon-count="rateIconCount" :grayscale="grayscale" @update:score="value => updateScoreArr(value, index)"
     />
   </div>
