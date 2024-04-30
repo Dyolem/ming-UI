@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref, watch, watchEffect } from 'vue'
 import type { rateProps } from './interface.ts'
 import RateItem from './components/RateItem.vue'
 
@@ -10,6 +10,7 @@ const props = withDefaults(defineProps<rateProps>(), {
   modelValue: 10,
   max: 10,
   rateIconCount: 5,
+  clearable: false,
 })
 const emit = defineEmits(['update:modelValue'])
 
@@ -33,6 +34,10 @@ const scoreArr = ref([{
   id: 4,
   score: 0,
 }])
+
+watchEffect(() => {
+  scoreArr.value = generateScoreArr(props.modelValue)
+})
 
 function getCurrentScore(index: number, currentScore: number) {
   // const beforeScoreArr = []
