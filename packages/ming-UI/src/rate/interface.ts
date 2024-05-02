@@ -3,7 +3,7 @@ import type { DefineComponent } from 'vue'
 export interface rateProps {
   modelValue: number
   size?: number
-  iconComponent?: DefineComponent<any, any, any, any>
+  iconComponent?: DefineComponent<any, any, any, any> | DefineComponent<any, any, any, any>[]
   fillColor?: string | string[]
   bottomLayerFillColor?: string
   stroke?: string
@@ -19,8 +19,9 @@ export interface rateProps {
   scoreAccuracy?: number
 }
 
-export interface rateItemProps extends Omit<rateProps, 'modelValue' | 'fillColor' | 'clearable' | 'lowThreshold' | 'highThreshold' | 'thresholdArr' | 'scoreAccuracy'> {
+export interface rateItemProps extends Omit<rateProps, 'modelValue' | 'fillColor' | 'iconComponent' | 'clearable' | 'lowThreshold' | 'highThreshold' | 'thresholdArr' | 'scoreAccuracy'> {
   id: number
   fillColor?: string
+  iconComponent?: DefineComponent<any, any, any, any>
   score?: number
 }

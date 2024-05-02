@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import type { DefineComponent } from 'vue'
 import { computed, ref, watchEffect } from 'vue'
 import type { rateProps } from './interface.ts'
 import RateItem from './components/RateItem.vue'
+import defaultRateIcon from './components/defaultRateIcon.vue'
 
 defineOptions({
   name: 'MRate',
@@ -11,6 +13,7 @@ const props = withDefaults(defineProps<rateProps>(), {
   max: 10,
   rateIconCount: 5,
   fillColor: '#F7BA2A',
+  iconComponent: defaultRateIcon,
   clearable: false,
   lowThreshold: 2,
   highThreshold: 3,
@@ -25,7 +28,7 @@ const maximumScore = computed(() => {
   return props.max / props.rateIconCount
 })
 
-type scoreAndStyleArrType = Array<{ id: number;score: number;fillColor: string }>
+type scoreAndStyleArrType = Array<{ id: number;score: number;fillColor: string;iconComponent: DefineComponent<any, any, any, any> }>
 const scoreArr = ref<scoreAndStyleArrType>([])
 
 const rateIconCount = computed(() => {
@@ -56,6 +59,16 @@ const fillColor = computed(() => {
   if (colorArr.length >= thresholdArr.value.length)
     return colorArr.slice(0, thresholdArr.value.length)
   else return [...colorArr]
+})
+
+const iconComponent = computed(() => {
+  const iconArr = [props.iconComponent].flat()
+  if (iconArr.length === 0)
+    iconArr.push(defaultRateIcon)
+
+  if (iconArr.length >= thresholdArr.value.length)
+    return iconArr.slice(0, thresholdArr.value.length)
+  else return [...iconArr]
 })
 
 watchEffect(() => {
@@ -90,8 +103,9 @@ function distributeColor(scoreArr: scoreAndStyleArrType) {
 
   if (fillColor.value.length - 1 < thresholdIndex)
     thresholdIndex = fillColor.value.length - 1
+
   for (const scoreObj of scoreArr)
-    scoreAndStyleArr.push({ ...scoreObj, fillColor: fillColor.value[thresholdIndex] })
+    scoreAndStyleArr.push({ ...scoreObj, fillColor: fillColor.value[thresholdIndex], iconComponent: iconComponent.value[thresholdIndex] })
 
   return scoreAndStyleArr
 }
@@ -111,6 +125,7 @@ function generateScoreArr(totalScore: number) {
       id: i,
       score,
       fillColor: '',
+      iconComponent: defaultRateIcon,
     }
     scoreArr.push(scoreObj)
   }
@@ -136,7 +151,7 @@ function updateScoreArr(score: number, index: number) {
   <div class="rate">
     <div class="rate-items">
       <RateItem
-        v-for="(item, index) in scoreArr" :id="item.id" :key="item.id" :score="item.score" :allow-half="allowHalf" :stroke-width="strokeWidth" :stroke="stroke" :size="size" :bottom-layer-fill-color="bottomLayerFillColor" :fill-color="item.fillColor" :icon-component="iconComponent"
+        v-for="(item, index) in scoreArr" :id="item.id" :key="item.id" :score="item.score" :allow-half="allowHalf" :stroke-width="strokeWidth" :stroke="stroke" :size="size" :bottom-layer-fill-color="bottomLayerFillColor" :fill-color="item.fillColor" :icon-component="item.iconComponent"
         :max="max" :rate-icon-count="rateIconCount" :grayscale="grayscale" @update:score="value => updateScoreArr(value, index)"
       />
     </div>
