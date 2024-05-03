@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { DefineComponent } from 'vue'
-import { computed, ref, watchEffect } from 'vue'
+import type { Component } from 'vue'
+import { computed, ref, shallowRef, watchEffect } from 'vue'
 import type { rateProps } from './interface.ts'
 import RateItem from './components/RateItem.vue'
 import defaultRateIcon from './components/defaultRateIcon.vue'
@@ -28,7 +28,7 @@ const maximumScore = computed(() => {
   return props.max / props.rateIconCount
 })
 
-type scoreAndStyleArrType = Array<{ id: number;score: number;fillColor: string;iconComponent: DefineComponent<any, any, any, any> }>
+type scoreAndStyleArrType = Array<{ id: number;score: number;fillColor: string;iconComponent: Component }>
 const scoreArr = ref<scoreAndStyleArrType>([])
 
 const rateIconCount = computed(() => {
@@ -105,7 +105,7 @@ function distributeColor(scoreArr: scoreAndStyleArrType) {
     thresholdIndex = fillColor.value.length - 1
 
   for (const scoreObj of scoreArr)
-    scoreAndStyleArr.push({ ...scoreObj, fillColor: fillColor.value[thresholdIndex], iconComponent: iconComponent.value[thresholdIndex] })
+    scoreAndStyleArr.push({ ...scoreObj, fillColor: fillColor.value[thresholdIndex], iconComponent: shallowRef(iconComponent.value[thresholdIndex]) })
 
   return scoreAndStyleArr
 }

@@ -1,9 +1,9 @@
-import type { DefineComponent } from 'vue'
+import type { Component } from 'vue'
 
 export interface rateProps {
   modelValue: number
   size?: number
-  iconComponent?: DefineComponent<any, any, any, any> | DefineComponent<any, any, any, any>[]
+  iconComponent?: Component | Component []
   fillColor?: string | string[]
   bottomLayerFillColor?: string
   stroke?: string
@@ -22,6 +22,6 @@ export interface rateProps {
 export interface rateItemProps extends Omit<rateProps, 'modelValue' | 'fillColor' | 'iconComponent' | 'clearable' | 'lowThreshold' | 'highThreshold' | 'thresholdArr' | 'scoreAccuracy'> {
   id: number
   fillColor?: string
-  iconComponent?: DefineComponent<any, any, any, any>
+  iconComponent?: Component
   score?: number
 }
