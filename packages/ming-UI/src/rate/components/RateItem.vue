@@ -10,14 +10,14 @@ const props = withDefaults(defineProps<rateItemProps>(), {
   score: 0,
   size: 20,
   iconComponent: DefaultRateIcon,
-  fillColor: 'gold',
+  fillColor: '#F7BA2A',
   stroke: '#d3d6db',
   bottomLayerFillColor: 'none',
   strokeWidth: 2,
   allowHalf: false,
   max: 10,
   rateIconCount: 5,
-  grayscale: 0.6,
+  grayscale: 0,
   disabled: false,
 })
 
@@ -126,8 +126,12 @@ const bottomLayerDynamicStyle = computed(() => {
   else
     style.stroke = props.stroke
 
-  if (props.grayscale !== 0 || props.stroke === 'none')
+  if (props.grayscale !== 0)
     style.filter = `grayscale(${props.grayscale})`
+  if (props.stroke === 'none') {
+    style.filter = `grayscale(${props.grayscale || 0.5})`
+    style.fill = props.fillColor
+  }
 
   return style
 })

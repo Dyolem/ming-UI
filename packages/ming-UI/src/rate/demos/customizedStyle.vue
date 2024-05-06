@@ -5,5 +5,5 @@ const score = ref(2)
 </script>
 
 <template>
-  <MRate v-model="score" :allow-half="true" :grayscale="0.4" stroke="none" bottom-layer-fill-color="gold" />
+  <MRate v-model="score" :allow-half="true" stroke="none" />
 </template>
