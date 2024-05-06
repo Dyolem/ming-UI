@@ -13,12 +13,14 @@ import ColorExtractor from './icon/ColorExtractor.vue'
 import BookMark from './icon/BookMark.vue'
 import BookMarkOne from './icon/BookMarkOne.vue'
 import Star from './icon/Star.vue'
+import DislikeTwo from './icon/DislikeTwo.vue'
 
 // 图标组件对象
 const icons = {
   MIcon,
   SvgIcon,
   Like,
+  DislikeTwo,
   Download,
   Mute,
   Pause,
@@ -36,6 +38,7 @@ export {
   MIcon,
   SvgIcon,
   Like,
+  DislikeTwo,
   Download,
   Mute,
   Pause,

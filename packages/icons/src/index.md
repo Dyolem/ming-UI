@@ -128,6 +128,12 @@ function copyIconsName(event) {
   </li>
   <li>
     <m-icon>
+      <DislikeTwo />
+    </m-icon>
+    <span>Like</span>
+  </li>
+  <li>
+    <m-icon>
       <Mute />
     </m-icon>
     <span>Mute</span>
