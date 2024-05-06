@@ -155,7 +155,7 @@ function updateScoreArr(score: number, index: number) {
         :max="max" :rate-icon-count="rateIconCount" :grayscale="grayscale" @update:score="value => updateScoreArr(value, index)"
       />
     </div>
-    <slot :template-score="templateScore">
+    <slot name="text" :template-score="templateScore">
       <span>{{ templateScore }}</span>
     </slot>
   </div>
