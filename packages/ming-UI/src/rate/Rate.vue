@@ -20,6 +20,7 @@ const props = withDefaults(defineProps<rateProps>(), {
   thresholdArr: () => [],
   scoreAccuracy: 1,
   disabled: false,
+  textPosition: 'right',
 })
 const emit = defineEmits(['update:modelValue'])
 const templateScore = computed(() => {
@@ -27,6 +28,14 @@ const templateScore = computed(() => {
 })
 const maximumScore = computed(() => {
   return props.max / props.rateIconCount
+})
+
+const textPosition = computed(() => {
+  const flexDirectionMap = new Map([['left', 'row-reverse'], ['right', 'row'], ['top', 'column-reverse'], ['bottom', 'column']])
+  let flexDirection = flexDirectionMap.get(props.textPosition)
+  if (flexDirection === undefined)
+    flexDirection = 'row'
+  return flexDirection
 })
 
 type scoreAndStyleArrType = Array<{ id: number;score: number;fillColor: string;iconComponent: Component }>
@@ -167,7 +176,9 @@ function updateScoreArr(score: number, index: number) {
   width: fit-content;
   padding: 0 5px;
   display: flex;
-  /* flex-direction: row-reverse; */
+  justify-content: center;
+  align-items: center;
+  flex-direction: v-bind(textPosition);
 }
 .rate-items {
   display: flex;
