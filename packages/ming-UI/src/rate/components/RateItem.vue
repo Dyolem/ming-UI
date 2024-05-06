@@ -18,6 +18,7 @@ const props = withDefaults(defineProps<rateItemProps>(), {
   max: 10,
   rateIconCount: 5,
   grayscale: 0.6,
+  disabled: false,
 })
 
 const emit = defineEmits(['update:score'])
@@ -39,6 +40,9 @@ function initSvgContainer() {
   const svgContainer = svgContainerRef.value.style
   svgContainer.width = `${props.size}px`
   svgContainer.height = `${props.size}px`
+
+  if (props.disabled)
+    svgContainer.cursor = 'default'
 }
 
 const maximumScore = computed(() => {
@@ -79,6 +83,8 @@ function clamp(value: number, max: number): number {
   return Math.min(Math.max(value, 0), max)
 }
 function mark(e: MouseEvent) {
+  if (props.disabled)
+    return
   if (!svgContainerRef.value)
     return
 
@@ -164,6 +170,7 @@ const upperLayerDynamicStyle = computed(() => {
 .svg-container {
   position: relative;
   transition: all .3s ease-in-out;
+  cursor: pointer;
 }
 .svg-container:hover {
   transform: scale(1.1);

@@ -19,6 +19,7 @@ const props = withDefaults(defineProps<rateProps>(), {
   highThreshold: 3,
   thresholdArr: () => [],
   scoreAccuracy: 1,
+  disabled: false,
 })
 const emit = defineEmits(['update:modelValue'])
 const templateScore = computed(() => {
@@ -152,7 +153,7 @@ function updateScoreArr(score: number, index: number) {
     <div class="rate-items">
       <RateItem
         v-for="(item, index) in scoreArr" :id="item.id" :key="item.id" :score="item.score" :allow-half="allowHalf" :stroke-width="strokeWidth" :stroke="stroke" :size="size" :bottom-layer-fill-color="bottomLayerFillColor" :fill-color="item.fillColor" :icon-component="item.iconComponent"
-        :max="max" :rate-icon-count="rateIconCount" :grayscale="grayscale" @update:score="value => updateScoreArr(value, index)"
+        :max="max" :rate-icon-count="rateIconCount" :grayscale="grayscale" :disabled="disabled" @update:score="value => updateScoreArr(value, index)"
       />
     </div>
     <slot name="text" :template-score="templateScore">
@@ -163,12 +164,14 @@ function updateScoreArr(score: number, index: number) {
 
 <style>
 .rate {
+  width: fit-content;
   padding: 0 5px;
   display: flex;
+  /* flex-direction: row-reverse; */
 }
 .rate-items {
   display: flex;
   gap: 10px;
-  margin-right: 20px;
+  margin:0 20px;
 }
 </style>

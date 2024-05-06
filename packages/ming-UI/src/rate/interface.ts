@@ -17,9 +17,10 @@ export interface rateProps {
   highThreshold?: number
   thresholdArr?: number[]
   scoreAccuracy?: number
+  disabled?: boolean
 }
 
-export interface rateItemProps extends Omit<rateProps, 'modelValue' | 'fillColor' | 'iconComponent' | 'clearable' | 'lowThreshold' | 'highThreshold' | 'thresholdArr' | 'scoreAccuracy'> {
+export interface rateItemProps extends Omit<rateProps, 'modelValue' | 'fillColor' | 'iconComponent' | 'clearable' | 'lowThreshold' | 'highThreshold' | 'thresholdArr' | 'scoreAccuracy' > {
   id: number
   fillColor?: string
   iconComponent?: Component
