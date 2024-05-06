@@ -130,7 +130,7 @@ const bottomLayerDynamicStyle = computed(() => {
     style.filter = `grayscale(${props.grayscale})`
   if (props.stroke === 'none') {
     style.filter = `grayscale(${props.grayscale || 0.5})`
-    style.fill = props.fillColor
+    style.fill = props.bottomLayerFillColor === 'none' ? props.fillColor : props.bottomLayerFillColor
   }
 
   return style
