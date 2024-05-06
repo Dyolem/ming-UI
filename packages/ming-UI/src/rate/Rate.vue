@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
 import { computed, ref, shallowRef, watchEffect } from 'vue'
+import { nanoid } from 'nanoid'
 import type { rateProps } from './interface.ts'
 import RateItem from './components/RateItem.vue'
 import defaultRateIcon from './components/defaultRateIcon.vue'
@@ -38,7 +39,7 @@ const textPosition = computed(() => {
   return flexDirection
 })
 
-type scoreAndStyleArrType = Array<{ id: number;score: number;fillColor: string;iconComponent: Component }>
+type scoreAndStyleArrType = Array<{ id: string;score: number;fillColor: string;iconComponent: Component }>
 const scoreArr = ref<scoreAndStyleArrType>([])
 
 const rateIconCount = computed(() => {
@@ -132,11 +133,13 @@ function generateScoreArr(totalScore: number) {
     residualScore = residualScore - score
 
     const scoreObj = {
-      id: i,
+      id: nanoid(4),
       score,
       fillColor: '',
       iconComponent: defaultRateIcon,
     }
+    console.log(scoreObj.id)
+
     scoreArr.push(scoreObj)
   }
   const scoreAndStyleArr = distributeColor(scoreArr)
@@ -183,6 +186,6 @@ function updateScoreArr(score: number, index: number) {
 .rate-items {
   display: flex;
   gap: 10px;
-  margin:0 20px;
+  margin:0 10px;
 }
 </style>

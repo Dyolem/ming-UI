@@ -22,7 +22,7 @@ export interface rateProps {
 }
 
 export interface rateItemProps extends Omit<rateProps, 'modelValue' | 'fillColor' | 'iconComponent' | 'clearable' | 'lowThreshold' | 'highThreshold' | 'thresholdArr' | 'scoreAccuracy' | 'textPosition' > {
-  id: number
+  id: string
   fillColor?: string
   iconComponent?: Component
   score?: number
