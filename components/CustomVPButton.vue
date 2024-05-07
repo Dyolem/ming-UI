@@ -16,7 +16,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   theme: 'brand',
 })
-console.log(props)
+
 const EXTERNAL_URL_RE = /^(?:[a-z]+:|\/\/)/i
 const isExternal = computed(
   () => props.href && EXTERNAL_URL_RE.test(props.href),

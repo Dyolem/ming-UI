@@ -138,7 +138,6 @@ function generateScoreArr(totalScore: number) {
       fillColor: '',
       iconComponent: defaultRateIcon,
     }
-    console.log(scoreObj.id)
 
     scoreArr.push(scoreObj)
   }
