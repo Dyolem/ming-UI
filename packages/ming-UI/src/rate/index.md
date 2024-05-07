@@ -70,4 +70,10 @@
 
 ## 自定义样式
 
+你可以通过设置`fill-color`，`bottom-layer-fill-color`，`stroke`，`grayscale`等一系列属性，自由控制评分图标的样式。
 <demo src="./demos/customizedStyle.vue"></demo>
+
+:::tip
+如果将`stroke`属性设置为`none`，图标将自动应用0.5数值的灰度滤镜用于显示图标区域。
+:::
+<demo src="./demos/contourless.vue"></demo>
