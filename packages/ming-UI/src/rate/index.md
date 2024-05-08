@@ -61,12 +61,16 @@
 
 ## 更多种类的图标
 
-通过设置`iconComponent`属性，接收一个组件对象，可以自定义评分图标。
+通过设置`iconComponent`属性，接收一个图标组件对象，可以自定义评分图标。
 
 <demo src="./demos/MoreIcons.vue"></demo>
 
-除了接收单个组件对象，也可以传递包含多个组件对象的数组，这在配合评分阈值使用时很有用。
+除了接收单个图标组件对象，也可以传递包含多个图标组件对象的数组，这在配合评分阈值使用时很有用。
 <demo src="./demos/iconsArr.vue"></demo>
+
+:::warning
+传递的图标组件内部实现必须以`<svg></svg>`为根节点，不可放在任何父元素内部，否则评分组件样式将失效。
+:::
 
 ## 自定义样式
 
@@ -101,13 +105,13 @@
 | grayscale | 图标的灰度滤镜，当`stroke`为'none'时，会自动应用滤镜 | `number` | false |
 | disabled | 组件是否为只读 | `boolean` | false |
 | score-accuracy | 控制评分显示的小数位数 | `number` | 1 |
-| text-position | 评分分数的显示位置 | `'top'`\|`'bottom'`\|`'left'`\|`'right'` | 1 |
+| text-position | 评分分数的显示位置 | `'top'`\|`'bottom'`\|`'left'`\|`'right'` | 'right' |
 
 ### Slots
 
 | 名称     | 说明               |
 | -------- | ------------------ |
-| text | 自定义评分分数   |
+| text | 自定义评分文字内容   |
 
 ### Exposes
 
