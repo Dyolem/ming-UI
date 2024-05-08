@@ -74,6 +74,37 @@
 <demo src="./demos/customizedStyle.vue"></demo>
 
 :::tip
-如果将`stroke`属性设置为`none`，图标将自动应用0.5数值的灰度滤镜用于显示图标区域。
+如果将`stroke`属性设置为`none`，`bottom-layer-fill-color`属性值将和`fill-color`属性值一致，同时图标将自动应用0.5数值的灰度滤镜用于显示图标区域。
 :::
 <demo src="./demos/contourless.vue"></demo>
+
+## API
+
+### Attributes
+
+| 属性     | 说明               | 类型                             | 默认值  |
+| -------- | ------------------ | -------------------------------- | ------- |
+| model-value/v-model | 绑定评分值  | `number` | 10 |
+| size | 评分图标的大小，size x size，单位为px | `number` | 20 |
+| fill-color | 评分图标内部区域填充颜色 | `string` \| `string[]` | '#F7BA2A'  |
+| icon-component | 自定义评分图标 | `Component` \|`Component[]`   | `defaultRateIcon`   |
+| bottom-layer-fill-color | 评分图标剩余区域填充颜色 | `string` | 'none'  |
+| stroke | 图标轮廓颜色 | `string` | '#d3d6db' |
+| stroke-width | 控制图标轮廓粗细 | `number` | 2 |
+| allow-half | 是否允许半选 | `boolean` | false |
+| max | 最高评分分数 | `number` | 10 |
+| rate-icon-count | 评分图标个数 | `number` | 5 |
+| clearable | 是否可以重置评分值为 0 | `boolean` | false |
+| low-threshold | 低分和中等分数的界限值，值本身被划分在中等分数中 | `number` | 2 |
+| high-threshold | 高分和中等分数的界限值，值本身被划分在高分中 | `number` | 3 |
+| thresholdArr | 自定义更多评分等级 | `number[]` | `[]` |
+| grayscale | 图标的灰度滤镜，当`stroke`为'none'时，会自动应用滤镜 | `number` | false |
+| disabled | 组件是否为只读 | `boolean` | false |
+| score-accrurary | 控制评分显示的小数位数 | `number` | 1 |
+| text-position | 评分分数的显示位置 | `top`\|`bottom`\|`left`\|`right` | 1 |
+
+### Slots
+
+| 名称     | 说明               |
+| -------- | ------------------ |
+| text | 自定义评分分数   |
