@@ -87,7 +87,7 @@
 | model-value/v-model | 绑定评分值  | `number` | 10 |
 | size | 评分图标的大小，size x size，单位为px | `number` | 20 |
 | fill-color | 评分图标内部区域填充颜色 | `string` \| `string[]` | '#F7BA2A'  |
-| icon-component | 自定义评分图标 | `Component` \|`Component[]`   | `defaultRateIcon`   |
+| icon-component | 自定义评分图标 | `Component` \| `Component[]`   | `defaultRateIcon`   |
 | bottom-layer-fill-color | 评分图标剩余区域填充颜色 | `string` | 'none'  |
 | stroke | 图标轮廓颜色 | `string` | '#d3d6db' |
 | stroke-width | 控制图标轮廓粗细 | `number` | 2 |
@@ -100,11 +100,18 @@
 | thresholdArr | 自定义更多评分等级 | `number[]` | `[]` |
 | grayscale | 图标的灰度滤镜，当`stroke`为'none'时，会自动应用滤镜 | `number` | false |
 | disabled | 组件是否为只读 | `boolean` | false |
-| score-accrurary | 控制评分显示的小数位数 | `number` | 1 |
-| text-position | 评分分数的显示位置 | `top`\|`bottom`\|`left`\|`right` | 1 |
+| score-accuracy | 控制评分显示的小数位数 | `number` | 1 |
+| text-position | 评分分数的显示位置 | `'top'`\|`'bottom'`\|`'left'`\|`'right'` | 1 |
 
 ### Slots
 
 | 名称     | 说明               |
 | -------- | ------------------ |
 | text | 自定义评分分数   |
+
+### Exposes
+
+| 名称     | 说明   | 类型 |
+| -------- | ------------------ |--------- |
+| resetCurrentScore | 重置评分分数为0 | `()=>void` |
+| setCurrentScore | 设置评分分数 | `(value:number)=>void` |
