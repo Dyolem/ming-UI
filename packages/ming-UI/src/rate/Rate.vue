@@ -157,6 +157,19 @@ function updateScoreArr(score: number, index: number) {
   }
   emit('update:modelValue', newTotalScore)
 }
+
+function resetCurrentScore() {
+  scoreArr.value = generateScoreArr(0)
+}
+
+function setCurrentScore(score: number) {
+  scoreArr.value = generateScoreArr(score)
+}
+
+defineExpose({
+  resetCurrentScore,
+  setCurrentScore,
+})
 </script>
 
 <template>
