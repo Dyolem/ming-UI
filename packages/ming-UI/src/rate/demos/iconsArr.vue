@@ -3,7 +3,6 @@ import { ref } from 'vue'
 
 import { DislikeTwo, Like, Star } from '@ming-UI/icons'
 
-// import { BookMarkOne, Like, Star } from '../../../../icons/src/index.ts'
 const icons = [DislikeTwo, Like, Star]
 const score = ref(2)
 </script>
