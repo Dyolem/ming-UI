@@ -63,6 +63,10 @@ export default defineConfig({
           text: 'Rate 评分',
           link: '/components/rate/',
         },
+        {
+          text: 'notification 通知',
+          link: '/components/notification/',
+        },
 
       ],
       '/utils/': [
