@@ -5,7 +5,11 @@ import { MButton } from 'ming-UI'
 const { appContext } = getCurrentInstance()
 const MNotification = appContext.config.globalProperties.$MNotification
 function open() {
-  MNotification()
+  MNotification({
+    message: 'hello world',
+    type: 'success',
+    title: 'head',
+  })
 }
 </script>
 

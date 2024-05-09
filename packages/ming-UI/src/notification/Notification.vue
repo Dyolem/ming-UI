@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { MIcon, Star } from '@ming-UI/icons'
 import { ref } from 'vue'
+import type { NotificationProps } from './interface'
 
 defineOptions({
   name: 'MNotification',
 })
 
+withDefaults(defineProps<NotificationProps>(), {
+  message: 'This is a message that does not automatically close',
+  type: 'info',
+  title: 'Prompt',
+})
 const offsetX = ref<number>(10)
 
 const isShow = ref(true)
@@ -15,8 +21,8 @@ function closeNotification() {
 </script>
 
 <template>
-  <Transition name="slide-fade">
-    <div v-if="isShow" class="container vp-raw">
+  <Transition name="slide-fade" appear>
+    <div v-if="isShow" class="container">
       <div class="replaceable-box">
         <div class="native-content-box">
           <div class="left-side">
@@ -25,8 +31,8 @@ function closeNotification() {
             </MIcon>
           </div>
           <div class="main">
-            <h1>head</h1>
-            <p> close          This is a message that does not automatically close          This is a message that does not automatically close</p>
+            <h1>{{ title }}</h1>
+            <p>{{ message }}</p>
           </div>
           <div class="right-side-close" @click="closeNotification()">
             <MIcon>
@@ -104,7 +110,11 @@ function closeNotification() {
   transition: all 0.3s ease-in-out;
 }
 
-.slide-fade-enter-from,
+.slide-fade-enter-from {
+  transform: translateX(100%);
+  opacity: 0;
+
+}
 .slide-fade-leave-to {
   transform: translateX(20px);
   opacity: 0;
