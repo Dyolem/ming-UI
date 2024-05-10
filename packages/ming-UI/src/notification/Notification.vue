@@ -1,53 +1,106 @@
 <script setup lang="ts">
 import { MIcon, Star } from '@ming-UI/icons'
-import { ref } from 'vue'
-import type { NotificationProps } from './interface'
+import { onMounted, ref } from 'vue'
+import type { NotificationConfig, NotificationConfigType, NotificationInstance } from './interface'
 
 defineOptions({
   name: 'MNotification',
+  inheritAttrs: false,
 })
 
-withDefaults(defineProps<NotificationProps>(), {
-  message: 'This is a message that does not automatically close',
-  type: 'info',
-  title: 'Prompt',
+const props = defineProps<{
+  onReady: (instance: NotificationInstance) => void
+}>()
+
+const data = ref<NotificationConfigType[]>([])
+let index = 0
+
+function add(config: NotificationConfig) {
+  // console.log(config)
+
+  const instance: NotificationConfigType = {
+    ...config,
+    _id: index++,
+
+  }
+
+  const close = () => {
+    closeNotification(instance._id)
+  }
+  let duration = instance.duration
+  if (typeof duration !== 'number')
+    duration = 3000
+
+  if (duration !== 0) {
+    instance._timer = setTimeout(() => {
+      close()
+    }, Math.abs(duration))
+  }
+  data.value.push(instance)
+  return close
+}
+
+function onReady() {
+  props.onReady?.({ add, close: closeNotification })
+}
+
+onMounted(() => {
+  onReady()
 })
+
 const offsetX = ref<number>(10)
 
-const isShow = ref(true)
-function closeNotification() {
-  isShow.value = false
+function closeNotification(id: number) {
+  const idx = data.value.findIndex(item => item._id === id)
+  if (idx !== -1) {
+    if (data.value[idx]._timer)
+      clearTimeout(data.value[idx]._timer)
+    data.value.splice(idx, 1)
+  }
 }
 </script>
 
 <template>
-  <Transition name="slide-fade" appear>
-    <div v-if="isShow" class="container">
-      <div class="replaceable-box">
-        <div class="native-content-box">
-          <div class="left-side">
-            <MIcon>
-              <Star />
-            </MIcon>
-          </div>
-          <div class="main">
-            <h1>{{ title }}</h1>
-            <p>{{ message }}</p>
-          </div>
-          <div class="right-side-close" @click="closeNotification()">
-            <MIcon>
-              <Star />
-            </MIcon>
+  <div class="wrapper">
+    <TransitionGroup name="slide-fade" appear>
+      <div v-for="item in data" :key="item._id" class="container">
+        <div class="replaceable-box">
+          <div class="native-content-box">
+            <div class="left-side">
+              <MIcon>
+                <Star />
+              </MIcon>
+            </div>
+            <div class="main">
+              <h1>{{ item.title }}</h1>
+              <p>{{ item.content }}</p>
+            </div>
+            <div v-if="item.showClose" class="right-side-close" @click="closeNotification(item._id)">
+              <MIcon>
+                <Star />
+              </MIcon>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </Transition>
+    </TransitionGroup>
+  </div>
 </template>
 
 <style scoped>
-.container {
+.wrapper {
   position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 10px;
+  height: 100%;
+}
+.container {
+  /* position: fixed; */
   width: fit-content;
   display: flex;
   justify-content: center;
@@ -59,7 +112,7 @@ function closeNotification() {
   border-radius: 5px;
   background-color: #fff;
   z-index: 1000;
-  top: 20px;
+  /* top: 20px; */
   right: v-bind(`${offsetX}px`);
 }
 .replaceable-box {
@@ -102,10 +155,12 @@ function closeNotification() {
   进入和离开动画可以使用不同
   持续时间和速度曲线。
 */
+.slide-fade-move,
 .slide-fade-enter-active {
   transition: all 0.3s ease-out;
 }
 
+.slide-fade-move,
 .slide-fade-leave-active {
   transition: all 0.3s ease-in-out;
 }
@@ -118,5 +173,8 @@ function closeNotification() {
 .slide-fade-leave-to {
   transform: translateX(20px);
   opacity: 0;
+}
+.slide-fade-leave-active {
+  position: absolute;
 }
 </style>

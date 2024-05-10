@@ -1,11 +1,12 @@
 import type { App } from 'vue'
-import Notification from './Notification.vue'
-import MNotificationPlugin, { MNotification } from './notificationPlugin'
+import { createNotification } from './instance'
 
-Notification.install = (app: App) => {
-  app.component(Notification.name as string, Notification)
-  app.use(MNotificationPlugin)
+const instance = createNotification();
+
+(instance as any).install = (app: App) => {
+  app.config.globalProperties.$notification = instance
+  // optionAPI
+  // this.$notification.info({ content: 'test', title: 'test' })
 }
 
-export default Notification
-export { MNotification }
+export default instance
