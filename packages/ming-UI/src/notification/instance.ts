@@ -6,7 +6,7 @@ export function createNotification() {
   let instance: NotificationInstance
   const info = (config: NotificationConfig) => {
     if (!instance) {
-      const body = document.body
+      const target = config.appendTo || document.body
       const vm = createVNode(Notification, {
         onReady(_instance: NotificationInstance) {
           instance = _instance
@@ -16,7 +16,7 @@ export function createNotification() {
       if (config.appContext)
         vm.appContext = config.appContext
 
-      render(vm, body)
+      render(vm, target)
     }
     else {
       instance.add(config)

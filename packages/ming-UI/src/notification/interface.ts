@@ -8,6 +8,7 @@ export interface NotificationConfig {
   showClose?: boolean
   position: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
   offset?: number
+  appendTo?: HTMLElement
 }
 
 export interface NotificationConfigType extends NotificationConfig {
