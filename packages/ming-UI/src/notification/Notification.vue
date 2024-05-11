@@ -207,10 +207,10 @@ const isVisible = computed(() => {
   margin: var(--height-gap) var(--width-gap);
 }
 .native-content-box {
-  position: relative;
   min-width: 200px;
   max-width: 300px;
   display: flex;
+  justify-content: space-between;
 }
 .left-side {
   display: flex;
@@ -220,8 +220,7 @@ const isVisible = computed(() => {
   height: 100%;
 }
 .right-side-close {
-  position: absolute;
-  right: 1px;
+  padding: 0 5px;
   cursor: pointer;
 }
 .main {
