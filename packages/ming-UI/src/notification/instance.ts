@@ -4,7 +4,7 @@ import Notification from './Notification.vue'
 
 export function createNotification() {
   let instance: NotificationInstance
-  const info = (config: NotificationConfig) => {
+  const notify = (config: NotificationConfig) => {
     if (!instance) {
       const target = config.appendTo || document.body
       const vm = createVNode(Notification, {
@@ -29,7 +29,7 @@ export function createNotification() {
   }
 
   return {
-    info,
+    notify,
     close,
   }
 }

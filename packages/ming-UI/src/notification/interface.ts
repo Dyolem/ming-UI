@@ -1,14 +1,16 @@
-import type { VNode } from 'vue'
+import type { Component, VNode } from 'vue'
 
 export interface NotificationConfig {
+  type?: 'success' | 'info' | 'warning' | 'error'
   content: string | VNode
-  title: string | VNode
+  title?: string | VNode
   duration?: number
   appContext?: any
   showClose?: boolean
   position: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
   offset?: number
   appendTo?: HTMLElement
+  icon?: Component
 }
 
 export interface NotificationConfigType extends NotificationConfig {

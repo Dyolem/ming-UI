@@ -1,6 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import type { Component } from 'vue'
+import { computed, onMounted, ref, shallowRef } from 'vue'
 import type { NotificationConfig, NotificationConfigType, NotificationInstance } from './interface'
+import Success from './components/Success.vue'
+import Info from './components/Info.vue'
+import Error from './components/Error.vue'
+import Warning from './components/Warning.vue'
+import CloseSmall from './components/CloseSmall.vue'
 
 defineOptions({
   name: 'MNotification',
@@ -66,24 +72,40 @@ const translateXValue = computed(() => {
 const data = ref<NotificationConfigType[]>([])
 let index = 0
 
-function add({ duration = 3000, title = 'Prompt', content = '', showClose = true, position = 'top-right', offset = 20 }: NotificationConfig) {
+const iconTypeMap = new Map<string, Component>([
+  ['success', Success],
+  ['info', Info],
+  ['error', Error],
+  ['warning', Warning],
+])
+const titleTypeMap = new Map<string, string>([
+  ['success', 'Success'],
+  ['info', 'Prompt'],
+  ['error', 'Error'],
+  ['warning', 'Warning'],
+])
+function add({ type = 'info', duration = 3000, title = 'Prompt', content = '', showClose = true, position = 'top-right', offset = 20, icon = Success }: NotificationConfig) {
   const instance: NotificationConfigType = {
-    duration,
-    title,
+    type,
+    title: titleTypeMap.get(type) || title,
     content,
+    duration,
     showClose,
     position,
     offset,
+    icon: shallowRef(iconTypeMap.get(type) || Info),
     _id: index++,
   }
 
   props.value = {
-    duration,
+    type,
     title,
     content,
+    duration,
     showClose,
     position,
     offset,
+    icon,
   }
 
   const close = () => {
@@ -142,18 +164,14 @@ const isVisible = computed(() => {
           <div class="replaceable-box">
             <div class="native-content-box">
               <div class="left-side">
-                <MIcon>
-                  <Star />
-                </MIcon>
+                <component :is="item.icon" />
               </div>
               <div class="main">
                 <h1>{{ item.title }}</h1>
                 <p>{{ item.content }}</p>
               </div>
               <div v-if="item.showClose" class="right-side-close" @click="closeNotification(item._id)">
-                <MIcon>
-                  <Star />
-                </MIcon>
+                <CloseSmall />
               </div>
             </div>
           </div>
