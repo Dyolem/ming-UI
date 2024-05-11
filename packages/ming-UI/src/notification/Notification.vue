@@ -167,7 +167,7 @@ const isVisible = computed(() => {
                 <component :is="item.icon" />
               </div>
               <div class="main">
-                <h1>{{ item.title }}</h1>
+                <h2>{{ item.title }}</h2>
                 <p>{{ item.content }}</p>
               </div>
               <div v-if="item.showClose" class="right-side-close" @click="closeNotification(item._id)">
@@ -196,18 +196,15 @@ const isVisible = computed(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.1),
-    -2px -2px 2px 2px rgba(0, 0, 0, 0.1),
-    2px -2px 2px 2px rgba(0, 0, 0, 0.1),
-    -2px 2px 2px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 12px rgba(0, 0, 0, .15);
+
   border-radius: 5px;
   background-color: #fff;
 }
 .replaceable-box {
-  --width-gap: 20px;
-  --height-gap: 10px;
+  --width-gap: 15px;
+  --height-gap: 15px;
   margin: var(--height-gap) var(--width-gap);
-  background-color: aqua;
 }
 .native-content-box {
   position: relative;
@@ -216,23 +213,24 @@ const isVisible = computed(() => {
   display: flex;
 }
 .left-side {
+  display: flex;
+  justify-content: center;
+  margin-right: 10px;
   width: 30px;
   height: 100%;
 }
 .right-side-close {
   position: absolute;
-  top: 1px;
   right: 1px;
   cursor: pointer;
 }
 .main {
   flex: 1;
-  background-color: beige;
 }
-.main h1 {
+.main h2 {
   margin-bottom: 10px;
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
 }
 .scroll {
   overflow: auto;
@@ -255,7 +253,6 @@ const isVisible = computed(() => {
 .slide-fade-enter-from {
   opacity: 0;
   transform: translateX(var(--slide-translate-x, 20px));
-  /* transform: v-bind(`translateX(${translateXDirection}100%)`); */
 }
 .slide-fade-leave-to {
   opacity: 0;
