@@ -7,7 +7,7 @@ export interface NotificationConfig {
   duration?: number
   appContext?: any
   showClose?: boolean
-  position: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
+  position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
   offset?: number
   appendTo?: HTMLElement
   icon?: Component

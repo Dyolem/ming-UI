@@ -25,7 +25,7 @@ const props = ref<NotificationConfig>({
   offset: 20,
 })
 const startPosition = computed(() => {
-  if (props.value.position.startsWith('bottom')) {
+  if (props.value.position?.startsWith('bottom')) {
     return {
       flexDirection: 'column-reverse',
     } as const
@@ -38,7 +38,7 @@ const startPosition = computed(() => {
 })
 
 const sidePosition = computed(() => {
-  if (props.value.position.endsWith('left')) {
+  if (props.value.position?.endsWith('left')) {
     return {
       left: '20px',
     } as const
@@ -64,7 +64,7 @@ const position = computed(() => {
 })
 
 const translateXValue = computed(() => {
-  if (props.value.position.endsWith('left'))
+  if (props.value.position?.endsWith('left'))
     return { '--slide-translate-x': '-100%' }
   else
     return { '--slide-translate-x': '100%' }
@@ -127,7 +127,7 @@ function add({ type = 'info', duration = 3000, title = 'Prompt', content = '', s
 }
 
 const dataOrderComputed = computed(() => {
-  if (props.value?.position.startsWith('bottom'))
+  if (props.value.position?.startsWith('bottom'))
     return data.value.toReversed()
   else return data.value
 })
