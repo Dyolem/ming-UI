@@ -1,10 +1,11 @@
+import type { AppContext } from 'vue'
 import { createVNode, render } from 'vue'
 import type { NotificationConfig, NotificationInstance } from './interface'
 import Notification from './Notification.vue'
 
 export function createNotification() {
   let instance: NotificationInstance
-  const notify = (config: NotificationConfig) => {
+  const notify = (config: NotificationConfig, appContext?: AppContext) => {
     if (!instance) {
       const target = config.appendTo || document.body
       const vm = createVNode(Notification, {
@@ -13,8 +14,8 @@ export function createNotification() {
           instance.add(config)
         },
       })
-      if (config.appContext)
-        vm.appContext = config.appContext
+      if (appContext)
+        vm.appContext = appContext
 
       render(vm, target)
     }

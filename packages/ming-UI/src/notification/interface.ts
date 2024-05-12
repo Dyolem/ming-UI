@@ -5,7 +5,6 @@ export interface NotificationConfig {
   content: string | VNode
   title?: string | VNode
   duration?: number
-  appContext?: any
   showClose?: boolean
   position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
   offset?: number
