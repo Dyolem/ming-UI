@@ -84,7 +84,7 @@ const titleTypeMap = new Map<string, string>([
   ['error', 'Error'],
   ['warning', 'Warning'],
 ])
-function add({ type = 'info', duration = 3000, title = 'Prompt', content = '', showClose = true, position = 'top-right', offset = 20, icon = Success, showIcon = true }: NotificationConfig) {
+function add({ type = 'info', duration = 3000, title = 'Prompt', content = '', showClose = true, position = 'top-right', offset = 20, icon = Success, showIcon = true, dangerouslyUseHTMLString = false }: NotificationConfig) {
   const instance: NotificationConfigType = {
     type,
     title: titleTypeMap.get(type) || title,
@@ -95,6 +95,7 @@ function add({ type = 'info', duration = 3000, title = 'Prompt', content = '', s
     offset,
     icon: shallowRef(iconTypeMap.get(type) || Info),
     showIcon,
+    dangerouslyUseHTMLString,
     _id: index++,
   }
 
@@ -160,19 +161,21 @@ const isVisible = computed(() => {
 
 const customContainerRefs = ref<HTMLElement[] | []>([])
 function customRender(instance: NotificationConfigType) {
-  const { content, _id } = instance
-  let vNode
+  const { content, _id, dangerouslyUseHTMLString } = instance
+  if (!dangerouslyUseHTMLString) {
+    let vNode
 
-  if (isVNode(content))
-    vNode = content
-  else if (typeof content === 'string')
-    vNode = h('div', { class: 'custom-vnode' }, content)
+    if (isVNode(content))
+      vNode = content
+    else if (typeof content === 'string')
+      vNode = h('div', { class: 'custom-vnode' }, content)
 
-  else return 'Unknown'
+    else return
 
-  // const container = document.querySelector(`[data-id="${_id}"]`)
-  if (customContainerRefs.value[_id] && vNode)
-    render(vNode, customContainerRefs.value[_id])
+    // const container = document.querySelector(`[data-id="${_id}"]`)
+    if (customContainerRefs.value[_id] && vNode)
+      render(vNode, customContainerRefs.value[_id])
+  }
 }
 </script>
 
@@ -189,8 +192,13 @@ function customRender(instance: NotificationConfigType) {
               <div class="main">
                 <h2>{{ item.title }}</h2>
                 <div
+                  v-if="!item.dangerouslyUseHTMLString"
                   ref="customContainerRefs"
                   :data-id="item._id"
+                />
+                <div
+                  v-if="item.dangerouslyUseHTMLString"
+                  v-html="item.content"
                 />
               </div>
             </div>

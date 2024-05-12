@@ -12,6 +12,7 @@ export interface NotificationConfig {
   appendTo?: HTMLElement
   icon?: Component
   showIcon?: boolean
+  dangerouslyUseHTMLString?: boolean
 }
 
 export interface NotificationConfigType extends NotificationConfig {
