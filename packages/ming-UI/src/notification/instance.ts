@@ -1,36 +1,61 @@
-import type { AppContext } from 'vue'
 import { createVNode, render } from 'vue'
+import type { AppContext } from 'vue'
 import type { NotificationConfig, NotificationInstance } from './interface'
 import Notification from './Notification.vue'
 
 export function createNotification() {
-  let instance: NotificationInstance
+  const instanceMap = new Map<string, { instance: NotificationInstance | null; container: HTMLDivElement | null }>([
+    ['top-left', { instance: null, container: null }],
+    ['top-right', { instance: null, container: null }],
+    ['bottom-left', { instance: null, container: null }],
+    ['bottom-right', { instance: null, container: null }],
+  ])
+
   const notify = (config: NotificationConfig, appContext?: AppContext) => {
-    if (!instance) {
-      const target = config.appendTo || document.body
+    const position = config.position || 'top-right'
+    if (!instanceMap.get(position)?.instance) {
+      const container = document.createElement('div')
+      container.className = `notification-container-${position}`
+      document.body.appendChild(container)
+
       const vm = createVNode(Notification, {
         onReady(_instance: NotificationInstance) {
-          instance = _instance
-          instance.add(config)
+          const entry = instanceMap.get(position)
+          if (entry) {
+            entry.instance = _instance
+            entry.container = container
+            entry.instance.add(config)
+          }
+        },
+        onEmpty() {
+          const entry = instanceMap.get(position)
+          if (entry?.container) {
+            render(null, entry.container) // 清空渲染
+            document.body.removeChild(entry.container)
+            instanceMap.set(position, { instance: null, container: null })
+          }
         },
       })
       if (appContext)
         vm.appContext = appContext
 
-      render(vm, target)
+      render(vm, container)
     }
     else {
-      instance.add(config)
+      instanceMap.get(position)?.instance?.add(config)
     }
   }
 
   const close = (id?: number) => {
-    if (instance)
-      instance.close(id)
+    instanceMap.forEach(({ instance }) => {
+      instance?.close(id)
+    })
   }
+
   const closeAll = () => {
-    if (instance)
-      instance.closeAll()
+    instanceMap.forEach(({ instance }) => {
+      instance?.closeAll()
+    })
   }
 
   return {

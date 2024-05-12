@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
-import { computed, h, isVNode, nextTick, onMounted, ref, render, shallowRef } from 'vue'
+import { computed, h, isVNode, nextTick, onMounted, ref, render, shallowRef, watch } from 'vue'
 import type { NotificationConfig, NotificationConfigType, NotificationInstance } from './interface'
 import Success from './components/Success.vue'
 import Info from './components/Info.vue'
@@ -14,6 +14,7 @@ defineOptions({
 
 const prop = defineProps<{
   onReady: (instance: NotificationInstance) => void
+  onEmpty: () => void
 }>()
 
 const props = ref<NotificationConfig>({
@@ -111,23 +112,18 @@ function add({ type = 'info', duration = 3000, title = 'Prompt', content = '', s
     showIcon,
   }
 
-  // const close = () => {
-  //   closeNotification(instance._id)
-  // }
-
   if (typeof duration !== 'number')
     duration = 3000
 
   if (duration !== 0) {
     instance._timer = setTimeout(() => {
-      close()
+      closeNotification(instance._id)
     }, Math.abs(duration))
   }
   data.value.push(instance)
   nextTick(() => {
     customRender(instance)
   })
-  // return close
 }
 
 const dataOrderComputed = computed(() => {
@@ -153,17 +149,24 @@ function closeNotification(id: number = data.value[0]?._id ?? 0) {
   }
 }
 function closeAllNotification() {
+  data.value.forEach((item) => {
+    if (item._timer)
+      clearTimeout(item._timer)
+  })
   data.value = []
 }
-const isVisible = computed(() => {
-  if (data.value.length > 0) {
-    return true
+function checkEmpty() {
+  if (data.value.length === 0) {
+    // 延迟检查以确保动画完成
+    setTimeout(() => {
+      if (data.value.length === 0)
+        prop.onEmpty?.()
+    }, 400) // 延迟时间需要超过动画时间
   }
-  else {
-    index = 0
-    return false
-  }
-})
+}
+function handleAfterLeave() {
+  checkEmpty()
+}
 
 function customRender(instance: NotificationConfigType) {
   const { content, _id, dangerouslyUseHTMLString } = instance
@@ -186,37 +189,34 @@ function customRender(instance: NotificationConfigType) {
 </script>
 
 <template>
-  <Transition name="slide-fade">
-    <div v-if="isVisible" class="wrapper" :style="position">
-      <TransitionGroup name="slide-fade" tag="div" appear>
-        <div v-for="item in dataOrderComputed" :key="item._id" class="container" :style="translateXValue">
-          <div class="replaceable-box public">
-            <div class="native-content-box">
-              <div v-if="item.showIcon" class="left-side">
-                <component :is="item.icon" />
-              </div>
-              <div class="main">
-                <h2>{{ item.title }}</h2>
-                <div
-                  v-if="!item.dangerouslyUseHTMLString"
-
-                  :data-id="item._id"
-                />
-                <div
-                  v-if="item.dangerouslyUseHTMLString"
-                  :data-id="item._id"
-                  v-html="item.content"
-                />
-              </div>
+  <div class="wrapper" :style="position">
+    <TransitionGroup name="slide-fade" tag="div" appear @after-leave="handleAfterLeave">
+      <div v-for="item in dataOrderComputed" :key="item._id" class="container" :style="translateXValue">
+        <div class="replaceable-box public">
+          <div class="native-content-box">
+            <div v-if="item.showIcon" class="left-side">
+              <component :is="item.icon" />
+            </div>
+            <div class="main">
+              <h2>{{ item.title }}</h2>
+              <div
+                v-if="!item.dangerouslyUseHTMLString"
+                :data-id="item._id"
+              />
+              <div
+                v-if="item.dangerouslyUseHTMLString"
+                :data-id="item._id"
+                v-html="item.content"
+              />
             </div>
           </div>
-          <div v-if="item.showClose" class="right-side-close public" @click="closeNotification(item._id)">
-            <CloseSmall />
-          </div>
         </div>
-      </TransitionGroup>
-    </div>
-  </Transition>
+        <div v-if="item.showClose" class="right-side-close public" @click="closeNotification(item._id)">
+          <CloseSmall />
+        </div>
+      </div>
+    </TransitionGroup>
+  </div>
 </template>
 
 <style scoped>
@@ -226,7 +226,6 @@ function customRender(instance: NotificationConfigType) {
 }
 .wrapper {
   position: fixed;
-  min-width: 250px;
   width: fit-content;
   z-index: 100;
   display: flex;
@@ -246,8 +245,7 @@ function customRender(instance: NotificationConfigType) {
   margin: var(--height-gap) var(--width-gap);
 }
 .native-content-box {
-  min-width: 200px;
-  max-width: 300px;
+  width: 200px;
   display: flex;
   justify-content: space-between;
 }
