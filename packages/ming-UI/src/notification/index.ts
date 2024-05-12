@@ -4,9 +4,9 @@ import { createNotification } from './instance'
 const instance = createNotification();
 
 (instance as any).install = (app: App) => {
-  app.config.globalProperties.$notification = instance
+  app.config.globalProperties.$notification = instance.notify
   // optionAPI
-  // this.$notification.info({ content: 'test', title: 'test' })
+  // this.$notification({ content: 'test', title: 'test' })
 }
 
 export default instance
