@@ -169,7 +169,7 @@ function handleAfterLeave() {
 }
 
 function customRender(instance: NotificationConfigType) {
-  const { content, _id, dangerouslyUseHTMLString } = instance
+  const { content, _id, dangerouslyUseHTMLString, position } = instance
 
   if (!dangerouslyUseHTMLString) {
     let vNode
@@ -181,7 +181,7 @@ function customRender(instance: NotificationConfigType) {
 
     else return
 
-    const container = document.querySelector(`[data-id="${_id}"]`)
+    const container = document.querySelector(`[data-id="${position}-${_id}"]`)
     if (container && vNode)
       render(vNode, container)
   }
@@ -201,11 +201,12 @@ function customRender(instance: NotificationConfigType) {
               <h2>{{ item.title }}</h2>
               <div
                 v-if="!item.dangerouslyUseHTMLString"
-                :data-id="item._id"
+                class="custom"
+                :data-id="`${item.position}-${item._id}`"
               />
               <div
                 v-if="item.dangerouslyUseHTMLString"
-                :data-id="item._id"
+                :data-id="`${item.position}-${item._id}`"
                 v-html="item.content"
               />
             </div>
@@ -268,8 +269,9 @@ function customRender(instance: NotificationConfigType) {
   margin-bottom: 10px;
   font-size: 16px;
   font-weight: 700;
+  color: black;
 }
-.main p {
+.main .custom {
   font-size: 14px;
   color: #606266;
 }
