@@ -165,9 +165,9 @@ const isVisible = computed(() => {
   }
 })
 
-const customContainerRefs = ref<HTMLElement[] | []>([])
 function customRender(instance: NotificationConfigType) {
   const { content, _id, dangerouslyUseHTMLString } = instance
+
   if (!dangerouslyUseHTMLString) {
     let vNode
 
@@ -178,9 +178,9 @@ function customRender(instance: NotificationConfigType) {
 
     else return
 
-    // const container = document.querySelector(`[data-id="${_id}"]`)
-    if (customContainerRefs.value[_id] && vNode)
-      render(vNode, customContainerRefs.value[_id])
+    const container = document.querySelector(`[data-id="${_id}"]`)
+    if (container && vNode)
+      render(vNode, container)
   }
 }
 </script>
@@ -199,11 +199,12 @@ function customRender(instance: NotificationConfigType) {
                 <h2>{{ item.title }}</h2>
                 <div
                   v-if="!item.dangerouslyUseHTMLString"
-                  ref="customContainerRefs"
+
                   :data-id="item._id"
                 />
                 <div
                   v-if="item.dangerouslyUseHTMLString"
+                  :data-id="item._id"
                   v-html="item.content"
                 />
               </div>
