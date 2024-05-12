@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { MNotification } from 'ming-UI'
+import { getCurrentInstance } from 'vue'
 
+const { appContext } = getCurrentInstance()
+const notify = appContext.config.globalProperties.$notification
 function info() {
-  MNotification.notify({
+  notify({
     type: 'info',
     content: 'This is a message',
   })

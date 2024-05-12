@@ -5,6 +5,7 @@ function info() {
   MNotification.notify({
     type: 'info',
     content: 'This is a message',
+    offset: 50,
   })
 }
 </script>

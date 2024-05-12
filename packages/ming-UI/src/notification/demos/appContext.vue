@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { MNotification } from 'ming-UI'
+import { getCurrentInstance } from 'vue'
 
+const instance = getCurrentInstance()
 function info() {
   MNotification.notify({
-    type: 'info',
     content: 'This is a message',
-  })
+  }, instance?.appContext)
 }
 </script>
 

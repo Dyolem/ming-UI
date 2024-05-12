@@ -5,6 +5,7 @@ function info() {
   MNotification.notify({
     type: 'info',
     content: 'This is a message',
+    showClose: false,
   })
 }
 </script>
@@ -12,7 +13,7 @@ function info() {
 <template>
   <div>
     <m-button type="primary" @click="info">
-      notify
+      Hide Close Button
     </m-button>
   </div>
 </template>
