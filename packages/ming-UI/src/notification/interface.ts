@@ -11,6 +11,7 @@ export interface NotificationConfig {
   offset?: number
   appendTo?: HTMLElement
   icon?: Component
+  showIcon?: boolean
 }
 
 export interface NotificationConfigType extends NotificationConfig {

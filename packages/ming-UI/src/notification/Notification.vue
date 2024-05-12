@@ -84,7 +84,7 @@ const titleTypeMap = new Map<string, string>([
   ['error', 'Error'],
   ['warning', 'Warning'],
 ])
-function add({ type = 'info', duration = 3000, title = 'Prompt', content = '', showClose = true, position = 'top-right', offset = 20, icon = Success }: NotificationConfig) {
+function add({ type = 'info', duration = 3000, title = 'Prompt', content = '', showClose = true, position = 'top-right', offset = 20, icon = Success, showIcon = true }: NotificationConfig) {
   const instance: NotificationConfigType = {
     type,
     title: titleTypeMap.get(type) || title,
@@ -94,6 +94,7 @@ function add({ type = 'info', duration = 3000, title = 'Prompt', content = '', s
     position,
     offset,
     icon: shallowRef(iconTypeMap.get(type) || Info),
+    showIcon,
     _id: index++,
   }
 
@@ -106,6 +107,7 @@ function add({ type = 'info', duration = 3000, title = 'Prompt', content = '', s
     position,
     offset,
     icon,
+    showIcon,
   }
 
   const close = () => {
@@ -161,19 +163,19 @@ const isVisible = computed(() => {
     <div v-if="isVisible" class="wrapper" :style="position">
       <TransitionGroup name="slide-fade" tag="div" appear>
         <div v-for="item in dataOrderComputed" :key="item._id" class="container" :style="translateXValue">
-          <div class="replaceable-box">
+          <div class="replaceable-box public">
             <div class="native-content-box">
-              <div class="left-side">
+              <div v-if="item.showIcon" class="left-side">
                 <component :is="item.icon" />
               </div>
               <div class="main">
                 <h2>{{ item.title }}</h2>
                 <p>{{ item.content }}</p>
               </div>
-              <div v-if="item.showClose" class="right-side-close" @click="closeNotification(item._id)">
-                <CloseSmall />
-              </div>
             </div>
+          </div>
+          <div v-if="item.showClose" class="right-side-close public" @click="closeNotification(item._id)">
+            <CloseSmall />
           </div>
         </div>
       </TransitionGroup>
@@ -182,6 +184,10 @@ const isVisible = computed(() => {
 </template>
 
 <style scoped>
+.public {
+  --width-gap: 15px;
+  --height-gap: 10px;
+}
 .wrapper {
   position: fixed;
   min-width: 250px;
@@ -191,19 +197,16 @@ const isVisible = computed(() => {
   flex-direction: column;
 }
 .container {
-  margin: 20px 0;
+  margin: 15px 0;
   width: fit-content;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   box-shadow: 0px 0px 12px rgba(0, 0, 0, .15);
-
   border-radius: 5px;
   background-color: #fff;
 }
 .replaceable-box {
-  --width-gap: 15px;
-  --height-gap: 15px;
   margin: var(--height-gap) var(--width-gap);
 }
 .native-content-box {
@@ -221,6 +224,7 @@ const isVisible = computed(() => {
 }
 .right-side-close {
   padding: 0 5px;
+  margin-top: var(--height-gap);
   cursor: pointer;
 }
 .main {
@@ -230,6 +234,10 @@ const isVisible = computed(() => {
   margin-bottom: 10px;
   font-size: 16px;
   font-weight: 700;
+}
+.main p {
+  font-size: 14px;
+  color: #606266;
 }
 .scroll {
   overflow: auto;
