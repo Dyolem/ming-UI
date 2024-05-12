@@ -137,14 +137,14 @@ const dataOrderComputed = computed(() => {
 })
 
 function onReady() {
-  prop.onReady?.({ add, close: closeNotification })
+  prop.onReady?.({ add, close: closeNotification, closeAll: closeAllNotification })
 }
 
 onMounted(() => {
   onReady()
 })
 
-function closeNotification(id: number) {
+function closeNotification(id: number = data.value[0]?._id ?? 0) {
   const idx = data.value.findIndex(item => item._id === id)
   if (idx !== -1) {
     if (data.value[idx]._timer)
@@ -152,11 +152,17 @@ function closeNotification(id: number) {
     data.value.splice(idx, 1)
   }
 }
+function closeAllNotification() {
+  data.value = []
+}
 const isVisible = computed(() => {
-  if (data.value.length > 0)
+  if (data.value.length > 0) {
     return true
-  else
+  }
+  else {
+    index = 0
     return false
+  }
 })
 
 const customContainerRefs = ref<HTMLElement[] | []>([])

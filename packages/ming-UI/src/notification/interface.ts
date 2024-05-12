@@ -22,5 +22,6 @@ export interface NotificationConfigType extends NotificationConfig {
 
 export interface NotificationInstance {
   add: (config: NotificationConfig) => (() => void)
-  close: (id: number) => void
+  close: (id?: number) => void
+  closeAll: () => void
 }

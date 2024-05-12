@@ -23,13 +23,18 @@ export function createNotification() {
     }
   }
 
-  const close = (id: number) => {
+  const close = (id?: number) => {
     if (instance)
       instance.close(id)
+  }
+  const closeAll = () => {
+    if (instance)
+      instance.closeAll()
   }
 
   return {
     notify,
     close,
+    closeAll,
   }
 }
