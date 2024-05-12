@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
-import { computed, onMounted, ref, shallowRef } from 'vue'
+import { computed, h, isVNode, nextTick, onMounted, ref, render, shallowRef } from 'vue'
 import type { NotificationConfig, NotificationConfigType, NotificationInstance } from './interface'
 import Success from './components/Success.vue'
 import Info from './components/Info.vue'
@@ -122,9 +122,10 @@ function add({ type = 'info', duration = 3000, title = 'Prompt', content = '', s
       close()
     }, Math.abs(duration))
   }
-
   data.value.push(instance)
-
+  nextTick(() => {
+    customRender(instance)
+  })
   return close
 }
 
@@ -156,6 +157,23 @@ const isVisible = computed(() => {
   else
     return false
 })
+
+const customContainerRefs = ref<HTMLElement[] | []>([])
+function customRender(instance: NotificationConfigType) {
+  const { content, _id } = instance
+  let vNode
+
+  if (isVNode(content))
+    vNode = content
+  else if (typeof content === 'string')
+    vNode = h('div', { class: 'custom-vnode' }, content)
+
+  else return 'Unknown'
+
+  // const container = document.querySelector(`[data-id="${_id}"]`)
+  if (customContainerRefs.value[_id] && vNode)
+    render(vNode, customContainerRefs.value[_id])
+}
 </script>
 
 <template>
@@ -170,7 +188,10 @@ const isVisible = computed(() => {
               </div>
               <div class="main">
                 <h2>{{ item.title }}</h2>
-                <p>{{ item.content }}</p>
+                <div
+                  ref="customContainerRefs"
+                  :data-id="item._id"
+                />
               </div>
             </div>
           </div>
