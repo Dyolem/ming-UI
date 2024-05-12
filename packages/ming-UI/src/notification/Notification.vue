@@ -111,9 +111,9 @@ function add({ type = 'info', duration = 3000, title = 'Prompt', content = '', s
     showIcon,
   }
 
-  const close = () => {
-    closeNotification(instance._id)
-  }
+  // const close = () => {
+  //   closeNotification(instance._id)
+  // }
 
   if (typeof duration !== 'number')
     duration = 3000
@@ -127,7 +127,7 @@ function add({ type = 'info', duration = 3000, title = 'Prompt', content = '', s
   nextTick(() => {
     customRender(instance)
   })
-  return close
+  // return close
 }
 
 const dataOrderComputed = computed(() => {
