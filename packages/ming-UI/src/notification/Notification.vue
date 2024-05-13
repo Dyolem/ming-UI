@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
-import { computed, h, isVNode, nextTick, onMounted, ref, render, shallowRef, watch } from 'vue'
+import { computed, h, isVNode, nextTick, onMounted, ref, render, shallowRef } from 'vue'
 import type { NotificationConfig, NotificationConfigType, NotificationInstance } from './interface'
 import Success from './components/Success.vue'
 import Info from './components/Info.vue'
@@ -16,17 +16,18 @@ const prop = defineProps<{
   onReady: (instance: NotificationInstance) => void
   onEmpty: () => void
 }>()
-
+const DEFAULT_DURATION = 3000
+const DEFAULT_OFFSET = 30
 const props = ref<NotificationConfig>({
   duration: 3000,
   title: 'Prompt',
   content: '',
   showClose: true,
   position: 'top-right',
-  offset: 20,
+  offset: DEFAULT_OFFSET,
 })
 const startPosition = computed(() => {
-  let offset = 20
+  let offset = DEFAULT_OFFSET
   if (props.value.offset !== undefined)
     offset = props.value.offset
   if (props.value.position?.startsWith('bottom')) {
@@ -84,7 +85,7 @@ const titleTypeMap = new Map<string, string>([
   ['error', 'Error'],
   ['warning', 'Warning'],
 ])
-function add({ type = 'info', duration = 3000, title = 'Prompt', content = '', showClose = true, position = 'top-right', offset = 20, icon = Success, showIcon = true, dangerouslyUseHTMLString = false, appendTo }: NotificationConfig) {
+function add({ type = 'info', duration = DEFAULT_DURATION, title = 'Prompt', content = '', showClose = true, position = 'top-right', offset = DEFAULT_OFFSET, icon = Info, showIcon = true, dangerouslyUseHTMLString = false, appendTo }: NotificationConfig) {
   const instance: NotificationConfigType = {
     type,
     title: titleTypeMap.get(type) || title,
@@ -113,7 +114,7 @@ function add({ type = 'info', duration = 3000, title = 'Prompt', content = '', s
   }
 
   if (typeof duration !== 'number')
-    duration = 3000
+    duration = DEFAULT_DURATION
 
   if (duration !== 0) {
     instance._timer = setTimeout(() => {
