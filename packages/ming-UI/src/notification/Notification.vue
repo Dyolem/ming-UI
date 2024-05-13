@@ -25,6 +25,7 @@ const props = ref<NotificationConfig>({
   showClose: true,
   position: 'top-right',
   offset: DEFAULT_OFFSET,
+  zIndex: 100,
 })
 const startPosition = computed(() => {
   let offset = DEFAULT_OFFSET
@@ -61,6 +62,7 @@ const position = computed(() => {
   return {
     ...startPosition.value,
     ...sidePosition.value,
+    zIndex: props.value.zIndex,
   }
 })
 
@@ -85,7 +87,7 @@ const titleTypeMap = new Map<string, string>([
   ['error', 'Error'],
   ['warning', 'Warning'],
 ])
-function add({ type = 'info', duration = DEFAULT_DURATION, title = 'Prompt', content = '', showClose = true, position = 'top-right', offset = DEFAULT_OFFSET, icon = Info, showIcon = true, dangerouslyUseHTMLString = false, appendTo }: NotificationConfig) {
+function add({ type = 'info', duration = DEFAULT_DURATION, title = 'Prompt', content = '', showClose = true, position = 'top-right', offset = DEFAULT_OFFSET, icon = Info, showIcon = true, dangerouslyUseHTMLString = false, appendTo, zIndex = 100 }: NotificationConfig) {
   const instance: NotificationConfigType = {
     type,
     title: titleTypeMap.get(type) || title,
@@ -111,6 +113,7 @@ function add({ type = 'info', duration = DEFAULT_DURATION, title = 'Prompt', con
     offset,
     icon,
     showIcon,
+    zIndex,
   }
 
   if (typeof duration !== 'number')
@@ -229,7 +232,7 @@ function customRender(instance: NotificationConfigType) {
 .wrapper {
   position: fixed;
   width: fit-content;
-  z-index: 100;
+  z-index:100;
   display: flex;
   flex-direction: column;
 }

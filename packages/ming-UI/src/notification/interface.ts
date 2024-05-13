@@ -12,6 +12,7 @@ export interface NotificationConfig {
   icon?: Component
   showIcon?: boolean
   dangerouslyUseHTMLString?: boolean
+  zIndex?: number
 }
 
 export interface NotificationConfigType extends NotificationConfig {
