@@ -13,7 +13,7 @@ function info() {
 <template>
   <div>
     <m-button type="primary" @click="info">
-      notify
+      Notify
     </m-button>
   </div>
 </template>
