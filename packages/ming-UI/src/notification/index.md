@@ -37,10 +37,29 @@ Ming-UI 注册了 `notify` 方法并且它接受一个 `Object` 作为其参数�
 
 <demo src="./demos/offset.vue"></demo>
 
+## 关闭通知
+
+调用 `close()` 方法可以关闭对应组件实例中的最先出现的通知。你也可以调用 `closeAll()`方法，直接关闭所有通知。
+<demo src="./demos/close.vue"></demo>
+
 ## 隐藏关闭按钮
 
 通知的关闭按钮可以被设置为隐藏。
 
-将 showClose 属性设置为 false 即可隐藏关闭按钮。
+将 `showClose` 属性设置为 `false` 即可隐藏关闭按钮。
 
 <demo src="./demos/closeButton.vue"></demo>
+
+## 全局方法
+
+Ming-UI为 `app.config.globalProperties` 添加了全局方法 `$notification` ,你可以获取当前应用实例直接调用`$notification`
+
+<demo src="./demos/globalMethod.vue"></demo>
+
+## 应用程序上下文继承
+
+现在 `MNotification` 接受一条 `context` 作为消息构造器的第二个参数，允许你将当前应用的上下文注入到 `MNotification` 中，这将允许你继承应用程序的所有属性。
+<demo src="./demos/appContext.vue"></demo>
+:::tip
+如果您全局注册了 `MNotification` 组件，它将自动继承应用的上下文环境。
+:::
