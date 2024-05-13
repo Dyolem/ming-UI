@@ -26,14 +26,19 @@ const props = ref<NotificationConfig>({
   offset: 20,
 })
 const startPosition = computed(() => {
+  let offset = 20
+  if (props.value.offset !== undefined)
+    offset = props.value.offset
   if (props.value.position?.startsWith('bottom')) {
     return {
       flexDirection: 'column-reverse',
+      bottom: `${offset}px`,
     } as const
   }
   else {
     return {
       flexDirection: 'column',
+      top: `${offset}px`,
     } as const
   }
 })
@@ -52,15 +57,9 @@ const sidePosition = computed(() => {
 })
 
 const position = computed(() => {
-  let offset = 20
-  if (props.value.offset !== undefined)
-    offset = props.value.offset
-
   return {
     ...startPosition.value,
     ...sidePosition.value,
-    height: `calc(100vh - ${offset * 2}px)`,
-    top: `${offset}px`,
   }
 })
 
