@@ -12,6 +12,7 @@ function renderHTML() {
 }
 function renderVNode() {
   MNotification.notify({
+    title: h(VNode),
     content: h(VNode),
     duration: 0,
   })

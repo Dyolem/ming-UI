@@ -12,9 +12,9 @@ Ming-UI 注册了 `notify` 方法并且它接受一个 `Object` 作为其参数�
 组件提供了四种不同类型的提醒框：`success`、`warning`、`info` 和`error`，可以通过`type`属性来控制。如果未手动传递值或者传递值不符合要求，类型默认为`info`类型
 <demo src="./demos/types.vue"></demo>
 
-## 正文内容
+## 标题与通知栏内容
 
-正文内容支持三种类型的值：`字符串`，`vNode类型`的值（可以是组件，也可以是h函数渲染的结果），`HTML片段`。如果要渲染HTML片段，请将`dangerouslyUseHTMLString`属性置为`true`。
+标题与通知栏内容均支持传入三类形式的值：`字符串`，`vNode类型`的值（可以是组件，也可以是h函数渲染的结果），`HTML片段`。如果要渲染HTML片段，请将`dangerouslyUseHTMLString`属性置为`true`。
 <demo src="./demos/content.vue"></demo>
 
 :::warning
@@ -42,6 +42,10 @@ Ming-UI 注册了 `notify` 方法并且它接受一个 `Object` 作为其参数�
 调用 `close()` 方法可以关闭对应组件实例中的最先出现的通知。你也可以调用 `closeAll()`方法，直接关闭所有通知。
 <demo src="./demos/close.vue"></demo>
 
+:::tip
+`close()` 方法还可以接收一个 `number` 类型的参数id，用于关闭对应id的通知。id涉及组件内部实现:id从0开始，随着通知的创建不断加一，当一个实例不存在任何消息时，id会重新置为0。对于组件自身来说是很容易实现的，但是在其他开发者时就需要添加存储更新id的额外代码，因此不建议给`close`方法传递参数。
+:::
+
 ## 隐藏关闭按钮
 
 通知的关闭按钮可以被设置为隐藏。
@@ -63,3 +67,31 @@ Ming-UI为 `app.config.globalProperties` 添加了全局方法 `$notification` ,
 :::tip
 如果您全局注册了 `MNotification` 组件，它将自动继承应用的上下文环境。
 :::
+
+## API
+
+### Attributes
+
+| 属性     | 说明               | 类型                             | 默认值  |
+| -------- | ------------------ | -------------------------------- | ------- |
+| type | 通知的类型,如不传递则默认为`'info'`类型 | `'success'` \| `'warning'` \| `'info'` \| `'error'` | 'info' |
+| title | 标题，若不传递则默认为`'Prompt'` | `string`   \| `vNode`   | 'Prompt' |
+| content | 通知栏正文内容 | `string` \| `vNode` | - |
+| duration | 显示时间, 单位为毫秒。 值为 `0` 则不会自动关闭 | `number` | 3000 |
+| showClose | 是否显示关闭按钮 | `boolean` | true |
+| position | 自定义弹出位置     | `'top-right'` \| `'top-left'` \| `'bottom-right'` \| `'bottom-left'` | false |
+| offset | 弹出位置距离窗口顶部或者底部的偏移距离 | `number` | 30 |
+| icon | 自定义通知图标     | `boolean` | false |
+| showIcon | 是否显示通知类型图标 | `boolean` | true |
+| appendTo | 设置 `notification` 的根元素，默认为 `document.body` | `HTMLElement` | - |
+| dangerouslyUseHTMLString | 是否将 `content` 属性作为 HTML 片段处理 | `boolean` | false |
+| onClose | 单个通知关闭时的回调函数,可以使用暴露出的 `id` 值 | `(id?:number)=>void` | - |
+| onClick | 点击通知时的回调函数（点击关闭按钮不触发）,可以使用暴露出的 `id` 值 | `(id?:number)=>void` | - |
+| zIndex | 自定义通知元素的层级(当 `appendTo` 属性设置的元素层级很低时很有用) | `number` | 100 |
+
+### Methods
+
+| 名称     | 详情               | 类型                             |
+| -------- | ------------------ | -------------------------------- |
+| close | 关闭对应组件实例中的最先出现的通知,传递id可以关闭当前实例中对应id的通知 | `(id?:number)=>void` |
+| closeAll | 关闭所有实例创建的通知 | `()=>void` |
