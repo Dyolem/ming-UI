@@ -87,10 +87,10 @@ const titleTypeMap = new Map<string, string>([
   ['error', 'Error'],
   ['warning', 'Warning'],
 ])
-function add({ type = 'info', duration = DEFAULT_DURATION, title = 'Prompt', content = '', showClose = true, position = 'top-right', offset = DEFAULT_OFFSET, icon = Info, showIcon = true, dangerouslyUseHTMLString = false, appendTo, zIndex = 100, onClick, onClose }: NotificationConfig) {
+function add({ type = 'info', duration = DEFAULT_DURATION, title = '', content = '', showClose = true, position = 'top-right', offset = DEFAULT_OFFSET, icon = Info, showIcon = true, dangerouslyUseHTMLString = false, appendTo, zIndex = 100, onClick, onClose }: NotificationConfig) {
   const instance: NotificationConfigType = {
     type,
-    title: titleTypeMap.get(type) || title,
+    title: title || titleTypeMap.get(type),
     content,
     duration,
     showClose,
@@ -128,7 +128,9 @@ function add({ type = 'info', duration = DEFAULT_DURATION, title = 'Prompt', con
   }
   data.value.push(instance)
   nextTick(() => {
-    customRender(instance)
+    const customRender = createCustomRender(instance)
+    customRender(instance.title!, 'title')
+    customRender(instance.content, 'content')
   })
 }
 
@@ -183,22 +185,23 @@ function handleAfterLeave() {
   checkEmpty()
 }
 
-function customRender(instance: NotificationConfigType) {
-  const { content, _id, dangerouslyUseHTMLString, position } = instance
+function createCustomRender(instance: NotificationConfigType) {
+  const { _id, dangerouslyUseHTMLString, position } = instance
+  return function customRender(target: string | Component, targetName: 'title' | 'content') {
+    if (!dangerouslyUseHTMLString) {
+      let vNode
 
-  if (!dangerouslyUseHTMLString) {
-    let vNode
+      if (isVNode(target))
+        vNode = target
+      else if (typeof target === 'string')
+        vNode = h('div', { class: `custom-${targetName}-vnode` }, target)
 
-    if (isVNode(content))
-      vNode = content
-    else if (typeof content === 'string')
-      vNode = h('div', { class: 'custom-vnode' }, content)
+      else return
 
-    else return
-
-    const container = document.querySelector(`[data-id="${position}-${_id}"]`)
-    if (container && vNode)
-      render(vNode, container)
+      const container = document.querySelector(`[data-id="${position}-${targetName}-${_id}"]`)
+      if (container && vNode)
+        render(vNode, container)
+    }
   }
 }
 </script>
@@ -216,15 +219,27 @@ function customRender(instance: NotificationConfigType) {
               <component :is="item.icon" />
             </div>
             <div class="main">
-              <h2>{{ item.title }}</h2>
+              <!-- <h2>{{ item.title }}</h2> -->
               <div
                 v-if="!item.dangerouslyUseHTMLString"
-                class="custom"
-                :data-id="`${item.position}-${item._id}`"
+                class="custom-title-box"
+                :data-id="`${item.position}-title-${item._id}`"
               />
               <div
                 v-if="item.dangerouslyUseHTMLString"
-                :data-id="`${item.position}-${item._id}`"
+                :data-id="`${item.position}-title-${item._id}`"
+                class="custom-title-box"
+                v-html="item.title"
+              />
+              <div
+                v-if="!item.dangerouslyUseHTMLString"
+                class="custom-content-box"
+                :data-id="`${item.position}-content-${item._id}`"
+              />
+              <div
+                v-if="item.dangerouslyUseHTMLString"
+                :data-id="`${item.position}-content-${item._id}`"
+                class="custom-content-box"
                 v-html="item.content"
               />
             </div>
@@ -283,13 +298,13 @@ function customRender(instance: NotificationConfigType) {
 .main {
   flex: 1;
 }
-.main h2 {
+.main .custom-title-box {
   margin-bottom: 10px;
   font-size: 16px;
   font-weight: 700;
-  color: black;
+  color: #000;
 }
-.main .custom {
+.main .custom-content-box {
   font-size: 14px;
   color: #606266;
 }
