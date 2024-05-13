@@ -84,7 +84,7 @@ const titleTypeMap = new Map<string, string>([
   ['error', 'Error'],
   ['warning', 'Warning'],
 ])
-function add({ type = 'info', duration = 3000, title = 'Prompt', content = '', showClose = true, position = 'top-right', offset = 20, icon = Success, showIcon = true, dangerouslyUseHTMLString = false }: NotificationConfig) {
+function add({ type = 'info', duration = 3000, title = 'Prompt', content = '', showClose = true, position = 'top-right', offset = 20, icon = Success, showIcon = true, dangerouslyUseHTMLString = false, appendTo }: NotificationConfig) {
   const instance: NotificationConfigType = {
     type,
     title: titleTypeMap.get(type) || title,
@@ -95,6 +95,7 @@ function add({ type = 'info', duration = 3000, title = 'Prompt', content = '', s
     offset,
     icon: shallowRef(iconTypeMap.get(type) || Info),
     showIcon,
+    appendTo,
     dangerouslyUseHTMLString,
     _id: index++,
   }

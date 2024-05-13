@@ -12,11 +12,12 @@ export function createNotification() {
   ])
 
   const notify = (config: NotificationConfig, appContext?: AppContext) => {
+    const appendToContainer = config.appendTo || document.body
     const position = config.position || 'top-right'
     if (!instanceMap.get(position)?.instance) {
       const container = document.createElement('div')
       container.className = `notification-container-${position}`
-      document.body.appendChild(container)
+      appendToContainer.appendChild(container)
 
       const vm = createVNode(Notification, {
         onReady(_instance: NotificationInstance) {
