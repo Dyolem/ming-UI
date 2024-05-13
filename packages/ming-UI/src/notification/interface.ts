@@ -13,6 +13,8 @@ export interface NotificationConfig {
   showIcon?: boolean
   dangerouslyUseHTMLString?: boolean
   zIndex?: number
+  onClick?: (id?: number) => void
+  onClose?: (id?: number) => void
 }
 
 export interface NotificationConfigType extends NotificationConfig {

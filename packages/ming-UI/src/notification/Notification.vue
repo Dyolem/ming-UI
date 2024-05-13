@@ -87,7 +87,7 @@ const titleTypeMap = new Map<string, string>([
   ['error', 'Error'],
   ['warning', 'Warning'],
 ])
-function add({ type = 'info', duration = DEFAULT_DURATION, title = 'Prompt', content = '', showClose = true, position = 'top-right', offset = DEFAULT_OFFSET, icon = Info, showIcon = true, dangerouslyUseHTMLString = false, appendTo, zIndex = 100 }: NotificationConfig) {
+function add({ type = 'info', duration = DEFAULT_DURATION, title = 'Prompt', content = '', showClose = true, position = 'top-right', offset = DEFAULT_OFFSET, icon = Info, showIcon = true, dangerouslyUseHTMLString = false, appendTo, zIndex = 100, onClick, onClose }: NotificationConfig) {
   const instance: NotificationConfigType = {
     type,
     title: titleTypeMap.get(type) || title,
@@ -100,6 +100,8 @@ function add({ type = 'info', duration = DEFAULT_DURATION, title = 'Prompt', con
     showIcon,
     appendTo,
     dangerouslyUseHTMLString,
+    onClick,
+    onClose,
     _id: index++,
   }
 
@@ -144,11 +146,20 @@ onMounted(() => {
   onReady()
 })
 
+function clickNotification(id: number = data.value[0]?._id ?? 0) {
+  const idx = data.value.findIndex(item => item._id === id)
+  if (idx !== -1) {
+    if (data.value[idx].onClick)
+      data.value[idx].onClick?.(id)
+  }
+}
 function closeNotification(id: number = data.value[0]?._id ?? 0) {
   const idx = data.value.findIndex(item => item._id === id)
   if (idx !== -1) {
     if (data.value[idx]._timer)
       clearTimeout(data.value[idx]._timer)
+
+    data.value[idx].onClose?.(id)
     data.value.splice(idx, 1)
   }
 }
@@ -195,7 +206,10 @@ function customRender(instance: NotificationConfigType) {
 <template>
   <div class="wrapper" :style="position">
     <TransitionGroup name="slide-fade" tag="div" appear @after-leave="handleAfterLeave">
-      <div v-for="item in dataOrderComputed" :key="item._id" class="container" :style="translateXValue">
+      <div
+        v-for="item in dataOrderComputed" :key="item._id" class="container" :style="translateXValue"
+        @click="clickNotification(item._id)"
+      >
         <div class="replaceable-box public">
           <div class="native-content-box">
             <div v-if="item.showIcon" class="left-side">
