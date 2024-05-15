@@ -79,7 +79,7 @@ Ming-UI为 `app.config.globalProperties` 添加了全局方法 `$notification` ,
 | content | 通知栏正文内容 | `string` \| `vNode` | - |
 | duration | 显示时间, 单位为毫秒。 值为 `0` 则不会自动关闭 | `number` | 3000 |
 | showClose | 是否显示关闭按钮 | `boolean` | true |
-| position | 自定义弹出位置     | `'top-right'` \| `'top-left'` \| `'bottom-right'` \| `'bottom-left'` | false |
+| position | 自定义弹出位置     | `'top-right'` \| `'top-left'` \| `'bottom-right'` \| `'bottom-left'` | 'top-right' |
 | offset | 弹出位置距离窗口顶部或者底部的偏移距离 | `number` | 30 |
 | icon | 自定义通知图标     | `boolean` | false |
 | showIcon | 是否显示通知类型图标 | `boolean` | true |
