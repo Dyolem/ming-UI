@@ -1,12 +1,13 @@
 import type { Component, VNode } from 'vue'
 
+export type position = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
 export interface NotificationConfig {
   type?: 'success' | 'info' | 'warning' | 'error'
   content: string | VNode
   title?: string | VNode
   duration?: number
   showClose?: boolean
-  position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
+  position?: position
   offset?: number
   appendTo?: HTMLElement
   icon?: Component

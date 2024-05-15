@@ -1,6 +1,6 @@
 import { createVNode, render } from 'vue'
 import type { AppContext } from 'vue'
-import type { NotificationConfig, NotificationInstance } from './interface'
+import type { NotificationConfig, NotificationInstance, position } from './interface'
 import Notification from './Notification.vue'
 
 export function createNotification() {
@@ -10,10 +10,10 @@ export function createNotification() {
     ['bottom-left', { instance: null, container: null }],
     ['bottom-right', { instance: null, container: null }],
   ])
-
+  let position: position = 'top-right'
   const notify = (config: NotificationConfig, appContext?: AppContext) => {
     const appendToContainer = config.appendTo || document.body
-    const position = config.position || 'top-right'
+    position = config.position || 'top-right'
     if (!instanceMap.get(position)?.instance) {
       const container = document.createElement('div')
       container.className = `notification-container-${position}`
@@ -47,10 +47,8 @@ export function createNotification() {
     }
   }
 
-  const close = (id?: number) => {
-    instanceMap.forEach(({ instance }) => {
-      instance?.close(id)
-    })
+  const close = (_position: position = position, id?: number) => {
+    instanceMap.get(_position)?.instance?.close(id)
   }
 
   const closeAll = () => {
