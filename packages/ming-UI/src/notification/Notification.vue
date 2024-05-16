@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
 import { computed, h, isVNode, nextTick, onMounted, ref, render, shallowRef } from 'vue'
-import type { NotificationConfig, NotificationConfigType, NotificationInstance } from './interface'
+import type { NotificationConfig, NotificationConfigType, NotificationInstance, Position } from './interface'
 import Success from './components/Success.vue'
 import Info from './components/Info.vue'
 import Error from './components/Error.vue'
@@ -15,6 +15,7 @@ defineOptions({
 const prop = defineProps<{
   onReady: (instance: NotificationInstance) => void
   onEmpty: () => void
+  onClose: (position: Position) => void
 }>()
 const DEFAULT_DURATION = 3000
 const DEFAULT_OFFSET = 30
@@ -161,8 +162,10 @@ function closeNotification(id: number = data.value[0]?._id ?? 0) {
     if (data.value[idx]._timer)
       clearTimeout(data.value[idx]._timer)
 
+    onClose(data.value[idx].position as Position)
     data.value[idx].onClose?.(id)
     data.value.splice(idx, 1)
+    checkEmpty()
   }
 }
 function closeAllNotification() {
@@ -171,6 +174,7 @@ function closeAllNotification() {
       clearTimeout(item._timer)
   })
   data.value = []
+  checkEmpty()
 }
 function checkEmpty() {
   if (data.value.length === 0) {
@@ -181,8 +185,8 @@ function checkEmpty() {
     }, 400) // 延迟时间需要超过动画时间
   }
 }
-function handleAfterLeave() {
-  checkEmpty()
+function onClose(position: Position) {
+  prop.onClose?.(position)
 }
 
 function createCustomRender(instance: NotificationConfigType) {
@@ -208,7 +212,7 @@ function createCustomRender(instance: NotificationConfigType) {
 
 <template>
   <div class="wrapper" :style="position">
-    <TransitionGroup name="slide-fade" tag="div" appear @after-leave="handleAfterLeave">
+    <TransitionGroup name="slide-fade" tag="div" appear>
       <div
         v-for="item in dataOrderComputed" :key="item._id" class="container" :style="translateXValue"
         @click="clickNotification(item._id)"
@@ -219,7 +223,6 @@ function createCustomRender(instance: NotificationConfigType) {
               <component :is="item.icon" />
             </div>
             <div class="main">
-              <!-- <h2>{{ item.title }}</h2> -->
               <div
                 v-if="!item.dangerouslyUseHTMLString"
                 class="custom-title-box"
