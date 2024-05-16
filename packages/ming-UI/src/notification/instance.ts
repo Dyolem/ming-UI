@@ -55,9 +55,9 @@ export function createNotification() {
     }
   }
 
-  const close = (id?: number) => {
+  const close = () => {
     const deletePosition = positionStack[0] as Position
-    instanceMap.get(deletePosition)?.instance?.close(id)
+    instanceMap.get(deletePosition)?.instance?.close()
   }
   const closeAll = () => {
     instanceMap.forEach(({ instance }) => {
