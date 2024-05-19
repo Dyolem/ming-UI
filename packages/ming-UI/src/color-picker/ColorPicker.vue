@@ -5,12 +5,8 @@ import MControlPanel from '../control-panel/index'
 import MInput from '../input/index'
 import MTooltip from '../tooltip/index'
 import EyeDropper from './components/EyeDropper.vue'
-import type { ColorPickerProps } from './interface'
+import type { ColorPickerProps, colorManagerType, ratioType } from './interface'
 
-interface ratioType {
-  horizontalDistanceRatio: number
-  verticalDistanceRatio: number
-}
 defineOptions({
   name: 'MColorPicker',
 })
@@ -50,19 +46,6 @@ const slConvertToRatio = ref<ratioType>({
   verticalDistanceRatio: 0,
 })
 
-interface colorManagerType {
-  hsl: {
-    h: number
-    s: number
-    l: number
-  }
-  rgb: {
-    r: number
-    g: number
-    b: number
-  }
-  hex: string
-}
 const colorManager = ref<colorManagerType>({
   hsl: { h: 264, s: 65, l: 91 },
   rgb: { r: 229, g: 217, b: 247 },
