@@ -3,6 +3,7 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  lang: 'zh-CN',
   title: 'Ming-UI',
   titleTemplate: false,
   head: [
@@ -11,29 +12,49 @@ export default defineConfig({
   description: '充满创意和交互性设计的组件库',
   // eslint-disable-next-line node/prefer-global/process
   base: process.env.NODE_ENV === 'production' ? '/ming-UI/' : '/',
+  locales: {
+    root: {
+      label: ' ',
+      lang: 'zh-CN',
+      link: '/zh-CN',
+    },
+    zh: {
+      label: '简体中文',
+      lang: 'zh-CN',
+      link: '/zh-CN',
+    },
+    en: {
+      label: 'English',
+      lang: 'en-US',
+      link: '/en-US',
+    },
+
+  },
   rewrites: {
-    'docs/(.*)': '(.*)',
-    'packages/ming-UI/src/:comp/(.*)': 'components/:comp/(.*)',
-    'packages/utils/src/(.*)': 'utils/(.*)',
-    'packages/icons/src/(.*)': 'components/icons/(.*)',
+    'docs/zh-CN/components/:comp': 'zh-CN/component/:comp',
+    'docs/zh-CN/(.*)': '(.*)',
+    'docs/en-US/components/:comp': 'en-US/component/:comp',
+    'docs/en-US/(.*)': '(.*)',
+    'docs/zh-CN/utils/:util': 'zh-CN/utils/:util',
+    'docs/en-US/utils/:util': 'en-US/utils/:util',
   },
   themeConfig: {
     logo: './four-leaves.svg',
     // https://vitepress.dev/reference/default-theme-config
     siteTitle: 'Ming-UI',
     outline: 'deep',
+    i18nRouting: true,
     nav: [
       { text: '首页', link: '/' },
       { text: '介绍', link: '/introduce' },
-      { text: '组件', link: '/components/button/' },
-      { text: '工具', link: '/utils/' },
+      { text: '组件', link: '/zh-CN/component/button' },
+      { text: '工具', link: '/zh-CN/utils/' },
     ],
-
     sidebar: {
-      '/components/': [
+      '/zh-CN/component/': [
         {
           text: 'Button 按钮',
-          link: '/components/button/',
+          link: '/zh-CN/component/button',
         },
         {
           text: 'Input 输入框',
@@ -49,7 +70,7 @@ export default defineConfig({
         },
         {
           text: 'Icons 图标',
-          link: '/components/icons/',
+          link: '/zh-CN/component/icon',
         },
         {
           text: 'ColorPicker 取色器',
@@ -68,6 +89,12 @@ export default defineConfig({
           link: '/components/notification/',
         },
 
+      ],
+      '/en-US/component/': [
+        {
+          text: 'Button',
+          link: '/en-US/component/button',
+        },
       ],
       '/utils/': [
         {
