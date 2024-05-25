@@ -20,8 +20,10 @@ export default {
     app.component('Demo', AntdTheme)
     app.use(ming)
     app.use(icons)
+    // eslint-disable-next-line node/prefer-global/process
+    const rootUrl = process.env.NODE_ENV === 'production' ? '/ming-UI/' : '/'
     router.onBeforePageLoad = (to) => {
-      if (to === '/') {
+      if (to === rootUrl) {
         router.go('/zh-CN/') // 使用router.go进行路由跳转
         return false // 阻止原本的路由变更
       }
