@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: "Ming UI"
-  text: "充满创意和交互性设计的组件库"
+  text: "A component library filled with creative and interactive designs"
   # tagline: My great project tagline
   actions:
     - theme: alt
@@ -16,14 +16,14 @@ hero:
 
 features:
   - icon: 🎨
-    title: 创新设计
-    details: 创新设计，让界面活跃起来，实现前沿的用户体验
+    title: Innovative Design
+    details: Innovative designs that bring interfaces to life, providing cutting-edge user experiences.
   - icon: 🛠️
-    title:  灵活定制
-    details: 量身打造，提供广泛的定制选项，满足你独特的视觉和功能需求
+    title: Flexible Customization
+    details: Tailor-made with a wide range of customization options to meet your unique visual and functional needs.
   - icon: ⚙️
-    title: 易于集成
-    details: 无缝集成，提供灵活的API和示例，简化开发，提升效率
+    title: Easy Integration
+    details: Seamless integration with flexible APIs and examples, simplifying development and enhancing efficiency.
   
 ---
 

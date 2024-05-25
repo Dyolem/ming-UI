@@ -16,10 +16,15 @@ export default {
       // https://vitepress.dev/guide/extending-default-theme#layout-slots
     })
   },
-  enhanceApp({ app }) {
-    // ...
+  enhanceApp({ app, router }) {
     app.component('Demo', AntdTheme)
     app.use(ming)
     app.use(icons)
+    router.onBeforePageLoad = (to) => {
+      if (to === '/') {
+        router.go('/zh-CN/') // 使用router.go进行路由跳转
+        return false // 阻止原本的路由变更
+      }
+    }
   },
 } satisfies Theme
