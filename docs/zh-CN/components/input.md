@@ -12,22 +12,22 @@
 
 ## 基础使用
 
-<demo src="./demos/basic.vue"></demo>
+<demo src="../../examples/input/basic.vue"></demo>
 
 ## 禁用状态
 
 通过 `disabled` 属性指定是否禁用 input 组件
 
-<demo src="./demos/disabled.vue"></demo>
+<demo src="../../examples/input/disabled.vue"></demo>
 
 ## 尺寸
 
 使用 `size` 属性改变输入框大小。 除了默认大小外，还有另外两个选项： `large`, `small`。
-<demo src="./demos/size.vue"></demo>
+<demo src="../../examples/input/size.vue"></demo>
 
 ## 插槽
 
-<demo src="./demos/slot.vue"></demo>
+<demo src="../../examples/input/slot.vue"></demo>
 
 ## API
 

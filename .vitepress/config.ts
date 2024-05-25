@@ -58,15 +58,15 @@ export default defineConfig({
         },
         {
           text: 'Input 输入框',
-          link: '/components/input/',
+          link: '/zh-CN/component/input',
         },
         {
           text: 'Tooltip 文字提示',
-          link: '/components/tooltip/',
+          link: '/zh-CN/component/tooltip',
         },
         {
           text: 'Table 表格',
-          link: '/components/table/',
+          link: '/zh-CN/component/table',
         },
         {
           text: 'Icons 图标',
@@ -74,19 +74,19 @@ export default defineConfig({
         },
         {
           text: 'ColorPicker 取色器',
-          link: '/components/color-picker/',
+          link: '/zh-CN/component/color-picker',
         },
         {
           text: 'ControlPanel 控制板',
-          link: '/components/control-panel/',
+          link: '/zh-CN/component/control-panel',
         },
         {
           text: 'Rate 评分',
-          link: '/components/rate/',
+          link: '/zh-CN/component/rate',
         },
         {
           text: 'notification 通知',
-          link: '/components/notification/',
+          link: '/zh-CN/component/notification',
         },
 
       ],

@@ -8,7 +8,7 @@
 
 传递`thresholdArr`数组，可以划分更多评分等级。
 
-<demo src="./demos/basic.vue"></demo>
+<demo src="../../examples/rate/basic.vue"></demo>
 
 ::: tip
 请确保`颜色数组长度`等于`阈值数组长度加一`，如果`颜色数组长度`小于等于`阈值数组长度加一`，缺少的颜色值将以颜色数组最后的一个值为准；如果`颜色数组长度`大于`阈值数组长度加一`，多余的颜色值将被丢弃。
@@ -16,13 +16,13 @@
 
 ## 尺寸
 
-<demo src="./demos/size.vue"></demo>
+<demo src="../../examples/rate/size.vue"></demo>
 
 ## 允许半选
 
 属性 `allow-half` 允许出现半星。实际使用中建议使用该属性，而不是使用无级打分模式。
 
-<demo src="./demos/half.vue"></demo>
+<demo src="../../examples/rate/half.vue"></demo>
 
 ::: tip
 当`allow-half`为false时，评分是无级调节的，为了便于展示，显示精度默认设置成保留一位小数，因此建议总分数除以图标个数的值是一个整数，比如`max`设置为10，`rateIconCount`设置为5
@@ -36,37 +36,37 @@
 
 当然为了避免手动处理的麻烦，组件内部有内置的显示分数区域，可以通过`score-accuracy`属性来控制评分值的小数位数。
 
-<demo src="./demos/accuracy.vue"></demo>
+<demo src="../../examples/rate/accuracy.vue"></demo>
 
 ### 显示位置
 
 可以通过设置`text-position`属性控制评分值的显示位置。
 
-<demo src="./demos/position.vue"></demo>
+<demo src="../../examples/rate/position.vue"></demo>
 
 ### 插槽
 
 除了显示数字，你还可以通过名字为`text`的作用域插槽自定义显示内容
-<demo src="./demos/text.vue"></demo>
+<demo src="../../examples/rate/text.vue"></demo>
 
 ## 可清空
 
 当你再次点击相同的值时，可以将值重置为 0。
-<demo src="./demos/clearable.vue"></demo>
+<demo src="../../examples/rate/clearable.vue"></demo>
 
 ## 只读
 
 只读的评分用来展示分数。为组件设置 disabled 属性表示组件为只读。
-<demo src="./demos/ReadOnly.vue"></demo>
+<demo src="../../examples/rate/ReadOnly.vue"></demo>
 
 ## 更多种类的图标
 
 通过设置`iconComponent`属性，接收一个图标组件对象，可以自定义评分图标。
 
-<demo src="./demos/MoreIcons.vue"></demo>
+<demo src="../../examples/rate/MoreIcons.vue"></demo>
 
 除了接收单个图标组件对象，也可以传递包含多个图标组件对象的数组，这在配合评分阈值使用时很有用。
-<demo src="./demos/iconsArr.vue"></demo>
+<demo src="../../examples/rate/iconsArr.vue"></demo>
 
 :::warning
 传递的图标组件内部实现必须以`<svg></svg>`为根节点，不可放在任何父元素内部，否则评分组件样式将失效。
@@ -75,12 +75,12 @@
 ## 自定义样式
 
 你可以通过设置`fill-color`，`bottom-layer-fill-color`，`stroke`，`grayscale`等一系列属性，自由控制评分图标的样式。
-<demo src="./demos/customizedStyle.vue"></demo>
+<demo src="../../examples/rate/customizedStyle.vue"></demo>
 
 :::tip
 如果将`stroke`属性设置为`none`，`bottom-layer-fill-color`属性值将和`fill-color`属性值一致，同时图标将自动应用0.5数值的灰度滤镜用于显示图标区域。
 :::
-<demo src="./demos/contourless.vue"></demo>
+<demo src="../../examples/rate/contourless.vue"></demo>
 
 ## API
 

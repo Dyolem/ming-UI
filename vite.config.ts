@@ -13,7 +13,7 @@ export default defineConfig({
   plugins: [
     vueJsx(),
     vitepressDemo({
-      glob: ['**/demos/*.vue'],
+      glob: ['**/examples/**/*.vue'],
     }),
     tsxResolveTypes(),
     // Component({

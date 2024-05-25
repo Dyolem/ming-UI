@@ -104,23 +104,36 @@ app.mount('#app')
 ::: tip
 结合m-icon使用时，如果同时给原生SVG直接设置属性，直接设置的属性并不会生效。
 :::
-<demo src="./demos/basic.vue"></demo>
+<demo src="../../examples/icon/basic.vue"></demo>
 
 ## 图标集合
 
 <script setup>
-import { useClipBoard } from '@ming-UI/utils'
+  import IconCollection from '../../examples/icon/IconCollection.vue'
+// import { useClipBoard } from '@ming-UI/utils'
+// import {MIcon,Like,DislikeTwo} from '@ming-UI/icons'
+// import { ref } from 'vue'
 
-function copyIconsName(event) {
-  if(event.target?.innerText ===undefined) return
-    const content = `<m-icon><${event.target?.innerText} /></m-icon>`
-  useClipBoard(content)
-}
+// function copyIconsName(event) {
+//   if(event.target?.innerText ===undefined) return
+//     const content = `<m-icon><${event.target?.innerText} /></m-icon>`
+//   useClipBoard(content)
+// }
+// const basicIcons=ref(new Map([
+//   ['Like',Like],
+//   ['DislikeTwo',DislikeTwo]
+// ]))
 
 </script>
-
-<ul :class="$style.grid" class="vp-raw" @click="copyIconsName($event)">
-  <li>
+<IconCollection />
+<!-- <ul :class="$style.grid" class="vp-raw" @click="copyIconsName($event)"> -->
+  <!-- <li v-for="([name,basic],index) in basicIcons" :key="index">
+    <m-icon>
+      <component :is="basic" />
+    </m-icon>
+    <span>{{ name }}</span>
+  </li> -->
+  <!-- <li>
     <m-icon>
       <Like />
     </m-icon>
@@ -191,8 +204,8 @@ function copyIconsName(event) {
       <Star />
     </m-icon>
     <span>Star</span>
-  </li>
-</ul>
+  </li> -->
+<!-- </ul> -->
 
 <style module>
   .grid {

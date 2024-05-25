@@ -9,7 +9,7 @@
 
 使用 `content` 属性来决定 `hover` 时的提示信息。 由 `placement` 属性决定展示效果： `placement属性值为：`[方向]-[对齐位置]；四个方向：`top`、`left`、`right`、`bottom`；三种对齐位置：`start`, `end`，默认为空。 如 `placement="left-end"`，则提示信息出现在目标元素的左侧，且提示信息的底部与目标元素的底部对齐。
 
-<demo src="./demos/basic.vue"></demo>
+<demo src="../../examples/tooltip/basic.vue"></demo>
 
 ## 主题
 
@@ -20,18 +20,18 @@ Tooltip 组件内置了两种主题：`dark`和`light`。除了内置主题，�
 :::
 
 通过设置 `effect` 来修改主题，默认值为 `dark`。
-<demo src="./demos/topic.vue"></demo>
+<demo src="../../examples/tooltip/topic.vue"></demo>
 
 ## 触发模式
 
 tooltip组件提供了`click`和`hover`两种触发模式。
-<demo src="./demos/trigger.vue"></demo>
+<demo src="../../examples/tooltip/trigger.vue"></demo>
 
 ## 插槽
 
 可自定义文字提示内容。若提供了插槽内容，会覆盖content传递的内容。
 
-<demo src="./demos/slot.vue"></demo>
+<demo src="../../examples/tooltip/slot.vue"></demo>
 
 ## API
 

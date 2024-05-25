@@ -5,17 +5,17 @@
 ## 基本使用
 
 Ming-UI 注册了 `notify` 方法并且它接受一个 `Object` 作为其参数。 在最简单的情况下，你可以通过设置 `title` 和 `message` 属性来设置通知的标题和正文内容。 默认情况下，通知在3000毫秒后自动关闭，但你可以通过设置 `duration` 属性来自定义通知的展示时间。 如果你将它设置为 `0`，那么通知将不会自动关闭。 需要注意的是 `duration` 接收一个 `number`类型的值，单位为毫秒。
-<demo src="./demos/basic.vue"></demo>
+<demo src="../../examples/notification/basic.vue"></demo>
 
 ## 不同类型的通知
 
 组件提供了四种不同类型的提醒框：`success`、`warning`、`info` 和`error`，可以通过`type`属性来控制。如果未手动传递值或者传递值不符合要求，类型默认为`info`类型
-<demo src="./demos/types.vue"></demo>
+<demo src="../../examples/notification/types.vue"></demo>
 
 ## 标题与通知栏内容
 
 标题与通知栏内容均支持传入三类形式的值：`字符串`，`vNode类型`的值（可以是组件，也可以是h函数渲染的结果），`HTML片段`。如果要渲染HTML片段，请将`dangerouslyUseHTMLString`属性置为`true`。
-<demo src="./demos/content.vue"></demo>
+<demo src="../../examples/notification/content.vue"></demo>
 
 :::warning
 `content` 属性虽然支持传入 `HTML` 片段，但是在网站上动态渲染任意 `HTML` 是非常危险的，因为容易导致 `XSS` 攻击。 因此在 `dangerouslyUseHTMLString` 打开的情况下，请确保 `content` 的内容是可信的，永远不要将用户提交的内容赋值给 `content` 属性。
@@ -27,7 +27,7 @@ Ming-UI 注册了 `notify` 方法并且它接受一个 `Object` 作为其参数�
 
 使用 `position` 属性设置 `Notification` 的弹出位置， 支持四个选项：`top-right`、`top-left`、`bottom-right` 和 `bottom-left`， 默认为 `top-right`。
 
-<demo src="./demos/position.vue"></demo>
+<demo src="../../examples/notification/position.vue"></demo>
 
 ## 有位置偏移的通知栏
 
@@ -35,12 +35,12 @@ Ming-UI 注册了 `notify` 方法并且它接受一个 `Object` 作为其参数�
 
 `Notification` 提供设置偏移量的功能，通过设置 offset 字段，可以使弹出的消息距屏幕边缘偏移一段距离。 注意在同一时刻，每一个的 `Notification` 实例应当具有一个相同的偏移量,否则会使用新的通知的偏移量。一个`Notification` 实例可以理解为一个通知队列。根据前面的 `position` 属性，本组件运行时最多存在四个`Notification` 实例。
 
-<demo src="./demos/offset.vue"></demo>
+<demo src="../../examples/notification/offset.vue"></demo>
 
 ## 关闭通知
 
 调用 `close()` 方法可以关闭页面中的最先出现的通知。你也可以调用 `closeAll()`方法，直接关闭所有通知。
-<demo src="./demos/close.vue"></demo>
+<demo src="../../examples/notification/close.vue"></demo>
 
 ## 隐藏关闭按钮
 
@@ -48,18 +48,18 @@ Ming-UI 注册了 `notify` 方法并且它接受一个 `Object` 作为其参数�
 
 将 `showClose` 属性设置为 `false` 即可隐藏关闭按钮。
 
-<demo src="./demos/closeButton.vue"></demo>
+<demo src="../../examples/notification/closeButton.vue"></demo>
 
 ## 全局方法
 
 Ming-UI为 `app.config.globalProperties` 添加了全局方法 `$notification` ,你可以获取当前应用实例直接调用`$notification`
 
-<demo src="./demos/globalMethod.vue"></demo>
+<demo src="../../examples/notification/globalMethod.vue"></demo>
 
 ## 应用程序上下文继承
 
 现在 `MNotification` 接受一条 `context` 作为消息构造器的第二个参数，允许你将当前应用的上下文注入到 `MNotification` 中，这将允许你继承应用程序的所有属性。
-<demo src="./demos/appContext.vue"></demo>
+<demo src="../../examples/notification/appContext.vue"></demo>
 :::tip
 如果您全局注册了 `MNotification` 组件，它将自动继承应用的上下文环境。
 :::

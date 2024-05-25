@@ -11,7 +11,7 @@
 
 点击画笔图标即可呼出系统取色器，点击鼠标左键获取当前位置的像素颜色，并将颜色展示在画笔下方的正方形画框内。鼠标悬浮于画框上可获得HEX形式的颜色值，左键点击画框即可复制到剪贴板。
 
-<demo src="./demos/basic.vue"></demo>
+<demo src="../../examples/color-picker/basic.vue"></demo>
 
 ### UI切换
 
@@ -26,19 +26,19 @@
 ### 关闭组件
 
 设置`enableClose`属性为true后，双击画笔下方的小画框可关闭组件。
-<demo src="./demos/close.vue"></demo>
+<demo src="../../examples/color-picker/close.vue"></demo>
 
 ### 插槽
 
 传递图标可以替换默认的画笔图标，推荐使用组件库配套的图标，当然你也可以自行传递任意图标
 
-<demo src="./demos/slot.vue"></demo>
+<demo src="../../examples/color-picker/slot.vue"></demo>
 
 <!-- ## 命令式调用
 
 除了以模板声明的方式直接使用组件，还可以以命令的方式调用组件。
 
-<demo src="./demos/command.vue"></demo> -->
+<demo src="../../examples/color-picker/command.vue"></demo> -->
 
 ## API
 
